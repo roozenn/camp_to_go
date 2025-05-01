@@ -42,29 +42,29 @@ class HomePage extends StatelessWidget {
                 title: 'Ramah Pemula',
                 products: [
                   Product(
-                    'Quechua 2 Second Easy Tent',
-                    'Rp76.000/hari',
+                    'Quechua Arpenaz 4.1',
+                    'Rp120.000/hari',
                     'https://raw.githubusercontent.com/roozenn/camp_to_go/refs/heads/main/lib/image/tenda1.webp',
                   ),
                   Product(
-                    'NH Escape 500 23L',
-                    'Rp76.000/hari',
-                    'https://raw.githubusercontent.com/roozenn/camp_to_go/refs/heads/main/lib/image/tenda1.webp',
+                    'Forclaz MT500 Hiking Boots',
+                    'Rp85.000/hari',
+                    'https://raw.githubusercontent.com/roozenn/camp_to_go/refs/heads/main/lib/image/sepatu1.webp',
+                  ),
+                  Product(
+                    'Quechua Air Fresh 500',
+                    'Rp65.000/hari',
+                    'https://raw.githubusercontent.com/roozenn/camp_to_go/refs/heads/main/lib/image/tenda2.webp',
+                  ),
+                  Product(
+                    'Simond Rock 2.0',
+                    'Rp90.000/hari',
+                    'https://raw.githubusercontent.com/roozenn/camp_to_go/refs/heads/main/lib/image/sepatu2.webp',
                   ),
                   Product(
                     'NH Escape 500 23L',
-                    'Rp76.000/hari',
-                    'https://raw.githubusercontent.com/roozenn/camp_to_go/refs/heads/main/lib/image/tenda1.webp',
-                  ),
-                  Product(
-                    'NH Escape 500 23L',
-                    'Rp76.000/hari',
-                    'https://raw.githubusercontent.com/roozenn/camp_to_go/refs/heads/main/lib/image/tenda1.webp',
-                  ),
-                  Product(
-                    'NH Escape 500 23L',
-                    'Rp76.000/hari',
-                    'https://raw.githubusercontent.com/roozenn/camp_to_go/refs/heads/main/lib/image/tenda1.webp',
+                    'Rp45.000/hari',
+                    'https://raw.githubusercontent.com/roozenn/camp_to_go/refs/heads/main/lib/image/tas1.webp',
                   ),
                 ],
               ),
@@ -88,61 +88,47 @@ class HomePage extends StatelessWidget {
                           ),
                       itemCount: 4,
                       itemBuilder: (context, index) {
-                        return Card(
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(12),
-                          ),
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Image.network(
-                                'https://raw.githubusercontent.com/roozenn/camp_to_go/refs/heads/main/lib/image/tenda1.webp',
-                                height: 120,
-                                width: double.infinity,
-                                fit: BoxFit.cover,
-                              ),
-                              Padding(
-                                padding: const EdgeInsets.all(8),
-                                child: Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: const [
-                                    Text(
-                                      'Forclaz Men\'s MT900 Symbium2',
-                                      maxLines: 2,
-                                      overflow: TextOverflow.ellipsis,
-                                      style: TextStyle(
-                                        fontWeight: FontWeight.w500,
-                                      ),
-                                    ),
-                                    SizedBox(height: 4),
-                                    Text(
-                                      'Rp76.000/hari',
-                                      style: TextStyle(
-                                        color: Colors.green,
-                                        fontWeight: FontWeight.bold,
-                                      ),
-                                    ),
-                                    SizedBox(height: 2),
-                                    Text(
-                                      'Rp100.000/hari',
-                                      style: TextStyle(
-                                        decoration: TextDecoration.lineThrough,
-                                        fontSize: 12,
-                                        color: Colors.grey,
-                                      ),
-                                    ),
-                                    Text(
-                                      '24%',
-                                      style: TextStyle(
-                                        fontSize: 12,
-                                        color: Colors.red,
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                              ),
-                            ],
-                          ),
+                        final products = [
+                          {
+                            'imageUrl':
+                                'https://raw.githubusercontent.com/roozenn/camp_to_go/refs/heads/main/lib/image/tenda3.webp',
+                            'productName': 'Quechua 2 Second Easy Tent',
+                            'currentPrice': 'Rp150.000/hari',
+                            'originalPrice': 'Rp200.000/hari',
+                            'discount': '25%',
+                          },
+                          {
+                            'imageUrl':
+                                'https://raw.githubusercontent.com/roozenn/camp_to_go/refs/heads/main/lib/image/sepatu3.webp',
+                            'productName': 'Forclaz Trek 900',
+                            'currentPrice': 'Rp95.000/hari',
+                            'originalPrice': 'Rp120.000/hari',
+                            'discount': '21%',
+                          },
+                          {
+                            'imageUrl':
+                                'https://raw.githubusercontent.com/roozenn/camp_to_go/refs/heads/main/lib/image/kompor1.webp',
+                            'productName': 'Quechua Camping Stove',
+                            'currentPrice': 'Rp55.000/hari',
+                            'originalPrice': 'Rp75.000/hari',
+                            'discount': '27%',
+                          },
+                          {
+                            'imageUrl':
+                                'https://raw.githubusercontent.com/roozenn/camp_to_go/refs/heads/main/lib/image/kasur1.webp',
+                            'productName': 'NH Comfort 500 Sleeping Bag',
+                            'currentPrice': 'Rp70.000/hari',
+                            'originalPrice': 'Rp90.000/hari',
+                            'discount': '22%',
+                          },
+                        ];
+
+                        return _buildProductCard(
+                          imageUrl: products[index]['imageUrl']!,
+                          productName: products[index]['productName']!,
+                          currentPrice: products[index]['currentPrice']!,
+                          originalPrice: products[index]['originalPrice']!,
+                          discount: products[index]['discount']!,
                         );
                       },
                     ),
@@ -457,6 +443,64 @@ class HomePage extends StatelessWidget {
             child: Text(
               'Produk yang paling banyak dipilih',
               style: TextStyle(color: Colors.white),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildProductCard({
+    required String imageUrl,
+    required String productName,
+    required String currentPrice,
+    required String originalPrice,
+    required String discount,
+  }) {
+    return Card(
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Image.network(
+            imageUrl,
+            height: 120,
+            width: double.infinity,
+            fit: BoxFit.cover,
+          ),
+          Padding(
+            padding: const EdgeInsets.all(8),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  productName,
+                  maxLines: 2,
+                  overflow: TextOverflow.ellipsis,
+                  style: const TextStyle(fontWeight: FontWeight.w500),
+                ),
+                const SizedBox(height: 4),
+                Text(
+                  currentPrice,
+                  style: const TextStyle(
+                    color: Colors.green,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+                const SizedBox(height: 2),
+                Text(
+                  originalPrice,
+                  style: const TextStyle(
+                    decoration: TextDecoration.lineThrough,
+                    fontSize: 12,
+                    color: Colors.grey,
+                  ),
+                ),
+                Text(
+                  discount,
+                  style: const TextStyle(fontSize: 12, color: Colors.red),
+                ),
+              ],
             ),
           ),
         ],
