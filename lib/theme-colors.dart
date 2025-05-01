@@ -57,6 +57,7 @@ class CAMPtoGoColors {
 // Example usage in your MaterialApp
 ThemeData buildLightTheme() {
   return ThemeData(
+    fontFamily: 'Arial',
     colorScheme: CAMPtoGoColors.colorScheme,
     appBarTheme: const AppBarTheme(
       backgroundColor: CAMPtoGoColors.primaryGreen,

@@ -28,18 +28,22 @@ class _HomePageState extends State<AkunPage> {
     return Scaffold(
       body: _pages[_selectedIndex],
       bottomNavigationBar: BottomNavigationBar(
+        selectedItemColor: const Color(0xFF2F4E3E),
+        unselectedItemColor: Colors.grey,
+        onTap: _onItemTapped,
+        currentIndex: _selectedIndex,
         type: BottomNavigationBarType.fixed,
-        items: const <BottomNavigationBarItem>[
+        items: const [
           BottomNavigationBarItem(
             icon: Icon(Icons.home_outlined),
             label: 'Beranda',
           ),
           BottomNavigationBarItem(
-            icon: Icon(Icons.shopping_cart_outlined),
+            icon: Icon(Icons.shopping_cart),
             label: 'Keranjang',
           ),
           BottomNavigationBarItem(
-            icon: Icon(Icons.receipt_outlined),
+            icon: Icon(Icons.receipt_long),
             label: 'Transaksi',
           ),
           BottomNavigationBarItem(
@@ -47,10 +51,6 @@ class _HomePageState extends State<AkunPage> {
             label: 'Akun',
           ),
         ],
-        currentIndex: _selectedIndex,
-        selectedItemColor: Color(0xFF3A5A40),
-        unselectedItemColor: Colors.grey,
-        onTap: _onItemTapped,
       ),
     );
   }

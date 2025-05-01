@@ -1,9 +1,9 @@
-import 'package:camp_to_go/unused/cart-page-gpt.dart';
+import 'package:camp_to_go/screen/cart-page-gpt.dart';
 import 'package:camp_to_go/unused/product-detail-page-gpt.dart';
 import 'package:camp_to_go/theme-colors.dart';
 import 'package:camp_to_go/screen/address-list-screen.dart';
 import 'package:camp_to_go/screen/akun-page.dart';
-import 'package:camp_to_go/screen/checkout-page.dart';
+import 'package:camp_to_go/unused/checkout-page.dart';
 import 'package:camp_to_go/screen/detail-order-screen.dart';
 import 'package:camp_to_go/screen/home-page.dart';
 import 'package:camp_to_go/screen/listing-page.dart';
@@ -92,6 +92,27 @@ class MyHome extends StatelessWidget {
                   },
                 ),
                 SizedBox(height: 10),
+                // ElevatedButton(
+                //   style: ElevatedButton.styleFrom(
+                //     padding: EdgeInsets.symmetric(
+                //       horizontal: 50,
+                //       vertical: 20,
+                //     ), // Padding horizontal dan vertical
+                //   ),
+                //   child: const Text(
+                //     'CheckoutPage',
+                //     style: TextStyle(fontSize: 20),
+                //   ),
+                //   onPressed: () {
+                //     Navigator.of(context).push(
+                //       MaterialPageRoute(
+                //         builder: (context) {
+                //           return CheckoutPage();
+                //         },
+                //       ),
+                //     );
+                //   },
+                // ),
                 ElevatedButton(
                   style: ElevatedButton.styleFrom(
                     padding: EdgeInsets.symmetric(
@@ -99,15 +120,12 @@ class MyHome extends StatelessWidget {
                       vertical: 20,
                     ), // Padding horizontal dan vertical
                   ),
-                  child: const Text(
-                    'CheckoutPage',
-                    style: TextStyle(fontSize: 20),
-                  ),
+                  child: const Text('CartPage', style: TextStyle(fontSize: 20)),
                   onPressed: () {
                     Navigator.of(context).push(
                       MaterialPageRoute(
                         builder: (context) {
-                          return CheckoutPage();
+                          return CartPage();
                         },
                       ),
                     );
@@ -129,7 +147,9 @@ class MyHome extends StatelessWidget {
                     Navigator.of(context).push(
                       MaterialPageRoute(
                         builder: (context) {
-                          return DetailOrderScreen();
+                          // return DetailOrderScreen();
+
+                          return DetailOrderPage();
                         },
                       ),
                     );
@@ -330,24 +350,6 @@ class MyHome extends StatelessWidget {
                     );
                   },
                 ),
-                // ElevatedButton(
-                //   style: ElevatedButton.styleFrom(
-                //     padding: EdgeInsets.symmetric(
-                //       horizontal: 50,
-                //       vertical: 20,
-                //     ), // Padding horizontal dan vertical
-                //   ),
-                //   child: const Text('CartPage', style: TextStyle(fontSize: 20)),
-                //   onPressed: () {
-                //     Navigator.of(context).push(
-                //       MaterialPageRoute(
-                //         builder: (context) {
-                //           return CartPage();
-                //         },
-                //       ),
-                //     );
-                //   },
-                // ),
                 // ElevatedButton(
                 //   style: ElevatedButton.styleFrom(
                 //     padding: EdgeInsets.symmetric(
