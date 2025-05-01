@@ -203,25 +203,25 @@ class HomePage extends StatelessWidget {
         'title': 'Paket Camping Hemat',
         'discount': 'Diskon 30%',
         'image':
-            'https://raw.githubusercontent.com/roozenn/camp_to_go/refs/heads/main/lib/image/bg-promo1.jpg',
+            'https://raw.githubusercontent.com/roozenn/camp_to_go/refs/heads/main/lib/image/promo-pakethemat.webp',
       },
       {
         'title': 'Sewa 3 Hari Gratis 1',
         'discount': 'Promo Spesial',
         'image':
-            'https://raw.githubusercontent.com/roozenn/camp_to_go/refs/heads/main/lib/image/bg-promo2.jpg',
+            'https://raw.githubusercontent.com/roozenn/camp_to_go/refs/heads/main/lib/image/promo-3plus1.webp',
       },
       {
         'title': 'Paket Keluarga',
         'discount': 'Diskon 25%',
         'image':
-            'https://raw.githubusercontent.com/roozenn/camp_to_go/refs/heads/main/lib/image/bg-promo1.jpg',
+            'https://raw.githubusercontent.com/roozenn/camp_to_go/refs/heads/main/lib/image/promo-paketkeluarga.webp',
       },
       {
         'title': 'Weekend Special',
         'discount': 'Diskon 40%',
         'image':
-            'https://raw.githubusercontent.com/roozenn/camp_to_go/refs/heads/main/lib/image/bg-promo2.jpg',
+            'https://raw.githubusercontent.com/roozenn/camp_to_go/refs/heads/main/lib/image/promo-weekend.webp',
       },
     ];
 
