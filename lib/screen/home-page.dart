@@ -45,26 +45,31 @@ class HomePage extends StatelessWidget {
                     'Quechua Arpenaz 4.1',
                     'Rp120.000/hari',
                     'https://raw.githubusercontent.com/roozenn/camp_to_go/refs/heads/main/lib/image/tenda1.webp',
+                    'Rp150.000/hari',
                   ),
                   Product(
                     'Forclaz MT500 Hiking Boots',
                     'Rp85.000/hari',
                     'https://raw.githubusercontent.com/roozenn/camp_to_go/refs/heads/main/lib/image/sepatu1.webp',
+                    'Rp120.000/hari',
                   ),
                   Product(
                     'Quechua Air Fresh 500',
                     'Rp65.000/hari',
                     'https://raw.githubusercontent.com/roozenn/camp_to_go/refs/heads/main/lib/image/tenda2.webp',
+                    'Rp90.000/hari',
                   ),
                   Product(
-                    'Simond Rock 2.0',
+                    'Simond Rock 2.0 Hiking Boots',
                     'Rp90.000/hari',
                     'https://raw.githubusercontent.com/roozenn/camp_to_go/refs/heads/main/lib/image/sepatu2.webp',
+                    'Rp130.000/hari',
                   ),
                   Product(
                     'NH Escape 500 23L',
                     'Rp45.000/hari',
                     'https://raw.githubusercontent.com/roozenn/camp_to_go/refs/heads/main/lib/image/tas1.webp',
+                    'Rp70.000/hari',
                   ),
                 ],
               ),
@@ -82,11 +87,11 @@ class HomePage extends StatelessWidget {
                       gridDelegate:
                           const SliverGridDelegateWithFixedCrossAxisCount(
                             crossAxisCount: 2,
-                            childAspectRatio: 0.75,
+                            childAspectRatio: 0.625,
                             crossAxisSpacing: 10,
                             mainAxisSpacing: 10,
                           ),
-                      itemCount: 4,
+                      itemCount: 6,
                       itemBuilder: (context, index) {
                         final products = [
                           {
@@ -119,6 +124,22 @@ class HomePage extends StatelessWidget {
                             'productName': 'NH Comfort 500 Sleeping Bag',
                             'currentPrice': 'Rp70.000/hari',
                             'originalPrice': 'Rp90.000/hari',
+                            'discount': '22%',
+                          },
+                          {
+                            'imageUrl':
+                                'https://raw.githubusercontent.com/roozenn/camp_to_go/refs/heads/main/lib/image/kompor2.webp',
+                            'productName': 'Eiger Stove Lipat',
+                            'currentPrice': 'Rp20.000/hari',
+                            'originalPrice': 'Rp40.000/hari',
+                            'discount': '22%',
+                          },
+                          {
+                            'imageUrl':
+                                'https://raw.githubusercontent.com/roozenn/camp_to_go/refs/heads/main/lib/image/kasur2.webp',
+                            'productName': 'The East 700 Sleeping Bag',
+                            'currentPrice': 'Rp100.000/hari',
+                            'originalPrice': 'Rp120.000/hari',
                             'discount': '22%',
                           },
                         ];
@@ -155,6 +176,10 @@ class HomePage extends StatelessWidget {
                 filled: true,
                 fillColor: Colors.white,
                 contentPadding: const EdgeInsets.all(10),
+                enabledBorder: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(12),
+                  borderSide: BorderSide(color: Colors.grey.shade300),
+                ),
                 border: OutlineInputBorder(
                   borderRadius: BorderRadius.circular(12),
                   borderSide: BorderSide(color: Colors.grey.shade300),
@@ -189,25 +214,25 @@ class HomePage extends StatelessWidget {
         'title': 'Paket Camping Hemat',
         'discount': 'Diskon 30%',
         'image':
-            'https://raw.githubusercontent.com/roozenn/camp_to_go/refs/heads/main/lib/image/promo-pakethemat.webp',
+            'https://raw.githubusercontent.com/roozenn/camp_to_go/refs/heads/main/lib/image/promo-pakethemat.jpg',
       },
       {
         'title': 'Sewa 3 Hari Gratis 1',
         'discount': 'Promo Spesial',
         'image':
-            'https://raw.githubusercontent.com/roozenn/camp_to_go/refs/heads/main/lib/image/promo-3plus1.webp',
+            'https://raw.githubusercontent.com/roozenn/camp_to_go/refs/heads/main/lib/image/promo-3plus1.jpg',
       },
       {
         'title': 'Paket Keluarga',
         'discount': 'Diskon 25%',
         'image':
-            'https://raw.githubusercontent.com/roozenn/camp_to_go/refs/heads/main/lib/image/promo-paketkeluarga.webp',
+            'https://raw.githubusercontent.com/roozenn/camp_to_go/refs/heads/main/lib/image/promo-paketkeluarga.jpg',
       },
       {
         'title': 'Weekend Special',
         'discount': 'Diskon 40%',
         'image':
-            'https://raw.githubusercontent.com/roozenn/camp_to_go/refs/heads/main/lib/image/promo-weekend.webp',
+            'https://raw.githubusercontent.com/roozenn/camp_to_go/refs/heads/main/lib/image/promo-weekend.jpg',
       },
     ];
 
@@ -234,7 +259,7 @@ class HomePage extends StatelessWidget {
                     ),
                   ),
                   Positioned(
-                    left: 16,
+                    left: 18,
                     top: 16,
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
@@ -244,14 +269,14 @@ class HomePage extends StatelessWidget {
                           style: const TextStyle(
                             color: Colors.white,
                             fontWeight: FontWeight.bold,
-                            fontSize: 18,
+                            fontSize: 22,
                           ),
                         ),
                         Text(
                           promo['discount'],
                           style: const TextStyle(
                             color: Colors.white,
-                            fontSize: 16,
+                            fontSize: 18,
                           ),
                         ),
                       ],
@@ -285,34 +310,44 @@ class HomePage extends StatelessWidget {
                 style: TextStyle(fontWeight: FontWeight.bold),
               ),
               const Spacer(),
-              Text('Lihat Semua', style: TextStyle(color: Colors.green[700])),
+              Text('Lihat Semua', style: TextStyle(color: Color(0xFF2F4E3E))),
             ],
           ),
         ),
-        SizedBox(
-          height: 90,
-          child: ListView.separated(
-            scrollDirection: Axis.horizontal,
-            padding: const EdgeInsets.symmetric(horizontal: 16),
-            itemCount: categories.length,
-            separatorBuilder: (_, __) => const SizedBox(width: 16),
-            itemBuilder: (context, index) {
-              final cat = categories[index];
-              return Column(
-                children: [
-                  CircleAvatar(
-                    radius: 26,
-                    backgroundColor: Colors.grey.shade200,
-                    child: Icon(cat['icon'] as IconData, color: Colors.black),
-                  ),
-                  const SizedBox(height: 6),
-                  Text(
-                    cat['label'] as String,
-                    style: const TextStyle(fontSize: 12),
-                  ),
-                ],
-              );
-            },
+        SizedBox(height: 8),
+        Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 16),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+            children:
+                categories.map((cat) {
+                  return Column(
+                    children: [
+                      Container(
+                        decoration: BoxDecoration(
+                          shape: BoxShape.circle,
+                          border: Border.all(
+                            color: Color(0xFF2F4E3E),
+                            width: 1,
+                          ),
+                        ),
+                        child: CircleAvatar(
+                          radius: 26,
+                          backgroundColor: Colors.white,
+                          child: Icon(
+                            cat['icon'] as IconData,
+                            color: Color(0xFF2F4E3E),
+                          ),
+                        ),
+                      ),
+                      const SizedBox(height: 6),
+                      Text(
+                        cat['label'] as String,
+                        style: const TextStyle(fontSize: 12),
+                      ),
+                    ],
+                  );
+                }).toList(),
           ),
         ),
       ],
@@ -326,6 +361,7 @@ class HomePage extends StatelessWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
+        SizedBox(height: 10),
         if (title.isNotEmpty)
           Padding(
             padding: const EdgeInsets.fromLTRB(16, 16, 16, 8),
@@ -336,7 +372,7 @@ class HomePage extends StatelessWidget {
                   style: const TextStyle(fontWeight: FontWeight.bold),
                 ),
                 const Spacer(),
-                Text('Lihat Semua', style: TextStyle(color: Colors.green[700])),
+                Text('Lihat Semua', style: TextStyle(color: Color(0xFF2F4E3E))),
               ],
             ),
           ),
@@ -349,8 +385,8 @@ class HomePage extends StatelessWidget {
             itemBuilder: (context, index) {
               final product = products[index];
               return Container(
-                width: 160,
-                margin: const EdgeInsets.only(right: 12),
+                width: 150,
+                margin: const EdgeInsets.only(right: 8),
                 child: Card(
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(12),
@@ -358,44 +394,56 @@ class HomePage extends StatelessWidget {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Image.network(
-                        product.imageUrl,
-                        height: 100,
-                        fit: BoxFit.cover,
-                      ),
                       Padding(
-                        padding: const EdgeInsets.all(8),
+                        padding: const EdgeInsets.all(12),
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
+                            Image.network(
+                              product.imageUrl,
+                              height: 100,
+                              width: 116,
+                              fit: BoxFit.fill,
+                            ),
+                            const SizedBox(height: 10),
                             Text(
                               product.name,
                               maxLines: 2,
                               overflow: TextOverflow.ellipsis,
                               style: const TextStyle(
-                                fontWeight: FontWeight.w500,
+                                fontWeight: FontWeight.bold,
+                                fontSize: 15,
                               ),
                             ),
-                            const SizedBox(height: 4),
+                            const SizedBox(height: 10),
                             Text(
                               product.price,
                               style: const TextStyle(
-                                color: Colors.green,
+                                color: Color(0xFF2F4E3E),
+                                fontSize: 14,
                                 fontWeight: FontWeight.bold,
                               ),
                             ),
                             const SizedBox(height: 2),
-                            const Text(
-                              'Rp100.000/hari',
-                              style: TextStyle(
-                                decoration: TextDecoration.lineThrough,
-                                fontSize: 12,
-                                color: Colors.grey,
-                              ),
-                            ),
-                            const Text(
-                              '24%',
-                              style: TextStyle(fontSize: 12, color: Colors.red),
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                Text(
+                                  product.originalPrice,
+                                  style: const TextStyle(
+                                    decoration: TextDecoration.lineThrough,
+                                    fontSize: 12,
+                                    color: Colors.grey,
+                                  ),
+                                ),
+                                const Text(
+                                  '24%',
+                                  style: TextStyle(
+                                    fontSize: 12,
+                                    color: Colors.red,
+                                  ),
+                                ),
+                              ],
                             ),
                           ],
                         ),
@@ -462,43 +510,54 @@ class HomePage extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Image.network(
-            imageUrl,
-            height: 120,
-            width: double.infinity,
-            fit: BoxFit.cover,
-          ),
           Padding(
-            padding: const EdgeInsets.all(8),
+            padding: const EdgeInsets.all(12),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
+                Image.network(
+                  imageUrl,
+                  height: 150,
+                  width: double.infinity,
+                  fit: BoxFit.fill,
+                ),
+                const SizedBox(height: 8),
+
                 Text(
                   productName,
                   maxLines: 2,
                   overflow: TextOverflow.ellipsis,
-                  style: const TextStyle(fontWeight: FontWeight.w500),
+                  style: const TextStyle(
+                    fontWeight: FontWeight.bold,
+                    fontSize: 15,
+                  ),
                 ),
                 const SizedBox(height: 4),
                 Text(
                   currentPrice,
                   style: const TextStyle(
-                    color: Colors.green,
+                    color: Color(0xFF2F4E3E),
                     fontWeight: FontWeight.bold,
+                    fontSize: 14,
                   ),
                 ),
                 const SizedBox(height: 2),
-                Text(
-                  originalPrice,
-                  style: const TextStyle(
-                    decoration: TextDecoration.lineThrough,
-                    fontSize: 12,
-                    color: Colors.grey,
-                  ),
-                ),
-                Text(
-                  discount,
-                  style: const TextStyle(fontSize: 12, color: Colors.red),
+                Row(
+                  children: [
+                    Text(
+                      originalPrice,
+                      style: const TextStyle(
+                        decoration: TextDecoration.lineThrough,
+                        fontSize: 12,
+                        color: Colors.grey,
+                      ),
+                    ),
+                    const SizedBox(width: 8),
+                    Text(
+                      discount,
+                      style: const TextStyle(fontSize: 12, color: Colors.red),
+                    ),
+                  ],
                 ),
               ],
             ),
@@ -513,6 +572,7 @@ class Product {
   final String name;
   final String price;
   final String imageUrl;
+  final String originalPrice;
 
-  Product(this.name, this.price, this.imageUrl);
+  Product(this.name, this.price, this.imageUrl, this.originalPrice);
 }
