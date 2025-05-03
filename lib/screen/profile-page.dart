@@ -1,144 +1,113 @@
 import 'package:flutter/material.dart';
 
 class ProfilePage extends StatelessWidget {
-  const ProfilePage({Key? key}) : super(key: key);
+  const ProfilePage({super.key});
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.white,
       appBar: AppBar(
-        leading: IconButton(
-          icon: const Icon(Icons.arrow_back_ios),
-          onPressed: () {},
+        leading: const BackButton(color: Colors.black87),
+        backgroundColor: Colors.white,
+        elevation: 1,
+        title: const Text(
+          'Profil',
+          style: TextStyle(color: Colors.black87, fontWeight: FontWeight.bold),
         ),
-        title: const Text('Profil'),
-        centerTitle: false,
       ),
-      body: Column(
+      body: ListView(
+        padding: const EdgeInsets.all(20),
         children: [
-          const Divider(height: 1),
-          Padding(
-            padding: const EdgeInsets.all(16.0),
-            child: Row(
+          Center(
+            child: Column(
               children: [
-                CircleAvatar(
-                  radius: 30,
-                  backgroundColor: Colors.pink[100],
-                  child: ClipOval(
-                    child: Image.network(
-                      'https://via.placeholder.com/60', // Replace with actual image
-                      fit: BoxFit.cover,
-                      width: 60,
-                      height: 60,
-                    ),
+                const CircleAvatar(
+                  radius: 40,
+                  backgroundImage: NetworkImage(
+                    'https://i.imgur.com/BoN9kdC.png', // Placeholder
                   ),
                 ),
-                const SizedBox(width: 16),
-                Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: const [
-                    Text(
-                      'Galih Silalaga',
-                      style: TextStyle(
-                        fontSize: 18,
-                        fontWeight: FontWeight.bold,
-                      ),
-                    ),
-                    SizedBox(height: 4),
-                    Text(
-                      '@its_galih',
-                      style: TextStyle(color: Colors.grey, fontSize: 14),
-                    ),
-                  ],
+                const SizedBox(height: 10),
+                const Text(
+                  'Galih Silalaga',
+                  style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
                 ),
+                const Text('@its_galih', style: TextStyle(color: Colors.grey)),
+                const SizedBox(height: 20),
               ],
             ),
           ),
-          const Divider(height: 1),
-          ProfileMenuItem(
-            icon: Icons.female,
-            title: 'Jenis Kelamin',
+          const ProfileTile(
+            icon: Icons.wc,
+            label: 'Jenis Kelamin',
             value: 'Pria',
-            onTap: () {},
           ),
-          const Divider(height: 1, indent: 56),
-          ProfileMenuItem(
+          const ProfileTile(
             icon: Icons.calendar_today,
-            title: 'Tanggal Lahir',
+            label: 'Tanggal Lahir',
             value: '12-12-2000',
-            onTap: () {},
           ),
-          const Divider(height: 1, indent: 56),
-          ProfileMenuItem(
+          const ProfileTile(
             icon: Icons.email_outlined,
-            title: 'Email',
+            label: 'Email',
             value: 'galih0911@gmail.com',
-            onTap: () {},
           ),
-          const Divider(height: 1, indent: 56),
-          ProfileMenuItem(
-            icon: Icons.phone_android,
-            title: 'Telepon',
+          const ProfileTile(
+            icon: Icons.phone_iphone,
+            label: 'Telepon',
             value: '(307) 555-0133',
-            onTap: () {},
           ),
-          const Divider(height: 1, indent: 56),
-          ProfileMenuItem(
+          const ProfileTile(
             icon: Icons.lock_outline,
-            title: 'Ubah Kata Sandi',
-            value: '••••••••••••••••',
-            onTap: () {},
+            label: 'Ubah Kata Sandi',
+            value: '••••••••••',
           ),
-          const Divider(height: 1, indent: 56),
         ],
       ),
     );
   }
 }
 
-class ProfileMenuItem extends StatelessWidget {
+class ProfileTile extends StatelessWidget {
   final IconData icon;
-  final String title;
+  final String label;
   final String value;
-  final VoidCallback onTap;
 
-  const ProfileMenuItem({
-    Key? key,
+  const ProfileTile({
+    super.key,
     required this.icon,
-    required this.title,
+    required this.label,
     required this.value,
-    required this.onTap,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {
-    return InkWell(
-      onTap: onTap,
-      child: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
-        child: Row(
+    return Column(
+      children: [
+        Row(
+          crossAxisAlignment: CrossAxisAlignment.center,
           children: [
-            Icon(icon, size: 24, color: Colors.black54),
+            Icon(icon, color: Colors.green[900]),
             const SizedBox(width: 16),
             Expanded(
-              child: Text(
-                title,
-                style: const TextStyle(
-                  fontSize: 16,
-                  fontWeight: FontWeight.w500,
-                ),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Text(
+                    label,
+                    style: const TextStyle(fontWeight: FontWeight.bold),
+                  ),
+                  Text(value, style: const TextStyle(color: Colors.grey)),
+                ],
               ),
             ),
-            Text(
-              value,
-              style: TextStyle(fontSize: 14, color: Colors.grey[600]),
-            ),
-            const SizedBox(width: 8),
-            const Icon(Icons.arrow_forward_ios, size: 16, color: Colors.grey),
+            const SizedBox(width: 12),
+
+            const Icon(Icons.chevron_right, color: Colors.grey),
           ],
         ),
-      ),
+        const SizedBox(height: 16),
+      ],
     );
   }
 }

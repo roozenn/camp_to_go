@@ -1,353 +1,236 @@
 import 'package:flutter/material.dart';
-import 'package:intl/intl.dart';
 
-class ProductDetailPage extends StatefulWidget {
-  const ProductDetailPage({Key? key}) : super(key: key);
-
-  @override
-  State<ProductDetailPage> createState() => _ProductDetailPageState();
-}
-
-class _ProductDetailPageState extends State<ProductDetailPage> {
-  DateTimeRange selectedDates = DateTimeRange(
-    start: DateTime(2025, 4, 14),
-    end: DateTime(2025, 4, 16),
-  );
+class ProductDetailPage extends StatelessWidget {
+  const ProductDetailPage({super.key});
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       body: SafeArea(
-        child: SingleChildScrollView(
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              _buildHeader(),
-              _buildProductImage(),
-              _buildProductTitle(),
-              _buildRentalPrice(),
-              _buildDatePicker(),
-              _buildDescription(),
-              _buildReviews(),
-              _buildRecommendations(),
-              _buildRentButton(),
-              const SizedBox(height: 16),
-            ],
-          ),
+        child: ListView(
+          padding: const EdgeInsets.all(16),
+          children: [
+            _buildTopBar(),
+            const SizedBox(height: 16),
+            _buildImageCarousel(),
+            const SizedBox(height: 16),
+            _buildTitleAndFavorite(),
+            _buildPriceSection(),
+            const SizedBox(height: 16),
+            _buildDatePicker(),
+            const SizedBox(height: 24),
+            _buildDescription(),
+            const SizedBox(height: 24),
+            _buildReviewSection(),
+            const SizedBox(height: 24),
+            _buildRecommendations(),
+            const SizedBox(height: 24),
+            _buildSewaButton(),
+          ],
         ),
       ),
     );
   }
 
-  Widget _buildHeader() {
-    return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-      child: Row(
-        children: [
-          IconButton(
-            icon: const Icon(Icons.arrow_back_ios, size: 20),
-            onPressed: () {},
+  Widget _buildTopBar() {
+    return Row(
+      children: const [
+        Icon(Icons.arrow_back_ios, size: 20),
+        SizedBox(width: 4),
+        Expanded(
+          child: Text(
+            'Forclaz Men\'s MT...',
+            style: TextStyle(fontWeight: FontWeight.w600),
           ),
-          const Expanded(
-            child: Text(
-              "Forclaz Men's MT900 Symbium2",
-              style: TextStyle(fontSize: 18, fontWeight: FontWeight.w500),
-              overflow: TextOverflow.ellipsis,
-            ),
-          ),
-          IconButton(icon: const Icon(Icons.refresh), onPressed: () {}),
-        ],
-      ),
+        ),
+        Icon(Icons.favorite_border),
+      ],
     );
   }
 
-  Widget _buildProductImage() {
-    return Container(
-      width: double.infinity,
-      height: 220,
-      decoration: BoxDecoration(color: Colors.grey[200]),
-      child: Stack(
-        children: [
-          Center(
-            child: Image.network(
-              'https://images.unsplash.com/photo-1504280390367-361c6d9f38f4?q=80&w=1770&auto=format&fit=crop',
-              fit: BoxFit.cover,
-              width: double.infinity,
-              height: double.infinity,
-            ),
-          ),
-          Positioned(
-            bottom: 10,
-            left: 0,
-            right: 0,
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: List.generate(
-                4,
-                (index) => Container(
-                  width: 8,
-                  height: 8,
-                  margin: const EdgeInsets.symmetric(horizontal: 3),
-                  decoration: BoxDecoration(
-                    shape: BoxShape.circle,
-                    color:
-                        index == 1
-                            ? Colors.white
-                            : Colors.grey.withOpacity(0.5),
-                  ),
-                ),
+  Widget _buildImageCarousel() {
+    return Column(
+      children: [
+        Image.network(
+          'https://images.unsplash.com/photo-1530541930197-ff16ac917b0e?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1470&q=80',
+          height: 200,
+          fit: BoxFit.contain,
+        ),
+        const SizedBox(height: 8),
+        Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: List.generate(
+            5,
+            (index) => Container(
+              margin: const EdgeInsets.symmetric(horizontal: 2),
+              width: 8,
+              height: 8,
+              decoration: BoxDecoration(
+                shape: BoxShape.circle,
+                color: index == 2 ? Colors.blueGrey : Colors.grey.shade300,
               ),
             ),
           ),
-        ],
-      ),
+        ),
+      ],
     );
   }
 
-  Widget _buildProductTitle() {
-    return Padding(
-      padding: const EdgeInsets.all(16),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        children: [
-          const Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text(
-                "Forclaz Men's MT900 Symbium2",
-                style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
-              ),
-              SizedBox(height: 8),
-              Row(
-                children: [
-                  Icon(Icons.star, color: Colors.amber, size: 18),
-                  Icon(Icons.star, color: Colors.amber, size: 18),
-                  Icon(Icons.star, color: Colors.amber, size: 18),
-                  Icon(Icons.star, color: Colors.amber, size: 18),
-                  Icon(Icons.star, color: Colors.grey, size: 18),
-                ],
-              ),
-            ],
+  Widget _buildTitleAndFavorite() {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      children: [
+        const Expanded(
+          child: Text(
+            'Forclaz Men\'s MT900 Symbium2',
+            style: TextStyle(fontSize: 18, fontWeight: FontWeight.w600),
           ),
-          IconButton(icon: const Icon(Icons.favorite_border), onPressed: () {}),
-        ],
-      ),
+        ),
+        Icon(Icons.favorite_border),
+      ],
     );
   }
 
-  Widget _buildRentalPrice() {
-    return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 16),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          const Text(
-            "Rp76.000/hari",
-            style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+  Widget _buildRatingStars(double rating) {
+    final fullStars = rating.floor();
+    final halfStar = (rating - fullStars) >= 0.5;
+    return Row(
+      children: List.generate(5, (index) {
+        if (index < fullStars) {
+          return const Icon(Icons.star, size: 20, color: Colors.amber);
+        } else if (index == fullStars && halfStar) {
+          return const Icon(Icons.star_half, size: 20, color: Colors.amber);
+        } else {
+          return const Icon(Icons.star_border, size: 20, color: Colors.amber);
+        }
+      }),
+    );
+  }
+
+  Widget _buildPriceSection() {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        const SizedBox(height: 4),
+        _buildRatingStars(4.5),
+        const SizedBox(height: 8),
+        const Text(
+          'Rp76.000/hari',
+          style: TextStyle(
+            fontSize: 18,
+            fontWeight: FontWeight.bold,
+            color: Colors.green,
           ),
-          const SizedBox(height: 8),
-          Row(
-            children: [
-              const Text(
-                "Deposit: ",
-                style: TextStyle(color: Colors.grey, fontSize: 14),
-              ),
-              Text(
-                "Rp128.000",
-                style: TextStyle(color: Colors.grey[600], fontSize: 14),
-              ),
-            ],
-          ),
-        ],
-      ),
+        ),
+        const SizedBox(height: 4),
+        const Text('Deposit : Rp128.000'),
+      ],
     );
   }
 
   Widget _buildDatePicker() {
-    final formatter = DateFormat('d MMMM');
-    return Padding(
-      padding: const EdgeInsets.all(16),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          const Text(
-            "Pilih Tanggal",
-            style: TextStyle(fontWeight: FontWeight.w500, fontSize: 16),
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        const Text(
+          'Pilih Tanggal',
+          style: TextStyle(fontWeight: FontWeight.w600),
+        ),
+        const SizedBox(height: 8),
+        Container(
+          padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 16),
+          decoration: BoxDecoration(
+            border: Border.all(color: Colors.grey.shade300),
+            borderRadius: BorderRadius.circular(8),
           ),
-          const SizedBox(height: 8),
-          InkWell(
-            onTap: () {
-              // Date picker logic would go here
-            },
-            child: Container(
-              padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
-              decoration: BoxDecoration(
-                border: Border.all(color: Colors.grey.shade300),
-                borderRadius: BorderRadius.circular(8),
-              ),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Text(
-                    "${formatter.format(selectedDates.start)} - ${formatter.format(selectedDates.end)} ${selectedDates.end.year}",
-                    style: const TextStyle(color: Colors.grey),
-                  ),
-                  const Icon(Icons.calendar_today, color: Colors.grey),
-                ],
-              ),
-            ),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: const [
+              Text('14 April - 16 April 2025'),
+              Icon(Icons.calendar_today, size: 18),
+            ],
           ),
-        ],
-      ),
+        ),
+      ],
     );
   }
 
   Widget _buildDescription() {
-    return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 16),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          const Text(
-            "Deskripsi",
-            style: TextStyle(fontWeight: FontWeight.w500, fontSize: 16),
-          ),
-          const SizedBox(height: 8),
-          Text(
-            "Tenda ini menggabungkan fabric anti air berkualitas tinggi dengan rangka inovatif yang ringan namun kokoh, menghasilkan kenyamanan optimal.",
-            style: TextStyle(
-              color: Colors.grey[600],
-              fontSize: 14,
-              height: 1.5,
-            ),
-          ),
-        ],
-      ),
+    return const Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text('Deskripsi', style: TextStyle(fontWeight: FontWeight.w600)),
+        SizedBox(height: 8),
+        Text(
+          'Tenda ini menggabungkan fabric anti air berkualitas tinggi dengan rangka inovatif yang ringan namun kokoh, menghasilkan kenyamanan optimal.',
+        ),
+      ],
     );
   }
 
-  Widget _buildReviews() {
-    return Padding(
-      padding: const EdgeInsets.all(16),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              const Text(
-                "Ulasan",
-                style: TextStyle(fontWeight: FontWeight.w500, fontSize: 16),
-              ),
-              TextButton(
-                onPressed: () {},
-                child: Text(
-                  "Lihat Semua",
-                  style: TextStyle(
-                    color: Colors.blue[700],
-                    fontWeight: FontWeight.w500,
-                  ),
-                ),
-              ),
-            ],
-          ),
-          Row(
-            children: [
-              const Icon(Icons.star, color: Colors.amber, size: 16),
-              const Icon(Icons.star, color: Colors.amber, size: 16),
-              const Icon(Icons.star, color: Colors.amber, size: 16),
-              const Icon(Icons.star, color: Colors.amber, size: 16),
-              const Icon(Icons.star, color: Colors.grey, size: 16),
-              const SizedBox(width: 8),
-              Text(
-                "4.5 (5 ulasan)",
-                style: TextStyle(color: Colors.grey[600], fontSize: 14),
-              ),
-            ],
-          ),
-          const SizedBox(height: 16),
-          _buildReviewItem(),
-        ],
-      ),
-    );
-  }
-
-  Widget _buildReviewItem() {
+  Widget _buildReviewSection() {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: const [
+            Text('Ulasan', style: TextStyle(fontWeight: FontWeight.w600)),
+            Text('Lihat Semua', style: TextStyle(color: Colors.blue)),
+          ],
+        ),
+        const SizedBox(height: 8),
+        Row(
+          children: [
+            _buildRatingStars(4.5),
+            const SizedBox(width: 8),
+            const Text('4.5 (5 Ulasan)'),
+          ],
+        ),
+        const SizedBox(height: 12),
+        Row(
           children: [
             const CircleAvatar(
-              backgroundColor: Colors.redAccent,
-              radius: 16,
-              child: Icon(Icons.person, color: Colors.white, size: 16),
+              backgroundImage: NetworkImage('https://i.imgur.com/BoN9kdC.png'),
             ),
-            const SizedBox(width: 8),
+            const SizedBox(width: 12),
             Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 const Text(
-                  "Aditya Nugraha",
-                  style: TextStyle(fontWeight: FontWeight.w500),
+                  'Aditya Nugraha',
+                  style: TextStyle(fontWeight: FontWeight.w600),
                 ),
-                Row(
-                  children: const [
-                    Icon(Icons.star, color: Colors.amber, size: 16),
-                    Icon(Icons.star, color: Colors.amber, size: 16),
-                    Icon(Icons.star, color: Colors.amber, size: 16),
-                    Icon(Icons.star, color: Colors.amber, size: 16),
-                    Icon(Icons.star, color: Colors.grey, size: 16),
-                  ],
-                ),
+                const SizedBox(height: 4),
+                _buildRatingStars(4),
               ],
             ),
           ],
         ),
         const SizedBox(height: 8),
-        Text(
-          "Tenda ini sangat nyaman digunakan, bersih, dan benar-benar sempurna dalam segala hal. Hanya saja, tas penyimpanannya terlalu kecil sehingga membuat tenda sedikit terlipat. Saya tidak yakin apakah tasnya bisa kuat terlipat lama.",
-          style: TextStyle(color: Colors.grey[600], fontSize: 14, height: 1.5),
+        const Text(
+          'Tenda ini sangat nyaman digunakan, bersih, dan benar-benar sempurna dalam segala hal. Hanya saja, tas penyimpanannya terlalu kecil sehingga membuat tenda sedikit terlipat.',
         ),
         const SizedBox(height: 8),
         Row(
-          children: [
-            Container(
-              width: 60,
-              height: 60,
-              decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(4),
-                color: Colors.grey[200],
+          children: List.generate(
+            3,
+            (index) => Padding(
+              padding: const EdgeInsets.only(right: 8.0),
+              child: ClipRRect(
+                borderRadius: BorderRadius.circular(8),
+                child: Image.network(
+                  'https://images.unsplash.com/photo-1530541930197-ff16ac917b0e?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1470&q=80',
+                  height: 60,
+                  width: 60,
+                  fit: BoxFit.cover,
+                ),
               ),
-              child: const Icon(Icons.cabin, color: Colors.teal),
             ),
-            const SizedBox(width: 8),
-            Container(
-              width: 60,
-              height: 60,
-              decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(4),
-                color: Colors.grey[200],
-              ),
-              child: const Icon(Icons.water_drop, color: Colors.blue),
-            ),
-            const SizedBox(width: 8),
-            Container(
-              width: 60,
-              height: 60,
-              decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(4),
-                color: Colors.grey[200],
-              ),
-              child: const Icon(Icons.backpack, color: Colors.brown),
-            ),
-          ],
+          ),
         ),
         const SizedBox(height: 8),
-        Text(
-          "December 10, 2024",
-          style: TextStyle(color: Colors.grey[400], fontSize: 12),
-        ),
+        const Text('December 10, 2024', style: TextStyle(color: Colors.grey)),
       ],
     );
   }
@@ -356,121 +239,79 @@ class _ProductDetailPageState extends State<ProductDetailPage> {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        const Padding(
-          padding: EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-          child: Text(
-            "Rekomendasi Untuk Kamu",
-            style: TextStyle(fontWeight: FontWeight.w500, fontSize: 16),
-          ),
+        const Text(
+          'Rekomendasi Untuk Kamu',
+          style: TextStyle(fontWeight: FontWeight.w600),
         ),
+        const SizedBox(height: 12),
         SizedBox(
-          height: 200,
+          height: 180,
           child: ListView(
             scrollDirection: Axis.horizontal,
-            padding: const EdgeInsets.symmetric(horizontal: 12),
-            children: List.generate(3, (index) => _buildRecommendationItem()),
+            children: List.generate(
+              3,
+              (index) => Container(
+                width: 140,
+                margin: const EdgeInsets.only(right: 12),
+                padding: const EdgeInsets.all(8),
+                decoration: BoxDecoration(
+                  border: Border.all(color: Colors.grey.shade200),
+                  borderRadius: BorderRadius.circular(8),
+                ),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Expanded(
+                      child: Image.network(
+                        'https://images.unsplash.com/photo-1530541930197-ff16ac917b0e?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1470&q=80',
+                        height: 200,
+                        fit: BoxFit.contain,
+                      ),
+                    ),
+                    const SizedBox(height: 8),
+                    const Text(
+                      'Forclaz Men\'s MT900 Symbium...',
+                      style: TextStyle(
+                        fontWeight: FontWeight.w600,
+                        fontSize: 12,
+                      ),
+                      maxLines: 2,
+                      overflow: TextOverflow.ellipsis,
+                    ),
+                    const SizedBox(height: 4),
+                    const Text(
+                      'Rp76.000/hari',
+                      style: TextStyle(color: Colors.green, fontSize: 12),
+                    ),
+                    const Text(
+                      'Rp100.000/hari',
+                      style: TextStyle(
+                        decoration: TextDecoration.lineThrough,
+                        fontSize: 10,
+                        color: Colors.grey,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ),
           ),
         ),
       ],
     );
   }
 
-  Widget _buildRecommendationItem() {
-    return Container(
-      width: 150,
-      margin: const EdgeInsets.symmetric(horizontal: 4),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Container(
-            height: 100,
-            decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(8),
-              color: Colors.teal.withOpacity(0.2),
-            ),
-            child: const Center(
-              child: Icon(Icons.cabin, size: 40, color: Colors.teal),
-            ),
-          ),
-          const SizedBox(height: 8),
-          const Padding(
-            padding: EdgeInsets.symmetric(horizontal: 4),
-            child: Text(
-              "Forclaz Men's MT900 Symbium2",
-              style: TextStyle(fontWeight: FontWeight.w500),
-              maxLines: 2,
-              overflow: TextOverflow.ellipsis,
-            ),
-          ),
-          const SizedBox(height: 4),
-          Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 4),
-            child: Row(
-              children: [
-                Text(
-                  "Rp76.000/hari",
-                  style: TextStyle(
-                    fontWeight: FontWeight.bold,
-                    fontSize: 12,
-                    color: Colors.blue[900],
-                  ),
-                ),
-              ],
-            ),
-          ),
-          Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 4),
-            child: Row(
-              children: [
-                Text(
-                  "Rp100.000/hari",
-                  style: TextStyle(
-                    fontSize: 12,
-                    color: Colors.grey[500],
-                    decoration: TextDecoration.lineThrough,
-                  ),
-                ),
-                const SizedBox(width: 4),
-                Container(
-                  padding: const EdgeInsets.symmetric(
-                    horizontal: 4,
-                    vertical: 1,
-                  ),
-                  decoration: BoxDecoration(
-                    color: Colors.red.withOpacity(0.1),
-                    borderRadius: BorderRadius.circular(2),
-                  ),
-                  child: Text(
-                    "24%",
-                    style: TextStyle(
-                      fontSize: 10,
-                      color: Colors.red[700],
-                      fontWeight: FontWeight.bold,
-                    ),
-                  ),
-                ),
-              ],
-            ),
-          ),
-        ],
+  Widget _buildSewaButton() {
+    return ElevatedButton(
+      style: ElevatedButton.styleFrom(
+        backgroundColor: Colors.green.shade800,
+        minimumSize: const Size.fromHeight(48),
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
       ),
-    );
-  }
-
-  Widget _buildRentButton() {
-    return Padding(
-      padding: const EdgeInsets.all(16),
-      child: ElevatedButton(
-        onPressed: () {},
-        style: ElevatedButton.styleFrom(
-          backgroundColor: Colors.green[800],
-          minimumSize: const Size(double.infinity, 48),
-          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
-        ),
-        child: const Text(
-          "Sewa",
-          style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
-        ),
+      onPressed: () {},
+      child: const Text(
+        'Sewa',
+        style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
       ),
     );
   }

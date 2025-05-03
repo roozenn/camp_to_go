@@ -13,8 +13,18 @@ class PembayaranPage extends StatelessWidget {
       ),
       PaymentMethod(
         networkImageUrl:
-            'https://upload.wikimedia.org/wikipedia/commons/b/b5/PayPal.svg', // Ganti jika perlu PNG
-        title: 'Paypal',
+            'https://raw.githubusercontent.com/roozenn/camp_to_go/main/lib/image/gopayicon.png',
+        title: 'Gopay',
+      ),
+      PaymentMethod(
+        networkImageUrl:
+            'https://raw.githubusercontent.com/roozenn/camp_to_go/main/lib/image/ovoicon.jpeg',
+        title: 'Ovo',
+      ),
+      PaymentMethod(
+        networkImageUrl:
+            'https://raw.githubusercontent.com/roozenn/camp_to_go/main/lib/image/spayicon.png',
+        title: 'ShopeePay',
       ),
       PaymentMethod(icon: Icons.account_balance, title: 'Transfer Bank'),
     ];

@@ -29,7 +29,7 @@ class MyApp extends StatelessWidget {
       title: 'CAMPtoGo',
       theme: buildLightTheme(),
       // darkTheme: buildDarkTheme(),
-      home: const MyHome(),
+      home: const ProfilePage(),
       debugShowCheckedModeBanner: false,
     );
   }
@@ -50,13 +50,28 @@ class MyHome extends StatelessWidget {
             child: Column(
               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
               children: [
+                Container(
+                  padding: EdgeInsets.symmetric(horizontal: 30, vertical: 15),
+                  margin: EdgeInsets.only(top: 20, bottom: 5),
+                  decoration: BoxDecoration(
+                    color: Colors.white,
+                    borderRadius: BorderRadius.circular(8),
+                  ),
+                  child: Column(
+                    children: [
+                      Text(
+                        'Roshan Syalwan Nurilham',
+                        style: TextStyle(fontSize: 20),
+                      ),
+                      Text('2203142', style: TextStyle(fontSize: 20)),
+                      Text('Kelompok 10', style: TextStyle(fontSize: 20)),
+                    ],
+                  ),
+                ),
                 SizedBox(height: 20),
                 ElevatedButton(
                   style: ElevatedButton.styleFrom(
-                    padding: EdgeInsets.symmetric(
-                      horizontal: 50,
-                      vertical: 20,
-                    ), // Padding horizontal dan vertical
+                    padding: EdgeInsets.symmetric(horizontal: 24, vertical: 12),
                   ),
                   child: const Text(
                     'AddressListScreen',
@@ -75,10 +90,7 @@ class MyHome extends StatelessWidget {
                 SizedBox(height: 10),
                 ElevatedButton(
                   style: ElevatedButton.styleFrom(
-                    padding: EdgeInsets.symmetric(
-                      horizontal: 50,
-                      vertical: 20,
-                    ), // Padding horizontal dan vertical
+                    padding: EdgeInsets.symmetric(horizontal: 24, vertical: 12),
                   ),
                   child: const Text('AkunPage', style: TextStyle(fontSize: 20)),
                   onPressed: () {
@@ -115,10 +127,7 @@ class MyHome extends StatelessWidget {
                 // ),
                 ElevatedButton(
                   style: ElevatedButton.styleFrom(
-                    padding: EdgeInsets.symmetric(
-                      horizontal: 50,
-                      vertical: 20,
-                    ), // Padding horizontal dan vertical
+                    padding: EdgeInsets.symmetric(horizontal: 24, vertical: 12),
                   ),
                   child: const Text('CartPage', style: TextStyle(fontSize: 20)),
                   onPressed: () {
@@ -134,10 +143,7 @@ class MyHome extends StatelessWidget {
                 SizedBox(height: 10),
                 ElevatedButton(
                   style: ElevatedButton.styleFrom(
-                    padding: EdgeInsets.symmetric(
-                      horizontal: 50,
-                      vertical: 20,
-                    ), // Padding horizontal dan vertical
+                    padding: EdgeInsets.symmetric(horizontal: 24, vertical: 12),
                   ),
                   child: const Text(
                     'DetailOrderScreen',
@@ -158,10 +164,7 @@ class MyHome extends StatelessWidget {
                 SizedBox(height: 10),
                 ElevatedButton(
                   style: ElevatedButton.styleFrom(
-                    padding: EdgeInsets.symmetric(
-                      horizontal: 50,
-                      vertical: 20,
-                    ), // Padding horizontal dan vertical
+                    padding: EdgeInsets.symmetric(horizontal: 24, vertical: 12),
                   ),
                   child: const Text('HomePage', style: TextStyle(fontSize: 20)),
                   onPressed: () {
@@ -177,10 +180,7 @@ class MyHome extends StatelessWidget {
                 SizedBox(height: 10),
                 ElevatedButton(
                   style: ElevatedButton.styleFrom(
-                    padding: EdgeInsets.symmetric(
-                      horizontal: 50,
-                      vertical: 20,
-                    ), // Padding horizontal dan vertical
+                    padding: EdgeInsets.symmetric(horizontal: 24, vertical: 12),
                   ),
                   child: const Text(
                     'ListingPage',
@@ -200,10 +200,7 @@ class MyHome extends StatelessWidget {
                 SizedBox(height: 10),
                 ElevatedButton(
                   style: ElevatedButton.styleFrom(
-                    padding: EdgeInsets.symmetric(
-                      horizontal: 50,
-                      vertical: 20,
-                    ), // Padding horizontal dan vertical
+                    padding: EdgeInsets.symmetric(horizontal: 24, vertical: 12),
                   ),
                   child: const Text(
                     'LoginScreen',
@@ -222,10 +219,7 @@ class MyHome extends StatelessWidget {
                 SizedBox(height: 10),
                 ElevatedButton(
                   style: ElevatedButton.styleFrom(
-                    padding: EdgeInsets.symmetric(
-                      horizontal: 50,
-                      vertical: 20,
-                    ), // Padding horizontal dan vertical
+                    padding: EdgeInsets.symmetric(horizontal: 24, vertical: 12),
                   ),
                   child: const Text(
                     'PaymentPage',
@@ -244,10 +238,7 @@ class MyHome extends StatelessWidget {
                 SizedBox(height: 10),
                 ElevatedButton(
                   style: ElevatedButton.styleFrom(
-                    padding: EdgeInsets.symmetric(
-                      horizontal: 50,
-                      vertical: 20,
-                    ), // Padding horizontal dan vertical
+                    padding: EdgeInsets.symmetric(horizontal: 24, vertical: 12),
                   ),
                   child: const Text(
                     'ProductDetailPage',
@@ -266,10 +257,7 @@ class MyHome extends StatelessWidget {
                 SizedBox(height: 10),
                 ElevatedButton(
                   style: ElevatedButton.styleFrom(
-                    padding: EdgeInsets.symmetric(
-                      horizontal: 50,
-                      vertical: 20,
-                    ), // Padding horizontal dan vertical
+                    padding: EdgeInsets.symmetric(horizontal: 24, vertical: 12),
                   ),
                   child: const Text(
                     'ProfilePage',
@@ -288,10 +276,7 @@ class MyHome extends StatelessWidget {
                 SizedBox(height: 10),
                 ElevatedButton(
                   style: ElevatedButton.styleFrom(
-                    padding: EdgeInsets.symmetric(
-                      horizontal: 50,
-                      vertical: 20,
-                    ), // Padding horizontal dan vertical
+                    padding: EdgeInsets.symmetric(horizontal: 24, vertical: 12),
                   ),
                   child: const Text(
                     'RegistrationPage',
@@ -310,10 +295,7 @@ class MyHome extends StatelessWidget {
                 SizedBox(height: 10),
                 ElevatedButton(
                   style: ElevatedButton.styleFrom(
-                    padding: EdgeInsets.symmetric(
-                      horizontal: 50,
-                      vertical: 20,
-                    ), // Padding horizontal dan vertical
+                    padding: EdgeInsets.symmetric(horizontal: 24, vertical: 12),
                   ),
                   child: const Text(
                     'SearchPage',
@@ -332,10 +314,7 @@ class MyHome extends StatelessWidget {
                 SizedBox(height: 10),
                 ElevatedButton(
                   style: ElevatedButton.styleFrom(
-                    padding: EdgeInsets.symmetric(
-                      horizontal: 50,
-                      vertical: 20,
-                    ), // Padding horizontal dan vertical
+                    padding: EdgeInsets.symmetric(horizontal: 24, vertical: 12),
                   ),
                   child: const Text(
                     'TransactionPage',
@@ -372,6 +351,7 @@ class MyHome extends StatelessWidget {
                 //     );
                 // },
                 // ),
+                SizedBox(height: 10),
               ],
             ),
           ),
