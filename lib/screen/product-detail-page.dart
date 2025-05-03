@@ -21,8 +21,6 @@ class _ProductDetailPageState extends State<ProductDetailPage> {
   ];
 
   final List<String> reviewImages = [
-    'https://raw.githubusercontent.com/roozenn/camp_to_go/refs/heads/main/lib/image/tenda1-commenter2.avif',
-    'https://raw.githubusercontent.com/roozenn/camp_to_go/refs/heads/main/lib/image/tenda1-commenter1.avif',
     'https://raw.githubusercontent.com/roozenn/camp_to_go/refs/heads/main/lib/image/tenda1-commenter1.avif',
   ];
 
