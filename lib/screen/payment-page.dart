@@ -1,126 +1,83 @@
 import 'package:flutter/material.dart';
 
-class PaymentPage extends StatelessWidget {
-  const PaymentPage({Key? key}) : super(key: key);
+class PembayaranPage extends StatelessWidget {
+  const PembayaranPage({super.key});
 
   @override
   Widget build(BuildContext context) {
+    final paymentMethods = [
+      PaymentMethod(
+        icon: Icons.credit_card,
+        title: 'Kartu Credit atau Debit',
+        isSelected: true,
+      ),
+      PaymentMethod(
+        networkImageUrl:
+            'https://upload.wikimedia.org/wikipedia/commons/b/b5/PayPal.svg', // Ganti jika perlu PNG
+        title: 'Paypal',
+      ),
+      PaymentMethod(icon: Icons.account_balance, title: 'Transfer Bank'),
+    ];
+
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: Colors.white,
         elevation: 0,
+        backgroundColor: Colors.white,
         leading: IconButton(
-          icon: Icon(Icons.arrow_back_ios, color: Colors.black),
-          onPressed: () {
-            // Navigation action
-          },
+          icon: const Icon(Icons.arrow_back, color: Colors.black),
+          onPressed: () {},
         ),
-        title: Text(
+        title: const Text(
           'Pembayaran',
           style: TextStyle(color: Colors.black, fontWeight: FontWeight.bold),
         ),
       ),
-      body: Column(
-        children: [
-          // Payment Methods List
-          PaymentMethodItem(
-            icon: Icons.credit_card,
-            title: 'Kartu Credit atau Debit',
-            isSelected: true,
-            onTap: () {},
-          ),
-          PaymentMethodItem(
-            icon: Icons.payment,
-            title: 'Paypal',
-            isSelected: false,
-            onTap: () {},
-            iconWidget: Padding(
-              padding: const EdgeInsets.only(left: 8.0),
-              child: Image.asset('assets/paypal.png', width: 24, height: 24),
-              // If you don't have the PayPal image, you can use this:
-              // child: Icon(Icons.payment, color: Colors.blue),
+      body: ListView.builder(
+        itemCount: paymentMethods.length,
+        itemBuilder: (context, index) {
+          final method = paymentMethods[index];
+          return Container(
+            color:
+                method.isSelected
+                    ? const Color(0xFFEFF3FF)
+                    : Colors.transparent,
+            child: ListTile(
+              leading:
+                  method.networkImageUrl != null
+                      ? Image.network(
+                        method.networkImageUrl!,
+                        width: 24,
+                        height: 24,
+                        errorBuilder:
+                            (context, error, stackTrace) =>
+                                const Icon(Icons.image_not_supported),
+                      )
+                      : Icon(method.icon, color: Colors.black),
+              title: Text(
+                method.title,
+                style: const TextStyle(fontWeight: FontWeight.w600),
+              ),
+              onTap: () {
+                // Logika seleksi bisa ditambahkan di sini
+              },
             ),
-          ),
-          PaymentMethodItem(
-            icon: Icons.account_balance,
-            title: 'Transfer Bank',
-            isSelected: false,
-            onTap: () {},
-          ),
-          Spacer(),
-          // Bottom placeholder for additional content
-          Container(
-            width: double.infinity,
-            height: 5,
-            color: Colors.grey[300],
-            margin: EdgeInsets.only(bottom: 20),
-          ),
-        ],
+          );
+        },
       ),
     );
   }
 }
 
-class PaymentMethodItem extends StatelessWidget {
-  final IconData icon;
+class PaymentMethod {
+  final IconData? icon;
+  final String? networkImageUrl;
   final String title;
   final bool isSelected;
-  final VoidCallback onTap;
-  final Widget? iconWidget;
 
-  const PaymentMethodItem({
-    Key? key,
-    required this.icon,
+  PaymentMethod({
+    this.icon,
+    this.networkImageUrl,
     required this.title,
-    required this.isSelected,
-    required this.onTap,
-    this.iconWidget,
-  }) : super(key: key);
-
-  @override
-  Widget build(BuildContext context) {
-    return GestureDetector(
-      onTap: onTap,
-      child: Container(
-        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
-        color: isSelected ? Color(0xFFF0F5FF) : Colors.white,
-        child: Row(
-          children: [
-            Container(
-              width: 40,
-              height: 40,
-              alignment: Alignment.center,
-              child: iconWidget ?? Icon(icon, color: Colors.black54),
-            ),
-            const SizedBox(width: 16),
-            Text(
-              title,
-              style: TextStyle(fontSize: 16, fontWeight: FontWeight.w500),
-            ),
-            Spacer(),
-            if (isSelected)
-              Container(
-                width: 24,
-                height: 24,
-                decoration: BoxDecoration(
-                  color: Colors.white,
-                  shape: BoxShape.circle,
-                  border: Border.all(color: Colors.blue),
-                ),
-                child: Center(
-                  child: Container(
-                    width: 12,
-                    height: 12,
-                    decoration: BoxDecoration(
-                      color: Colors.blue,
-                      shape: BoxShape.circle,
-                    ),
-                  ),
-                ),
-              ),
-          ],
-        ),
-      ),
-    );
-  }
+    this.isSelected = false,
+  });
 }

@@ -114,7 +114,7 @@ class ProductListPage extends StatelessWidget {
                       },
                       {
                         'imageUrl':
-                            'https://raw.githubusercontent.com/roozenn/camp_to_go/refs/heads/main/lib/image/tenda1.webp',
+                            'https://raw.githubusercontent.com/roozenn/camp_to_go/refs/heads/main/lib/image/tenda5.webp',
                         'productName': 'Pop Up 3 Person Quechua',
                         'currentPrice': 'Rp150.000/hari',
                         'originalPrice': 'Rp220.000/hari',
@@ -122,7 +122,7 @@ class ProductListPage extends StatelessWidget {
                       },
                       {
                         'imageUrl':
-                            'https://raw.githubusercontent.com/roozenn/camp_to_go/refs/heads/main/lib/image/tenda1.webp',
+                            'https://raw.githubusercontent.com/roozenn/camp_to_go/refs/heads/main/lib/image/tenda6.webp',
                         'productName': 'Waterproof 2 Person Eiger',
                         'currentPrice': 'Rp130.000/hari',
                         'originalPrice': 'Rp190.000/hari',

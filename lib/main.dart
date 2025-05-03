@@ -235,7 +235,7 @@ class MyHome extends StatelessWidget {
                     Navigator.of(context).push(
                       MaterialPageRoute(
                         builder: (context) {
-                          return PaymentPage();
+                          return PembayaranPage();
                         },
                       ),
                     );
