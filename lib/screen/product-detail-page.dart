@@ -20,6 +20,12 @@ class _ProductDetailPageState extends State<ProductDetailPage> {
     'https://raw.githubusercontent.com/roozenn/camp_to_go/refs/heads/main/lib/image/tenda1-detail3.webp',
   ];
 
+  final List<String> reviewImages = [
+    'https://raw.githubusercontent.com/roozenn/camp_to_go/refs/heads/main/lib/image/tenda1-commenter2.avif',
+    'https://raw.githubusercontent.com/roozenn/camp_to_go/refs/heads/main/lib/image/tenda1-commenter1.avif',
+    'https://raw.githubusercontent.com/roozenn/camp_to_go/refs/heads/main/lib/image/tenda1-commenter1.avif',
+  ];
+
   final List<Product> recommendedProducts = [
     Product(
       "Tenda Camping 2 Orang",
@@ -248,18 +254,20 @@ class _ProductDetailPageState extends State<ProductDetailPage> {
               height: 80,
               child: ListView(
                 scrollDirection: Axis.horizontal,
-                children: List.generate(
-                  3,
-                  (index) => Container(
-                    margin: const EdgeInsets.only(right: 8),
-                    child: Image.network(
-                      'https://raw.githubusercontent.com/roozenn/camp_to_go/refs/heads/main/lib/image/tenda1.webp',
-                      width: 80,
-                      height: 80,
-                      fit: BoxFit.cover,
-                    ),
-                  ),
-                ),
+                children:
+                    reviewImages
+                        .map(
+                          (imageUrl) => Container(
+                            margin: const EdgeInsets.only(right: 8),
+                            child: Image.network(
+                              imageUrl,
+                              width: 80,
+                              height: 80,
+                              fit: BoxFit.cover,
+                            ),
+                          ),
+                        )
+                        .toList(),
               ),
             ),
             const SizedBox(height: 4),
