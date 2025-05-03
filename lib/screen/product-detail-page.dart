@@ -15,8 +15,9 @@ class _ProductDetailPageState extends State<ProductDetailPage> {
 
   final List<String> productImages = [
     'https://raw.githubusercontent.com/roozenn/camp_to_go/refs/heads/main/lib/image/tenda1.webp',
-    'https://raw.githubusercontent.com/roozenn/camp_to_go/refs/heads/main/lib/image/tenda1.webp',
-    'https://raw.githubusercontent.com/roozenn/camp_to_go/refs/heads/main/lib/image/tenda1.webp',
+    'https://raw.githubusercontent.com/roozenn/camp_to_go/refs/heads/main/lib/image/tenda1-detail1.webp',
+    'https://raw.githubusercontent.com/roozenn/camp_to_go/refs/heads/main/lib/image/tenda1-detail2.webp',
+    'https://raw.githubusercontent.com/roozenn/camp_to_go/refs/heads/main/lib/image/tenda1-detail3.webp',
   ];
 
   final List<Product> recommendedProducts = [
@@ -68,26 +69,30 @@ class _ProductDetailPageState extends State<ProductDetailPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.white,
+      appBar: AppBar(
+        backgroundColor: Colors.white,
+        elevation: 0,
+        leading: const Icon(Icons.arrow_back, color: Colors.black),
+        title: const Text(
+          "Forclaz Men's MT900 Symbium2",
+          style: TextStyle(
+            fontSize: 16,
+            fontWeight: FontWeight.w600,
+            color: Colors.black,
+          ),
+        ),
+        actions: const [
+          Icon(Icons.search, color: Colors.black),
+          SizedBox(width: 16),
+          Icon(Icons.favorite_border, color: Colors.black),
+          SizedBox(width: 16),
+        ],
+      ),
       body: SafeArea(
         child: ListView(
           padding: const EdgeInsets.symmetric(horizontal: 16),
           children: [
             const SizedBox(height: 8),
-            Row(
-              children: const [
-                Icon(Icons.arrow_back),
-                SizedBox(width: 8),
-                Expanded(
-                  child: Text(
-                    "Forclaz Men's MT...",
-                    style: TextStyle(fontSize: 16, fontWeight: FontWeight.w600),
-                    overflow: TextOverflow.ellipsis,
-                  ),
-                ),
-                Icon(Icons.favorite_border),
-              ],
-            ),
-            const SizedBox(height: 16),
             // Product Image Carousel
             ClipRRect(
               borderRadius: BorderRadius.circular(12),
@@ -106,7 +111,7 @@ class _ProductDetailPageState extends State<ProductDetailPage> {
                       );
                     }).toList(),
                 options: CarouselOptions(
-                  height: 200,
+                  height: 350,
                   viewportFraction: 1.0,
                   enableInfiniteScroll: false,
                   autoPlay: false,
@@ -224,7 +229,7 @@ class _ProductDetailPageState extends State<ProductDetailPage> {
                 CircleAvatar(
                   radius: 20,
                   backgroundImage: NetworkImage(
-                    'https://raw.githubusercontent.com/roozenn/camp_to_go/refs/heads/main/lib/image/tenda1.webp',
+                    'https://raw.githubusercontent.com/roozenn/camp_to_go/refs/heads/main/lib/image/commenter.png',
                   ),
                 ),
                 const SizedBox(width: 12),

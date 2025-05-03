@@ -29,7 +29,7 @@ class MyApp extends StatelessWidget {
       title: 'CAMPtoGo',
       theme: buildLightTheme(),
       // darkTheme: buildDarkTheme(),
-      home: MyHome(),
+      home: ProductDetailPage(),
       debugShowCheckedModeBanner: false,
     );
   }
