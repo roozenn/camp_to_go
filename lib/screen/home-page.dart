@@ -1,3 +1,68 @@
+/*
+ * STRUKTUR KODE PROGRAM - Home Page
+ * 
+ * 1. Import Statements
+ *    - flutter/material.dart
+ *    - carousel_slider/carousel_slider.dart
+ * 
+ * 2. Class Utama
+ *    - HomePage (StatelessWidget)
+ *      - build() method
+ *        - Scaffold dengan bottomNavigationBar
+ *        - CustomScrollView dengan slivers:
+ *          a. _buildHeader()
+ *          b. _buildLocationSelector()
+ *          c. _buildPromoCarousel()
+ *          d. _buildCategoryMenu()
+ *          e. _buildProductSection()
+ *          f. _buildPopularBanner()
+ *          g. GridView produk
+ * 
+ * 3. Widget Methods (Urutan Implementasi)
+ *    a. _buildHeader() [Line ~100]
+ *       - Search bar
+ *       - Icon notifikasi
+ *       - Icon headset
+ * 
+ *    b. _buildLocationSelector() [Line ~130]
+ *       - Text kota
+ *       - Icon dropdown
+ * 
+ *    c. _buildPromoCarousel() [Line ~140]
+ *       - CarouselSlider
+ *       - List promos
+ *       - Stack untuk overlay text
+ * 
+ *    d. _buildCategoryMenu() [Line ~200]
+ *       - Row kategori
+ *       - CircleAvatar icons
+ * 
+ *    e. _buildProductSection() [Line ~250]
+ *       - Column layout
+ *       - ListView.builder horizontal
+ *       - Product cards
+ * 
+ *    f. _buildPopularBanner() [Line ~350]
+ *       - Stack layout
+ *       - Image background
+ *       - Positioned text
+ * 
+ *    g. _buildProductCard() [Line ~380]
+ *       - Card layout
+ *       - Image
+ *       - Product details
+ * 
+ * 4. Class Pendukung
+ *    - Product [Line ~450]
+ *      - Properties: name, price, imageUrl, originalPrice
+ * 
+ * 5. Data Statis
+ *    - List promos dalam _buildPromoCarousel()
+ *    - List categories dalam _buildCategoryMenu()
+ *    - List products dalam _buildProductSection()
+ *    - List products dalam GridView
+ */
+
 import 'package:flutter/material.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 
@@ -174,12 +239,8 @@ class HomePage extends StatelessWidget {
                 hintText: 'Cari Produk',
                 prefixIcon: Icon(Icons.search),
                 filled: true,
-                fillColor: Colors.white,
+                fillColor: Colors.grey[100],
                 contentPadding: const EdgeInsets.all(10),
-                enabledBorder: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(12),
-                  borderSide: BorderSide(color: Colors.grey.shade300),
-                ),
                 border: OutlineInputBorder(
                   borderRadius: BorderRadius.circular(12),
                   borderSide: BorderSide(color: Colors.grey.shade300),
@@ -214,25 +275,25 @@ class HomePage extends StatelessWidget {
         'title': 'Paket Camping Hemat',
         'discount': 'Diskon 30%',
         'image':
-            'https://raw.githubusercontent.com/roozenn/camp_to_go/refs/heads/main/lib/image/promo-pakethemat.jpg',
+            'https://raw.githubusercontent.com/roozenn/camp_to_go/refs/heads/main/lib/image/promo-pakethemat.webp',
       },
       {
         'title': 'Sewa 3 Hari Gratis 1',
         'discount': 'Promo Spesial',
         'image':
-            'https://raw.githubusercontent.com/roozenn/camp_to_go/refs/heads/main/lib/image/promo-3plus1.jpg',
+            'https://raw.githubusercontent.com/roozenn/camp_to_go/refs/heads/main/lib/image/promo-3plus1.webp',
       },
       {
         'title': 'Paket Keluarga',
         'discount': 'Diskon 25%',
         'image':
-            'https://raw.githubusercontent.com/roozenn/camp_to_go/refs/heads/main/lib/image/promo-paketkeluarga.jpg',
+            'https://raw.githubusercontent.com/roozenn/camp_to_go/refs/heads/main/lib/image/promo-paketkeluarga.webp',
       },
       {
         'title': 'Weekend Special',
         'discount': 'Diskon 40%',
         'image':
-            'https://raw.githubusercontent.com/roozenn/camp_to_go/refs/heads/main/lib/image/promo-weekend.jpg',
+            'https://raw.githubusercontent.com/roozenn/camp_to_go/refs/heads/main/lib/image/promo-weekend.webp',
       },
     ];
 
@@ -440,6 +501,7 @@ class HomePage extends StatelessWidget {
                                   '24%',
                                   style: TextStyle(
                                     fontSize: 12,
+                                    fontWeight: FontWeight.bold,
                                     color: Colors.red,
                                   ),
                                 ),
@@ -522,7 +584,6 @@ class HomePage extends StatelessWidget {
                   fit: BoxFit.fill,
                 ),
                 const SizedBox(height: 8),
-
                 Text(
                   productName,
                   maxLines: 2,
@@ -532,7 +593,7 @@ class HomePage extends StatelessWidget {
                     fontSize: 15,
                   ),
                 ),
-                const SizedBox(height: 4),
+                const SizedBox(height: 8),
                 Text(
                   currentPrice,
                   style: const TextStyle(
@@ -552,10 +613,14 @@ class HomePage extends StatelessWidget {
                         color: Colors.grey,
                       ),
                     ),
-                    const SizedBox(width: 8),
+                    const Spacer(),
                     Text(
                       discount,
-                      style: const TextStyle(fontSize: 12, color: Colors.red),
+                      style: const TextStyle(
+                        fontSize: 12,
+                        fontWeight: FontWeight.bold,
+                        color: Colors.red,
+                      ),
                     ),
                   ],
                 ),

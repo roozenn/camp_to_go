@@ -28,29 +28,35 @@ class AddressListScreen extends StatelessWidget {
           ),
         ],
       ),
-      body: SingleChildScrollView(
-        child: Padding(
-          padding: const EdgeInsets.all(16.0),
-          child: Column(
-            children: [
-              _buildAddressCard(
-                'Yammal Yamine',
-                'Kompleks Perumahan Angkatan Darat No.17,\nBandung 524111 Indonesia',
-                '+62 1234567890',
+      body: Column(
+        children: [
+          Expanded(
+            child: SingleChildScrollView(
+              child: Padding(
+                padding: const EdgeInsets.all(16.0),
+                child: Column(
+                  children: [
+                    _buildAddressCard(
+                      'Yammal Yamine',
+                      'Kompleks Perumahan Angkatan Darat No.17,\nBandung 524111 Indonesia',
+                      '+62 1234567890',
+                    ),
+                    const SizedBox(height: 16),
+                    _buildAddressCard(
+                      'Gavi Perdoza',
+                      'Kompleks Perumahan Angkatan Darat No.17,\nBandung 524111 Indonesia',
+                      '+62 1234567890',
+                    ),
+                  ],
+                ),
               ),
-              const SizedBox(height: 16),
-              _buildAddressCard(
-                'Gavi Perdoza',
-                'Kompleks Perumahan Angkatan Darat No.17,\nBandung 524111 Indonesia',
-                '+62 1234567890',
-              ),
-              const SizedBox(height: 65),
-              _buildContinueButton(),
-              const SizedBox(height: 16),
-              _buildBottomIndicator(),
-            ],
+            ),
           ),
-        ),
+          Padding(
+            padding: const EdgeInsets.all(16.0),
+            child: _buildContinueButton(),
+          ),
+        ],
       ),
     );
   }
@@ -132,17 +138,6 @@ class AddressListScreen extends StatelessWidget {
           fontWeight: FontWeight.bold,
           fontSize: 16,
         ),
-      ),
-    );
-  }
-
-  Widget _buildBottomIndicator() {
-    return Container(
-      width: 40,
-      height: 4,
-      decoration: BoxDecoration(
-        color: Colors.grey.shade300,
-        borderRadius: BorderRadius.circular(2),
       ),
     );
   }

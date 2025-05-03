@@ -44,65 +44,78 @@ class DetailOrderPage extends StatelessWidget {
           ),
         ],
       ),
-      body: SingleChildScrollView(
-        padding: const EdgeInsets.all(16),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            const OrderStatusStepper(),
-            Padding(
-              padding: const EdgeInsets.all(16.0),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: const [
-                  Text(
-                    'Produk',
-                    style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+      body: Stack(
+        children: [
+          SingleChildScrollView(
+            padding: const EdgeInsets.all(16),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                const OrderStatusStepper(),
+                Padding(
+                  padding: const EdgeInsets.all(16.0),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: const [
+                      Text(
+                        'Produk',
+                        style: TextStyle(
+                          fontSize: 16,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                      Text(
+                        'LQNSU346JK',
+                        style: TextStyle(color: Colors.grey, fontSize: 14),
+                      ),
+                    ],
                   ),
-                  Text(
-                    'LQNSU346JK',
-                    style: TextStyle(color: Colors.grey, fontSize: 14),
-                  ),
-                ],
-              ),
+                ),
+                productItem(
+                  'https://raw.githubusercontent.com/roozenn/camp_to_go/refs/heads/main/lib/image/tenda1.webp',
+                  'Dome 4 Person Coleman',
+                  '24 Apr - 25 Apr 2025',
+                  'Rp76.000',
+                  true,
+                ),
+                const SizedBox(height: 12),
+                productItem(
+                  'https://raw.githubusercontent.com/roozenn/camp_to_go/refs/heads/main/lib/image/tas1.webp',
+                  'Carrier 60L Deuter',
+                  '24 Apr - 25 Apr 2025',
+                  'Rp45.000',
+                  false,
+                ),
+                const SizedBox(height: 24),
+                const Text(
+                  "Detail Pembayaran",
+                  style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
+                ),
+                const SizedBox(height: 8),
+                paymentDetail(),
+                const SizedBox(height: 24),
+                const Text(
+                  "Detail Penyewaan",
+                  style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
+                ),
+                const SizedBox(height: 8),
+                rentalDetail(),
+                const SizedBox(height: 80),
+              ],
             ),
-            productItem(
-              'https://raw.githubusercontent.com/roozenn/camp_to_go/refs/heads/main/lib/image/tenda1.webp',
-              'Dome 4 Person Coleman',
-              '24 Apr - 25 Apr 2025',
-              'Rp76.000',
-              true,
-            ),
-            const SizedBox(height: 12),
-            productItem(
-              'https://raw.githubusercontent.com/roozenn/camp_to_go/refs/heads/main/lib/image/tas1.webp',
-              'Carrier 60L Deuter',
-              '24 Apr - 25 Apr 2025',
-              'Rp45.000',
-              false,
-            ),
-            const SizedBox(height: 24),
-            const Text(
-              "Detail Pembayaran",
-              style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
-            ),
-            const SizedBox(height: 8),
-            paymentDetail(),
-            const SizedBox(height: 24),
-            const Text(
-              "Detail Penyewaan",
-              style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
-            ),
-            const SizedBox(height: 8),
-            rentalDetail(),
-            const SizedBox(height: 24),
-            ElevatedButton(
+          ),
+          Positioned(
+            left: 16,
+            right: 16,
+            bottom: 16,
+            child: ElevatedButton(
               style: ElevatedButton.styleFrom(
                 minimumSize: const Size(double.infinity, 48),
                 backgroundColor: const Color(0xFF2E4F3D),
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(8),
                 ),
+                elevation: 4,
               ),
               onPressed: () {},
               child: const Text(
@@ -114,8 +127,8 @@ class DetailOrderPage extends StatelessWidget {
                 ),
               ),
             ),
-          ],
-        ),
+          ),
+        ],
       ),
     );
   }
