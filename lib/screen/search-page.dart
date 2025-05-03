@@ -1,84 +1,105 @@
 import 'package:flutter/material.dart';
 
 class SearchPage extends StatefulWidget {
-  const SearchPage({Key? key}) : super(key: key);
+  const SearchPage({super.key});
 
   @override
   State<SearchPage> createState() => _SearchPageState();
 }
 
 class _SearchPageState extends State<SearchPage> {
-  final TextEditingController _searchController = TextEditingController(
-    text: 'Forclaz MT900',
-  );
+  final TextEditingController _controller = TextEditingController();
+
   final List<String> _searchResults = [
-    'Forclaz Men\'s MT900 Symbium2',
-    'Forclaz Men\'s MT900 Symbium2',
-    'Forclaz Men\'s MT900 Symbium2',
+    "Forclaz Men's MT900 Symbium2",
+    "Forclaz Men's MT900 Symbium2",
+    "Forclaz Men's MT900 Symbium2",
   ];
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       body: SafeArea(
-        child: Column(
-          children: [
-            Padding(
-              padding: const EdgeInsets.all(16.0),
-              child: Container(
-                decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(8.0),
-                  color: Colors.grey[200],
-                ),
-                child: TextField(
-                  controller: _searchController,
-                  decoration: InputDecoration(
-                    hintText: 'Search',
-                    prefixIcon: const Icon(Icons.search),
-                    suffixIcon: IconButton(
-                      icon: const Icon(Icons.clear),
-                      onPressed: () {
-                        _searchController.clear();
-                      },
+        child: Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              // Search Row with Mic outside
+              Row(
+                children: [
+                  Expanded(
+                    child: TextField(
+                      controller: _controller,
+                      onChanged: (_) => setState(() {}),
+                      decoration: InputDecoration(
+                        contentPadding: const EdgeInsets.symmetric(
+                          vertical: 10,
+                        ),
+                        hintText: 'Forclaz MT900',
+                        hintStyle: const TextStyle(
+                          fontWeight: FontWeight.w600,
+                          color: Colors.black54,
+                        ),
+                        prefixIcon: const Icon(
+                          Icons.search,
+                          size: 20,
+                          color: Colors.black54,
+                        ),
+                        suffixIcon:
+                            _controller.text.isNotEmpty
+                                ? GestureDetector(
+                                  onTap: () {
+                                    _controller.clear();
+                                    setState(() {});
+                                  },
+                                  child: const Icon(
+                                    Icons.close,
+                                    size: 20,
+                                    color: Colors.black54,
+                                  ),
+                                )
+                                : null,
+                        filled: true,
+                        fillColor: Colors.white,
+                        isDense: true,
+                        enabledBorder: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(6),
+                          borderSide: BorderSide(
+                            color: Colors.black.withOpacity(0.2),
+                          ),
+                        ),
+                        focusedBorder: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(6),
+                          borderSide: BorderSide(
+                            color: Colors.black.withOpacity(0.4),
+                          ),
+                        ),
+                      ),
                     ),
-                    border: InputBorder.none,
-                    contentPadding: const EdgeInsets.symmetric(vertical: 12.0),
+                  ),
+                  const SizedBox(width: 12),
+                  const Icon(Icons.mic_none, size: 20, color: Colors.black45),
+                ],
+              ),
+              const SizedBox(height: 20),
+              // Search Results
+              ..._searchResults.map(
+                (result) => Padding(
+                  padding: const EdgeInsets.only(bottom: 16),
+                  child: Text(
+                    result,
+                    style: TextStyle(
+                      fontSize: 14,
+                      color: Colors.black.withOpacity(0.6),
+                    ),
                   ),
                 ),
               ),
-            ),
-            Expanded(
-              child: ListView.builder(
-                itemCount: _searchResults.length,
-                itemBuilder: (context, index) {
-                  return Padding(
-                    padding: const EdgeInsets.symmetric(
-                      horizontal: 16.0,
-                      vertical: 8.0,
-                    ),
-                    child: Text(
-                      _searchResults[index],
-                      style: TextStyle(color: Colors.grey[500], fontSize: 16.0),
-                    ),
-                  );
-                },
-              ),
-            ),
-            const SizedBox(
-              height: 20.0,
-              child: Center(
-                child: Divider(thickness: 4.0, indent: 150.0, endIndent: 150.0),
-              ),
-            ),
-          ],
+            ],
+          ),
         ),
       ),
     );
-  }
-
-  @override
-  void dispose() {
-    _searchController.dispose();
-    super.dispose();
   }
 }

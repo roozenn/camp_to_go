@@ -24,7 +24,7 @@ class ProfilePage extends StatelessWidget {
                 const CircleAvatar(
                   radius: 40,
                   backgroundImage: NetworkImage(
-                    'https://i.imgur.com/BoN9kdC.png', // Placeholder
+                    'https://raw.githubusercontent.com/roozenn/camp_to_go/refs/heads/main/lib/image/profil.png',
                   ),
                 ),
                 const SizedBox(height: 10),
@@ -87,7 +87,7 @@ class ProfileTile extends StatelessWidget {
         Row(
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
-            Icon(icon, color: Colors.green[900]),
+            Icon(icon, color: Color(0xFF2F4E3E)),
             const SizedBox(width: 16),
             Expanded(
               child: Row(

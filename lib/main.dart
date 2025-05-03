@@ -29,7 +29,7 @@ class MyApp extends StatelessWidget {
       title: 'CAMPtoGo',
       theme: buildLightTheme(),
       // darkTheme: buildDarkTheme(),
-      home: const ProfilePage(),
+      home: MyHome(),
       debugShowCheckedModeBanner: false,
     );
   }
@@ -324,7 +324,7 @@ class MyHome extends StatelessWidget {
                     Navigator.of(context).push(
                       MaterialPageRoute(
                         builder: (context) {
-                          return TransactionPage();
+                          return TransaksiPage();
                         },
                       ),
                     );

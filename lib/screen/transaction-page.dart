@@ -1,45 +1,129 @@
 import 'package:flutter/material.dart';
 
-class TransactionPage extends StatelessWidget {
-  const TransactionPage({super.key});
+class TransaksiPage extends StatelessWidget {
+  final List<Map<String, String>> transaksiList = [
+    {
+      'kode': 'TRX2301ABC',
+      'tanggal': '4 Mei, 2025',
+      'status': 'Dalam Penyewaan',
+      'jumlah': '3 Barang disewa',
+      'total': 'Rp450.000',
+    },
+    {
+      'kode': 'TRX2104XYZ',
+      'tanggal': '28 April, 2025',
+      'status': 'Selesai',
+      'jumlah': '1 Barang disewa',
+      'total': 'Rp150.000',
+    },
+    {
+      'kode': 'TRX2003LMN',
+      'tanggal': '15 April, 2025',
+      'status': 'Dibatalkan',
+      'jumlah': '2 Barang disewa',
+      'total': 'Rp300.000',
+    },
+    {
+      'kode': 'TRX1902PQR',
+      'tanggal': '2 Maret, 2025',
+      'status': 'Selesai',
+      'jumlah': '4 Barang disewa',
+      'total': 'Rp600.000',
+    },
+    {
+      'kode': 'TRX1801DEF',
+      'tanggal': '25 Februari, 2025',
+      'status': 'Dalam Proses',
+      'jumlah': '1 Barang disewa',
+      'total': 'Rp120.000',
+    },
+  ];
+
+  TransaksiPage({super.key});
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text(
-          'Transaksi',
-          style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
-        ),
         backgroundColor: Colors.white,
-        foregroundColor: Colors.black,
-        elevation: 0.5,
-        leadingWidth: 30,
-        leading: const BackButton(),
+        elevation: 0,
+        leading: BackButton(color: Colors.black),
+        title: Text(
+          'Transaksi',
+          style: TextStyle(color: Colors.black, fontWeight: FontWeight.bold),
+        ),
+        centerTitle: false,
       ),
-      body: ListView(
-        children: [
-          TransactionCard(
-            orderId: 'LQNSU346JK',
-            date: '23 April, 2025',
-            status: 'Dalam Penyewaan',
-            itemCount: '2 Barang disewa',
-            totalCost: 'Rp299.000',
-          ),
-          const Divider(height: 1, thickness: 1, color: Color(0xFFEEEEEE)),
-          TransactionCard(
-            orderId: 'SDGI345KJD',
-            date: '1 Januari, 2025',
-            status: 'Selesai',
-            itemCount: '1 Barang disewa',
-            totalCost: 'Rp299.000',
-          ),
-          const Divider(height: 1, thickness: 1, color: Color(0xFFEEEEEE)),
-        ],
+      body: ListView.builder(
+        padding: EdgeInsets.all(16),
+        itemCount: transaksiList.length,
+        itemBuilder: (context, index) {
+          final transaksi = transaksiList[index];
+          return Card(
+            margin: EdgeInsets.only(bottom: 16),
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(8),
+              side: BorderSide(color: Colors.grey.shade200),
+            ),
+            child: Padding(
+              padding: const EdgeInsets.all(16.0),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    transaksi['kode']!,
+                    style: TextStyle(fontWeight: FontWeight.bold),
+                  ),
+                  SizedBox(height: 4),
+                  Text(
+                    transaksi['tanggal']!,
+                    style: TextStyle(color: Colors.grey),
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.symmetric(vertical: 12.0),
+                    child: DashedLine(),
+                  ),
+
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Text('Status Order'),
+                      Text(transaksi['status']!),
+                    ],
+                  ),
+                  SizedBox(height: 8),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Text('Jumlah Barang'),
+                      Text(transaksi['jumlah']!),
+                    ],
+                  ),
+                  SizedBox(height: 8),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Text('Total Biaya'),
+                      Text(
+                        transaksi['total']!,
+                        style: TextStyle(
+                          color: Color(0xFF2F4E3E),
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                    ],
+                  ),
+                ],
+              ),
+            ),
+          );
+        },
       ),
       bottomNavigationBar: BottomNavigationBar(
-        type: BottomNavigationBarType.fixed,
-        currentIndex: 2, // Transaksi tab is selected
+        currentIndex: 2,
+        selectedItemColor: Color(0xFF2F4E3E),
+        unselectedItemColor: Colors.grey,
+        showUnselectedLabels: true,
         items: const [
           BottomNavigationBarItem(
             icon: Icon(Icons.home_outlined),
@@ -50,7 +134,7 @@ class TransactionPage extends StatelessWidget {
             label: 'Cart',
           ),
           BottomNavigationBarItem(
-            icon: Icon(Icons.receipt_long),
+            icon: Icon(Icons.receipt_long_outlined),
             label: 'Transaksi',
           ),
           BottomNavigationBarItem(
@@ -58,96 +142,37 @@ class TransactionPage extends StatelessWidget {
             label: 'Akun',
           ),
         ],
-        selectedItemColor: Colors.blue,
-        unselectedItemColor: Colors.grey,
       ),
     );
   }
 }
 
-class TransactionCard extends StatelessWidget {
-  final String orderId;
-  final String date;
-  final String status;
-  final String itemCount;
-  final String totalCost;
+class DashedLine extends StatelessWidget {
+  final double height;
+  final Color color;
 
-  const TransactionCard({
-    super.key,
-    required this.orderId,
-    required this.date,
-    required this.status,
-    required this.itemCount,
-    required this.totalCost,
-  });
+  const DashedLine({this.height = 1, this.color = const Color(0xFFBDBDBD)});
 
   @override
   Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.all(16.0),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Text(
-            orderId,
-            style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
-          ),
-          const SizedBox(height: 4),
-          Text(date, style: TextStyle(fontSize: 14, color: Colors.grey[600])),
-          const SizedBox(height: 12),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              const Text(
-                'Status Order',
-                style: TextStyle(fontSize: 14, color: Colors.grey),
-              ),
-              Text(
-                status,
-                style: TextStyle(
-                  fontSize: 14,
-                  fontWeight: FontWeight.w500,
-                  color: status == 'Selesai' ? Colors.black : Colors.blue,
-                ),
-              ),
-            ],
-          ),
-          const SizedBox(height: 8),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              const Text(
-                'Jumlah Barang',
-                style: TextStyle(fontSize: 14, color: Colors.grey),
-              ),
-              Text(
-                itemCount,
-                style: const TextStyle(
-                  fontSize: 14,
-                  fontWeight: FontWeight.w500,
-                ),
-              ),
-            ],
-          ),
-          const SizedBox(height: 8),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              const Text(
-                'Total Biaya',
-                style: TextStyle(fontSize: 14, color: Colors.grey),
-              ),
-              Text(
-                totalCost,
-                style: const TextStyle(
-                  fontSize: 14,
-                  fontWeight: FontWeight.w500,
-                ),
-              ),
-            ],
-          ),
-        ],
-      ),
+    return LayoutBuilder(
+      builder: (context, constraints) {
+        final boxWidth = constraints.constrainWidth();
+        final dashWidth = 5.0;
+        final dashSpace = 3.0;
+        final dashCount = (boxWidth / (dashWidth + dashSpace)).floor();
+
+        return Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: List.generate(dashCount, (_) {
+            return SizedBox(
+              width: dashWidth,
+              height: height,
+              child: DecoratedBox(decoration: BoxDecoration(color: color)),
+            );
+          }),
+        );
+      },
     );
   }
 }
