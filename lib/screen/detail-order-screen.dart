@@ -8,7 +8,7 @@ class DetailOrderPage extends StatelessWidget {
       width: 24,
       height: 24,
       decoration: BoxDecoration(
-        color: isCompleted ? Colors.green : Colors.grey[300],
+        color: isCompleted ? Color(0xFF2F4E3E) : Colors.grey[300],
         shape: BoxShape.circle,
       ),
       child:
@@ -111,7 +111,7 @@ class DetailOrderPage extends StatelessWidget {
             child: ElevatedButton(
               style: ElevatedButton.styleFrom(
                 minimumSize: const Size(double.infinity, 48),
-                backgroundColor: const Color(0xFF2E4F3D),
+                backgroundColor: const Color(0xFF2F4E3E),
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(8),
                 ),
@@ -182,7 +182,7 @@ class DetailOrderPage extends StatelessWidget {
                   price,
                   style: const TextStyle(
                     fontSize: 14,
-                    color: Colors.green,
+                    color: Color(0xFF2F4E3E),
                     fontWeight: FontWeight.bold,
                   ),
                 ),
@@ -234,7 +234,7 @@ class DetailOrderPage extends StatelessWidget {
           style: TextStyle(
             fontSize: isTotal ? 14 : 12,
             fontWeight: isTotal ? FontWeight.bold : FontWeight.normal,
-            color: isTotal ? Colors.green : Colors.black,
+            color: isTotal ? Color(0xFF2F4E3E) : Colors.black,
           ),
         ),
       ],

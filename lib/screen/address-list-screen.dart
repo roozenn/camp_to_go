@@ -109,7 +109,7 @@ class AddressListScreen extends StatelessWidget {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
       decoration: BoxDecoration(
-        color: const Color(0xFF3A5A40),
+        color: const Color(0xFF2F4E3E),
         borderRadius: BorderRadius.circular(4),
       ),
       child: Text(
@@ -127,7 +127,7 @@ class AddressListScreen extends StatelessWidget {
       width: double.infinity,
       padding: const EdgeInsets.symmetric(vertical: 16),
       decoration: BoxDecoration(
-        color: const Color(0xFF3A5A40),
+        color: const Color(0xFF2F4E3E),
         borderRadius: BorderRadius.circular(8),
       ),
       alignment: Alignment.center,

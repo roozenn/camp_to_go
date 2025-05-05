@@ -21,46 +21,42 @@ class _ProductDetailPageState extends State<ProductDetailPage> {
   ];
 
   final List<String> reviewImages = [
-    'https://raw.githubusercontent.com/roozenn/camp_to_go/refs/heads/main/lib/image/tenda1-commenter1.avif',
+    'https://raw.githubusercontent.com/roozenn/camp_to_go/refs/heads/main/lib/image/tenda1-commenter1.webp',
+    'https://raw.githubusercontent.com/roozenn/camp_to_go/refs/heads/main/lib/image/tenda1-commenter2.webp',
+    'https://raw.githubusercontent.com/roozenn/camp_to_go/refs/heads/main/lib/image/tenda1-commenter3.webp',
   ];
 
   final List<Product> recommendedProducts = [
     Product(
-      "Tenda Camping 2 Orang",
-      "Rp65.000/hari",
-      "https://raw.githubusercontent.com/roozenn/camp_to_go/refs/heads/main/lib/image/tenda1.webp",
-      "Rp85.000/hari",
+      'Simond Rock 2.0 Hiking Boots',
+      'Rp90.000/hari',
+      'https://raw.githubusercontent.com/roozenn/camp_to_go/refs/heads/main/lib/image/sepatu2.webp',
+      'Rp130.000/hari',
     ),
     Product(
-      "Tenda Dome 4 Orang",
-      "Rp95.000/hari",
-      "https://raw.githubusercontent.com/roozenn/camp_to_go/refs/heads/main/lib/image/tenda1.webp",
-      "Rp120.000/hari",
+      'Forclaz MT500 Hiking Boots',
+      'Rp85.000/hari',
+      'https://raw.githubusercontent.com/roozenn/camp_to_go/refs/heads/main/lib/image/sepatu1.webp',
+      'Rp120.000/hari',
     ),
     Product(
-      "Tenda Family 6 Orang",
-      "Rp125.000/hari",
-      "https://raw.githubusercontent.com/roozenn/camp_to_go/refs/heads/main/lib/image/tenda1.webp",
-      "Rp150.000/hari",
+      'NH Escape 500 23L',
+      'Rp45.000/hari',
+      'https://raw.githubusercontent.com/roozenn/camp_to_go/refs/heads/main/lib/image/tas1.webp',
+      'Rp70.000/hari',
+    ),
+    Product(
+      'Quechua Arpenaz 4.1',
+      'Rp120.000/hari',
+      'https://raw.githubusercontent.com/roozenn/camp_to_go/refs/heads/main/lib/image/tenda1.webp',
+      'Rp150.000/hari',
     ),
 
     Product(
-      "Tenda Family 6 Orang",
-      "Rp125.000/hari",
-      "https://raw.githubusercontent.com/roozenn/camp_to_go/refs/heads/main/lib/image/tenda1.webp",
-      "Rp150.000/hari",
-    ),
-    Product(
-      "Tenda Family 6 Orang",
-      "Rp125.000/hari",
-      "https://raw.githubusercontent.com/roozenn/camp_to_go/refs/heads/main/lib/image/tenda1.webp",
-      "Rp150.000/hari",
-    ),
-    Product(
-      "Tenda Family 6 Orang",
-      "Rp125.000/hari",
-      "https://raw.githubusercontent.com/roozenn/camp_to_go/refs/heads/main/lib/image/tenda1.webp",
-      "Rp150.000/hari",
+      'Quechua Air Fresh 500',
+      'Rp65.000/hari',
+      'https://raw.githubusercontent.com/roozenn/camp_to_go/refs/heads/main/lib/image/tenda2.webp',
+      'Rp90.000/hari',
     ),
   ];
 
@@ -142,7 +138,7 @@ class _ProductDetailPageState extends State<ProductDetailPage> {
                     shape: BoxShape.circle,
                     color:
                         _currentPage == index
-                            ? Colors.green
+                            ? Color(0xFF2F4E3E)
                             : Colors.grey.shade300,
                   ),
                 ),
@@ -170,12 +166,12 @@ class _ProductDetailPageState extends State<ProductDetailPage> {
               style: TextStyle(
                 fontSize: 18,
                 fontWeight: FontWeight.bold,
-                color: Colors.green,
+                color: Color(0xFF2F4E3E),
               ),
             ),
             const SizedBox(height: 2),
             const Text("Deposit : Rp128.000"),
-            const SizedBox(height: 16),
+            const SizedBox(height: 20),
             // Date Picker (Placeholder)
             const Text(
               "Pilih Tanggal",
@@ -195,7 +191,7 @@ class _ProductDetailPageState extends State<ProductDetailPage> {
                 ],
               ),
             ),
-            const SizedBox(height: 20),
+            const SizedBox(height: 30),
             // Deskripsi
             const Text(
               "Deskripsi",
@@ -206,13 +202,19 @@ class _ProductDetailPageState extends State<ProductDetailPage> {
               "Tenda ini menggabungkan fabric anti air berkualitas tinggi dengan rangka inovatif yang ringan namun kokoh, menghasilkan kenyamanan optimal.",
               style: TextStyle(color: Colors.black87),
             ),
-            const SizedBox(height: 20),
+            const SizedBox(height: 30),
             // Ulasan
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: const [
                 Text("Ulasan", style: TextStyle(fontWeight: FontWeight.bold)),
-                Text("Lihat Semua", style: TextStyle(color: Colors.blue)),
+                Text(
+                  "Lihat Semua",
+                  style: TextStyle(
+                    fontWeight: FontWeight.bold,
+                    color: Color(0xFF2F4E3E),
+                  ),
+                ),
               ],
             ),
             const SizedBox(height: 8),
@@ -257,11 +259,14 @@ class _ProductDetailPageState extends State<ProductDetailPage> {
                         .map(
                           (imageUrl) => Container(
                             margin: const EdgeInsets.only(right: 8),
-                            child: Image.network(
-                              imageUrl,
-                              width: 80,
-                              height: 80,
-                              fit: BoxFit.cover,
+                            child: ClipRRect(
+                              borderRadius: BorderRadius.circular(8),
+                              child: Image.network(
+                                imageUrl,
+                                width: 60,
+                                height: 60,
+                                fit: BoxFit.cover,
+                              ),
                             ),
                           ),
                         )
@@ -270,12 +275,12 @@ class _ProductDetailPageState extends State<ProductDetailPage> {
             ),
             const SizedBox(height: 4),
             const Text("December 10, 2024"),
-            const SizedBox(height: 20),
+            const SizedBox(height: 30),
             const Text(
               "Rekomendasi Untuk Kamu",
               style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
             ),
-            const SizedBox(height: 12),
+            const SizedBox(height: 8),
             SizedBox(
               height: 240,
               child: ListView(
@@ -292,7 +297,7 @@ class _ProductDetailPageState extends State<ProductDetailPage> {
             // Sewa Button
             ElevatedButton(
               style: ElevatedButton.styleFrom(
-                backgroundColor: Colors.green.shade700,
+                backgroundColor: Color(0xFF2F4E3E),
                 padding: const EdgeInsets.symmetric(vertical: 16),
               ),
               onPressed: () {},

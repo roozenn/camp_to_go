@@ -21,7 +21,7 @@ class LoginScreen extends StatelessWidget {
                   width: 80,
                   height: 80,
                   decoration: BoxDecoration(
-                    color: const Color(0xFF3B5249),
+                    color: const Color(0xFF2F4E3E),
                     borderRadius: BorderRadius.circular(16),
                   ),
                   child: Center(
@@ -99,7 +99,7 @@ class LoginScreen extends StatelessWidget {
                   child: ElevatedButton(
                     onPressed: () {},
                     style: ElevatedButton.styleFrom(
-                      backgroundColor: const Color(0xFF3B5249),
+                      backgroundColor: const Color(0xFF2F4E3E),
                       shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(8),
                       ),
@@ -141,7 +141,7 @@ class LoginScreen extends StatelessWidget {
                       child: const Text(
                         'Daftar',
                         style: TextStyle(
-                          color: Color(0xFF3B5249),
+                          color: Color(0xFF2F4E3E),
                           fontWeight: FontWeight.bold,
                           fontSize: 14,
                         ),
