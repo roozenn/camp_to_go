@@ -47,7 +47,6 @@ class TransaksiPage extends StatelessWidget {
       appBar: AppBar(
         backgroundColor: Colors.white,
         elevation: 0,
-        leading: BackButton(color: Colors.black),
         title: Text(
           'Transaksi',
           style: TextStyle(color: Colors.black, fontWeight: FontWeight.bold),
@@ -119,30 +118,30 @@ class TransaksiPage extends StatelessWidget {
           );
         },
       ),
-      bottomNavigationBar: BottomNavigationBar(
-        currentIndex: 2,
-        selectedItemColor: Color(0xFF2F4E3E),
-        unselectedItemColor: Colors.grey,
-        showUnselectedLabels: true,
-        items: const [
-          BottomNavigationBarItem(
-            icon: Icon(Icons.home_outlined),
-            label: 'Home',
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.shopping_cart_outlined),
-            label: 'Cart',
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.receipt_long_outlined),
-            label: 'Transaksi',
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.person_outline),
-            label: 'Akun',
-          ),
-        ],
-      ),
+      // bottomNavigationBar: BottomNavigationBar(
+      //   currentIndex: 2,
+      //   selectedItemColor: Color(0xFF2F4E3E),
+      //   unselectedItemColor: Colors.grey,
+      //   showUnselectedLabels: true,
+      //   items: const [
+      //     BottomNavigationBarItem(
+      //       icon: Icon(Icons.home_outlined),
+      //       label: 'Home',
+      //     ),
+      //     BottomNavigationBarItem(
+      //       icon: Icon(Icons.shopping_cart_outlined),
+      //       label: 'Cart',
+      //     ),
+      //     BottomNavigationBarItem(
+      //       icon: Icon(Icons.receipt_long_outlined),
+      //       label: 'Transaksi',
+      //     ),
+      //     BottomNavigationBarItem(
+      //       icon: Icon(Icons.person_outline),
+      //       label: 'Akun',
+      //     ),
+      //   ],
+      // ),
     );
   }
 }

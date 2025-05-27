@@ -124,30 +124,30 @@ class CartPage extends StatelessWidget {
           ),
         ],
       ),
-      bottomNavigationBar: BottomNavigationBar(
-        selectedItemColor: const Color(0xFF2F4E3E),
-        unselectedItemColor: Colors.grey,
-        currentIndex: 1,
-        type: BottomNavigationBarType.fixed,
-        items: const [
-          BottomNavigationBarItem(
-            icon: Icon(Icons.home_outlined),
-            label: 'Beranda',
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.shopping_cart),
-            label: 'Keranjang',
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.receipt_long),
-            label: 'Transaksi',
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.person_outline),
-            label: 'Akun',
-          ),
-        ],
-      ),
+      // bottomNavigationBar: BottomNavigationBar(
+      //   selectedItemColor: const Color(0xFF2F4E3E),
+      //   unselectedItemColor: Colors.grey,
+      //   currentIndex: 1,
+      //   type: BottomNavigationBarType.fixed,
+      //   items: const [
+      //     BottomNavigationBarItem(
+      //       icon: Icon(Icons.home_outlined),
+      //       label: 'Beranda',
+      //     ),
+      //     BottomNavigationBarItem(
+      //       icon: Icon(Icons.shopping_cart),
+      //       label: 'Keranjang',
+      //     ),
+      //     BottomNavigationBarItem(
+      //       icon: Icon(Icons.receipt_long),
+      //       label: 'Transaksi',
+      //     ),
+      //     BottomNavigationBarItem(
+      //       icon: Icon(Icons.person_outline),
+      //       label: 'Akun',
+      //     ),
+      //   ],
+      // ),
     );
   }
 }

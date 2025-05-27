@@ -29,7 +29,7 @@ class MyApp extends StatelessWidget {
       title: 'CAMPtoGo',
       theme: buildLightTheme(),
       // darkTheme: buildDarkTheme(),
-      home: MyHome(),
+      home: HomePage(),
       debugShowCheckedModeBanner: false,
     );
   }
@@ -236,24 +236,24 @@ class MyHome extends StatelessWidget {
                   },
                 ),
                 SizedBox(height: 10),
-                ElevatedButton(
-                  style: ElevatedButton.styleFrom(
-                    padding: EdgeInsets.symmetric(horizontal: 24, vertical: 12),
-                  ),
-                  child: const Text(
-                    'ProductDetailPage',
-                    style: TextStyle(fontSize: 20),
-                  ),
-                  onPressed: () {
-                    Navigator.of(context).push(
-                      MaterialPageRoute(
-                        builder: (context) {
-                          return ProductDetailPage();
-                        },
-                      ),
-                    );
-                  },
-                ),
+                // ElevatedButton(
+                //   style: ElevatedButton.styleFrom(
+                //     padding: EdgeInsets.symmetric(horizontal: 24, vertical: 12),
+                //   ),
+                //   child: const Text(
+                //     'ProductDetailPage',
+                //     style: TextStyle(fontSize: 20),
+                //   ),
+                //   onPressed: () {
+                //     Navigator.of(context).push(
+                //       MaterialPageRoute(
+                //         builder: (context) {
+                //           return ProductDetailPage(product: null,);
+                //         },
+                //       ),
+                //     );
+                //   },
+                // ),
                 SizedBox(height: 10),
                 ElevatedButton(
                   style: ElevatedButton.styleFrom(

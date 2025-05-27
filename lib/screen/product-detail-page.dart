@@ -3,7 +3,9 @@ import 'package:carousel_slider/carousel_slider.dart';
 import 'package:camp_to_go/screen/home-page.dart';
 
 class ProductDetailPage extends StatefulWidget {
-  const ProductDetailPage({super.key});
+  final Product product;
+
+  const ProductDetailPage({super.key, required this.product});
 
   @override
   State<ProductDetailPage> createState() => _ProductDetailPageState();
@@ -72,10 +74,13 @@ class _ProductDetailPageState extends State<ProductDetailPage> {
       appBar: AppBar(
         backgroundColor: Colors.white,
         elevation: 0,
-        leading: const Icon(Icons.arrow_back, color: Colors.black),
-        title: const Text(
-          "Forclaz Men's MT900 Symbium2",
-          style: TextStyle(
+        leading: IconButton(
+          icon: const Icon(Icons.arrow_back, color: Colors.black),
+          onPressed: () => Navigator.pop(context),
+        ),
+        title: Text(
+          widget.product.name,
+          style: const TextStyle(
             fontSize: 16,
             fontWeight: FontWeight.w600,
             color: Colors.black,
@@ -88,6 +93,52 @@ class _ProductDetailPageState extends State<ProductDetailPage> {
           SizedBox(width: 16),
         ],
       ),
+      floatingActionButton: Container(
+        padding: const EdgeInsets.symmetric(horizontal: 16),
+        width: double.infinity,
+        child: Row(
+          children: [
+            Expanded(
+              child: ElevatedButton(
+                onPressed: () {
+                  // TODO: Implementasi logika keranjang
+                },
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: Colors.white,
+                  foregroundColor: const Color(0xFF2F4E3E),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(8),
+                    side: const BorderSide(color: Color(0xFF2F4E3E)),
+                  ),
+                  padding: const EdgeInsets.symmetric(vertical: 16),
+                ),
+                child: const Text(
+                  "+ Keranjang",
+                  style: TextStyle(fontSize: 16),
+                ),
+              ),
+            ),
+            const SizedBox(width: 12),
+            Expanded(
+              child: ElevatedButton(
+                onPressed: () {
+                  // TODO: Implementasi logika sewa
+                },
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: const Color(0xFF2F4E3E),
+                  foregroundColor: Colors.white,
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(8),
+                  ),
+                  padding: const EdgeInsets.symmetric(vertical: 16),
+                ),
+                child: const Text("Sewa", style: TextStyle(fontSize: 16)),
+              ),
+            ),
+          ],
+        ),
+      ),
+      floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
       body: SafeArea(
         child: ListView(
           padding: const EdgeInsets.symmetric(horizontal: 16),
@@ -293,17 +344,7 @@ class _ProductDetailPageState extends State<ProductDetailPage> {
                         .toList(),
               ),
             ),
-            const SizedBox(height: 20),
-            // Sewa Button
-            ElevatedButton(
-              style: ElevatedButton.styleFrom(
-                backgroundColor: Color(0xFF2F4E3E),
-                padding: const EdgeInsets.symmetric(vertical: 16),
-              ),
-              onPressed: () {},
-              child: const Text("Sewa", style: TextStyle(fontSize: 16)),
-            ),
-            const SizedBox(height: 16),
+            const SizedBox(height: 80),
           ],
         ),
       ),
