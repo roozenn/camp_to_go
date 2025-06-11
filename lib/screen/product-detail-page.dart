@@ -1,74 +1,24 @@
 import 'package:flutter/material.dart';
-import 'package:carousel_slider/carousel_slider.dart';
-import 'package:camp_to_go/screen/home-page.dart';
+import 'package:flutter_carousel_widget/flutter_carousel_widget.dart';
+import 'package:get/get.dart';
+import 'package:camp_to_go/controllers/product_detail_controller.dart';
+import 'package:camp_to_go/models/product_detail_model.dart';
+import 'package:intl/intl.dart';
+import 'package:camp_to_go/routes/routes.dart';
+import 'package:camp_to_go/bindings/product_detail_binding.dart';
 
-class ProductDetailPage extends StatefulWidget {
-  final Product product;
+class ProductDetailPage extends StatelessWidget {
+  final int productId;
 
-  const ProductDetailPage({super.key, required this.product});
-
-  @override
-  State<ProductDetailPage> createState() => _ProductDetailPageState();
-}
-
-class _ProductDetailPageState extends State<ProductDetailPage> {
-  final String selectedDateRange = '14 April - 16 April 2025';
-  int _currentPage = 0;
-
-  final List<String> productImages = [
-    'https://raw.githubusercontent.com/roozenn/camp_to_go/refs/heads/main/lib/image/tenda1.webp',
-    'https://raw.githubusercontent.com/roozenn/camp_to_go/refs/heads/main/lib/image/tenda1-detail1.webp',
-    'https://raw.githubusercontent.com/roozenn/camp_to_go/refs/heads/main/lib/image/tenda1-detail2.webp',
-    'https://raw.githubusercontent.com/roozenn/camp_to_go/refs/heads/main/lib/image/tenda1-detail3.webp',
-  ];
-
-  final List<String> reviewImages = [
-    'https://raw.githubusercontent.com/roozenn/camp_to_go/refs/heads/main/lib/image/tenda1-commenter1.webp',
-    'https://raw.githubusercontent.com/roozenn/camp_to_go/refs/heads/main/lib/image/tenda1-commenter2.webp',
-    'https://raw.githubusercontent.com/roozenn/camp_to_go/refs/heads/main/lib/image/tenda1-commenter3.webp',
-  ];
-
-  final List<Product> recommendedProducts = [
-    Product(
-      'Simond Rock 2.0 Hiking Boots',
-      'Rp90.000/hari',
-      'https://raw.githubusercontent.com/roozenn/camp_to_go/refs/heads/main/lib/image/sepatu2.webp',
-      'Rp130.000/hari',
-    ),
-    Product(
-      'Forclaz MT500 Hiking Boots',
-      'Rp85.000/hari',
-      'https://raw.githubusercontent.com/roozenn/camp_to_go/refs/heads/main/lib/image/sepatu1.webp',
-      'Rp120.000/hari',
-    ),
-    Product(
-      'NH Escape 500 23L',
-      'Rp45.000/hari',
-      'https://raw.githubusercontent.com/roozenn/camp_to_go/refs/heads/main/lib/image/tas1.webp',
-      'Rp70.000/hari',
-    ),
-    Product(
-      'Quechua Arpenaz 4.1',
-      'Rp120.000/hari',
-      'https://raw.githubusercontent.com/roozenn/camp_to_go/refs/heads/main/lib/image/tenda1.webp',
-      'Rp150.000/hari',
-    ),
-
-    Product(
-      'Quechua Air Fresh 500',
-      'Rp65.000/hari',
-      'https://raw.githubusercontent.com/roozenn/camp_to_go/refs/heads/main/lib/image/tenda2.webp',
-      'Rp90.000/hari',
-    ),
-  ];
-
-  @override
-  void dispose() {
-    super.dispose();
-  }
+  const ProductDetailPage({super.key, required this.productId});
 
   @override
   Widget build(BuildContext context) {
+    final controller = Get.find<ProductDetailController>();
+
+    // Load data saat halaman dibuka
+    controller.loadProductDetail(productId);
+
     return Scaffold(
       backgroundColor: Colors.white,
       appBar: AppBar(
@@ -76,16 +26,16 @@ class _ProductDetailPageState extends State<ProductDetailPage> {
         elevation: 0,
         leading: IconButton(
           icon: const Icon(Icons.arrow_back, color: Colors.black),
-          onPressed: () => Navigator.pop(context),
+          onPressed: () => Get.offAllNamed(Routes.HOME),
         ),
-        title: Text(
-          widget.product.name,
-          style: const TextStyle(
-            fontSize: 16,
-            fontWeight: FontWeight.w600,
-            color: Colors.black,
-          ),
-        ),
+        title: Obx(() => Text(
+              controller.state.product?.name ?? '',
+              style: const TextStyle(
+                fontSize: 16,
+                fontWeight: FontWeight.w600,
+                color: Colors.black,
+              ),
+            )),
         actions: const [
           Icon(Icons.search, color: Colors.black),
           SizedBox(width: 16),
@@ -139,283 +89,388 @@ class _ProductDetailPageState extends State<ProductDetailPage> {
         ),
       ),
       floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
-      body: SafeArea(
-        child: ListView(
-          padding: const EdgeInsets.symmetric(horizontal: 16),
-          children: [
-            const SizedBox(height: 8),
-            // Product Image Carousel
-            ClipRRect(
-              borderRadius: BorderRadius.circular(12),
-              child: CarouselSlider(
-                items:
-                    productImages.map((imageUrl) {
-                      return Container(
-                        width: double.infinity,
-                        decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(12),
-                          image: DecorationImage(
-                            fit: BoxFit.cover,
-                            image: NetworkImage(imageUrl),
-                          ),
-                        ),
-                      );
-                    }).toList(),
-                options: CarouselOptions(
-                  height: 350,
-                  viewportFraction: 1.0,
-                  enableInfiniteScroll: false,
-                  autoPlay: false,
-                  enlargeCenterPage: true,
-                  onPageChanged: (index, reason) {
-                    setState(() {
-                      _currentPage = index;
-                    });
-                  },
-                ),
-              ),
-            ),
-            const SizedBox(height: 8),
-            // Indikator
-            Row(
+      body: Obx(() {
+        if (controller.state.isLoading) {
+          return const Center(child: CircularProgressIndicator());
+        }
+
+        if (controller.state.error != null) {
+          return Center(
+            child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
-              children: List.generate(
-                productImages.length,
-                (index) => Container(
-                  margin: const EdgeInsets.symmetric(horizontal: 4),
-                  width: 8,
-                  height: 8,
-                  decoration: BoxDecoration(
-                    shape: BoxShape.circle,
-                    color:
-                        _currentPage == index
-                            ? Color(0xFF2F4E3E)
-                            : Colors.grey.shade300,
+              children: [
+                Text(controller.state.error ?? ''),
+                ElevatedButton(
+                  onPressed: () => controller.refreshData(productId),
+                  child: const Text('Coba Lagi'),
+                ),
+              ],
+            ),
+          );
+        }
+
+        final product = controller.state.product;
+        if (product == null) {
+          return const Center(child: Text('Produk tidak ditemukan'));
+        }
+
+        return SafeArea(
+          child: ListView(
+            padding: const EdgeInsets.symmetric(horizontal: 16),
+            children: [
+              const SizedBox(height: 8),
+              // Product Image Carousel
+              ClipRRect(
+                borderRadius: BorderRadius.circular(12),
+                child: FlutterCarousel(
+                  items: product.images.map((image) {
+                    return Container(
+                      width: double.infinity,
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(12),
+                        image: DecorationImage(
+                          fit: BoxFit.cover,
+                          image: NetworkImage(image.imageUrl),
+                        ),
+                      ),
+                    );
+                  }).toList(),
+                  options: CarouselOptions(
+                    height: 350,
+                    viewportFraction: 1.0,
+                    enableInfiniteScroll: false,
+                    autoPlay: false,
+                    enlargeCenterPage: true,
                   ),
                 ),
               ),
-            ),
-            const SizedBox(height: 16),
-            // Title
-            const Text(
-              "Forclaz Men's MT900 Symbium2",
-              style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
-            ),
-            // Rating
-            Row(
-              children: const [
-                Icon(Icons.star, color: Colors.amber, size: 20),
-                Icon(Icons.star, color: Colors.amber, size: 20),
-                Icon(Icons.star, color: Colors.amber, size: 20),
-                Icon(Icons.star, color: Colors.amber, size: 20),
-                Icon(Icons.star_half, color: Colors.amber, size: 20),
-              ],
-            ),
-            const SizedBox(height: 4),
-            const Text(
-              "Rp76.000/hari",
-              style: TextStyle(
-                fontSize: 18,
-                fontWeight: FontWeight.bold,
-                color: Color(0xFF2F4E3E),
+              const SizedBox(height: 16),
+              // Title
+              Text(
+                product.name,
+                style:
+                    const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
               ),
-            ),
-            const SizedBox(height: 2),
-            const Text("Deposit : Rp128.000"),
-            const SizedBox(height: 20),
-            // Date Picker (Placeholder)
-            const Text(
-              "Pilih Tanggal",
-              style: TextStyle(fontWeight: FontWeight.bold),
-            ),
-            const SizedBox(height: 8),
-            Container(
-              padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 14),
-              decoration: BoxDecoration(
-                border: Border.all(color: Colors.grey.shade400),
-                borderRadius: BorderRadius.circular(8),
-              ),
-              child: Row(
+              // Rating
+              Row(
                 children: [
-                  Expanded(child: Text(selectedDateRange)),
-                  Icon(Icons.calendar_today, size: 20),
+                  ...List.generate(5, (index) {
+                    if (index < product.rating.floor()) {
+                      return const Icon(Icons.star,
+                          color: Colors.amber, size: 20);
+                    } else if (index < product.rating.ceil()) {
+                      return const Icon(Icons.star_half,
+                          color: Colors.amber, size: 20);
+                    }
+                    return const Icon(Icons.star_border,
+                        color: Colors.amber, size: 20);
+                  }),
+                  const SizedBox(width: 8),
+                  Text("${product.rating} (${product.reviewCount} Ulasan)"),
                 ],
               ),
-            ),
-            const SizedBox(height: 30),
-            // Deskripsi
-            const Text(
-              "Deskripsi",
-              style: TextStyle(fontWeight: FontWeight.bold),
-            ),
-            const SizedBox(height: 8),
-            const Text(
-              "Tenda ini menggabungkan fabric anti air berkualitas tinggi dengan rangka inovatif yang ringan namun kokoh, menghasilkan kenyamanan optimal.",
-              style: TextStyle(color: Colors.black87),
-            ),
-            const SizedBox(height: 30),
-            // Ulasan
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: const [
-                Text("Ulasan", style: TextStyle(fontWeight: FontWeight.bold)),
-                Text(
-                  "Lihat Semua",
-                  style: TextStyle(
-                    fontWeight: FontWeight.bold,
-                    color: Color(0xFF2F4E3E),
+              const SizedBox(height: 4),
+              Text(
+                "Rp${product.pricePerDay.toStringAsFixed(0)}/hari",
+                style: const TextStyle(
+                  fontSize: 18,
+                  fontWeight: FontWeight.bold,
+                  color: Color(0xFF2F4E3E),
+                ),
+              ),
+              const SizedBox(height: 2),
+              Text("Deposit : Rp${product.depositAmount.toStringAsFixed(0)}"),
+              const SizedBox(height: 20),
+              // Date Picker (Placeholder)
+              const Text(
+                "Pilih Tanggal",
+                style: TextStyle(fontWeight: FontWeight.bold),
+              ),
+              const SizedBox(height: 8),
+              Container(
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 12, vertical: 14),
+                decoration: BoxDecoration(
+                  border: Border.all(color: Colors.grey.shade400),
+                  borderRadius: BorderRadius.circular(8),
+                ),
+                child: Row(
+                  children: [
+                    Expanded(child: Text("14 April - 16 April 2025")),
+                    Icon(Icons.calendar_today, size: 20),
+                  ],
+                ),
+              ),
+              const SizedBox(height: 30),
+              // Deskripsi
+              const Text(
+                "Deskripsi",
+                style: TextStyle(fontWeight: FontWeight.bold),
+              ),
+              const SizedBox(height: 8),
+              Text(
+                product.description,
+                style: const TextStyle(color: Colors.black87),
+              ),
+              const SizedBox(height: 30),
+              // Ulasan
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: const [
+                  Text("Ulasan", style: TextStyle(fontWeight: FontWeight.bold)),
+                  Text(
+                    "Lihat Semua",
+                    style: TextStyle(
+                      fontWeight: FontWeight.bold,
+                      color: Color(0xFF2F4E3E),
+                    ),
+                  ),
+                ],
+              ),
+              const SizedBox(height: 8),
+              Row(
+                children: [
+                  ...List.generate(5, (index) {
+                    if (index < product.rating.floor()) {
+                      return const Icon(Icons.star,
+                          color: Colors.amber, size: 18);
+                    } else if (index < product.rating.ceil()) {
+                      return const Icon(Icons.star_half,
+                          color: Colors.amber, size: 18);
+                    }
+                    return const Icon(Icons.star_border,
+                        color: Colors.amber, size: 18);
+                  }),
+                  const SizedBox(width: 8),
+                  Text("${product.rating} (${product.reviews.length} Ulasan)"),
+                ],
+              ),
+              const SizedBox(height: 12),
+              if (product.reviews.isNotEmpty)
+                ...product.reviews.map((review) => _buildReviewItem(review))
+              else
+                const Center(
+                  child: Padding(
+                    padding: EdgeInsets.all(16.0),
+                    child: Text('Memuat ulasan...'),
                   ),
                 ),
-              ],
-            ),
-            const SizedBox(height: 8),
-            Row(
-              children: const [
-                Icon(Icons.star, color: Colors.amber, size: 18),
-                Icon(Icons.star, color: Colors.amber, size: 18),
-                Icon(Icons.star, color: Colors.amber, size: 18),
-                Icon(Icons.star, color: Colors.amber, size: 18),
-                Icon(Icons.star_half, color: Colors.amber, size: 18),
-                SizedBox(width: 8),
-                Text("4.5 (5 Ulasan)"),
-              ],
-            ),
+              const SizedBox(height: 30),
+              const Text(
+                "Rekomendasi Untuk Kamu",
+                style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
+              ),
+              const SizedBox(height: 8),
+              if (controller.state.recommendedProducts.isNotEmpty)
+                SizedBox(
+                  height: 240,
+                  child: ListView(
+                    scrollDirection: Axis.horizontal,
+                    shrinkWrap: true,
+                    physics: const AlwaysScrollableScrollPhysics(),
+                    children: controller.state.recommendedProducts
+                        .map((product) => _buildRecommendationCard(product))
+                        .toList(),
+                  ),
+                )
+              else
+                const Center(
+                  child: Padding(
+                    padding: EdgeInsets.all(16.0),
+                    child: Text('Tidak ada produk rekomendasi saat ini'),
+                  ),
+                ),
+              const SizedBox(height: 80),
+            ],
+          ),
+        );
+      }),
+    );
+  }
+
+  Widget _buildReviewItem(ProductReviewModel review) {
+    print(
+        'Building review item: ${review.userName} - ${review.comment}'); // Debug print
+    return Container(
+      margin: const EdgeInsets.only(bottom: 16),
+      padding: const EdgeInsets.all(16),
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(8),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withOpacity(0.05),
+            blurRadius: 4,
+            offset: const Offset(0, 2),
+          ),
+        ],
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Row(
+            children: [
+              CircleAvatar(
+                radius: 20,
+                backgroundImage: review.userProfilePicture.isNotEmpty
+                    ? NetworkImage(review.userProfilePicture)
+                    : null,
+                child: review.userProfilePicture.isEmpty
+                    ? const Icon(Icons.person)
+                    : null,
+              ),
+              const SizedBox(width: 12),
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      review.userName,
+                      style: const TextStyle(
+                        fontWeight: FontWeight.bold,
+                        fontSize: 16,
+                      ),
+                    ),
+                    const SizedBox(height: 4),
+                    Row(
+                      children: [
+                        ...List.generate(5, (index) {
+                          if (index < review.rating) {
+                            return const Icon(Icons.star,
+                                color: Colors.amber, size: 16);
+                          }
+                          return const Icon(Icons.star_border,
+                              color: Colors.amber, size: 16);
+                        }),
+                        const SizedBox(width: 8),
+                        Text(
+                          DateFormat('dd MMM yyyy').format(review.createdAt),
+                          style: const TextStyle(
+                            color: Colors.grey,
+                            fontSize: 12,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ],
+                ),
+              ),
+            ],
+          ),
+          if (review.comment.isNotEmpty) ...[
             const SizedBox(height: 12),
-            Row(
-              children: [
-                CircleAvatar(
-                  radius: 20,
-                  backgroundImage: NetworkImage(
-                    'https://raw.githubusercontent.com/roozenn/camp_to_go/refs/heads/main/lib/image/commenter.png',
-                  ),
-                ),
-                const SizedBox(width: 12),
-                const Text(
-                  "Aditya Nugraha",
-                  style: TextStyle(fontWeight: FontWeight.bold),
-                ),
-              ],
+            Text(
+              review.comment,
+              style: const TextStyle(fontSize: 14),
             ),
-            const SizedBox(height: 8),
-            const Text(
-              "Tenda ini sangat nyaman digunakan, bersih, dan benar-benar sempurna dalam segala hal. Hanya saja, tas penyimpanannya terlalu kecil sehingga membuat tenda sedikit terlipat. Saya tidak yakin apakah tasnya bisa kuat terlipat lama.",
-            ),
-            const SizedBox(height: 8),
+          ],
+          if (review.images.isNotEmpty) ...[
+            const SizedBox(height: 12),
             SizedBox(
               height: 80,
-              child: ListView(
+              child: ListView.builder(
                 scrollDirection: Axis.horizontal,
-                children:
-                    reviewImages
-                        .map(
-                          (imageUrl) => Container(
-                            margin: const EdgeInsets.only(right: 8),
-                            child: ClipRRect(
-                              borderRadius: BorderRadius.circular(8),
-                              child: Image.network(
-                                imageUrl,
-                                width: 60,
-                                height: 60,
-                                fit: BoxFit.cover,
-                              ),
-                            ),
-                          ),
-                        )
-                        .toList(),
+                itemCount: review.images.length,
+                itemBuilder: (context, index) {
+                  return Container(
+                    margin: const EdgeInsets.only(right: 8),
+                    width: 80,
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(8),
+                      image: DecorationImage(
+                        image: NetworkImage(review.images[index]),
+                        fit: BoxFit.cover,
+                      ),
+                    ),
+                  );
+                },
               ),
             ),
-            const SizedBox(height: 4),
-            const Text("December 10, 2024"),
-            const SizedBox(height: 30),
-            const Text(
-              "Rekomendasi Untuk Kamu",
-              style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
-            ),
-            const SizedBox(height: 8),
-            SizedBox(
-              height: 240,
-              child: ListView(
-                scrollDirection: Axis.horizontal,
-                shrinkWrap: true,
-                physics: const AlwaysScrollableScrollPhysics(),
-                children:
-                    recommendedProducts
-                        .map((product) => recommendationCard(product))
-                        .toList(),
-              ),
-            ),
-            const SizedBox(height: 80),
           ],
-        ),
+        ],
       ),
     );
   }
 
-  Widget recommendationCard(Product product) {
+  Widget _buildRecommendationCard(ProductDetailModel product) {
     return Container(
       width: 150,
       margin: const EdgeInsets.only(right: 8),
-      child: Card(
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Padding(
-              padding: const EdgeInsets.all(12),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Image.network(
-                    product.imageUrl,
-                    height: 100,
-                    width: 116,
-                    fit: BoxFit.fill,
-                  ),
-                  const SizedBox(height: 10),
-                  Text(
-                    product.name,
-                    maxLines: 2,
-                    overflow: TextOverflow.ellipsis,
-                    style: const TextStyle(
-                      fontWeight: FontWeight.bold,
-                      fontSize: 15,
+      child: InkWell(
+        onTap: () {
+          print('Tapped product with ID: ${product.id}');
+          if (Get.isRegistered<ProductDetailController>()) {
+            Get.delete<ProductDetailController>();
+          }
+          Get.toNamed(
+            Routes.PRODUCT_DETAIL,
+            arguments: {'productId': product.id},
+            preventDuplicates: false,
+          );
+        },
+        child: Card(
+          shape:
+              RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Padding(
+                padding: const EdgeInsets.all(12),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Image.network(
+                      product.images.first.imageUrl,
+                      height: 100,
+                      width: 116,
+                      fit: BoxFit.fill,
                     ),
-                  ),
-                  const SizedBox(height: 10),
-                  Text(
-                    product.price,
-                    style: const TextStyle(
-                      color: Color(0xFF2F4E3E),
-                      fontSize: 14,
-                      fontWeight: FontWeight.bold,
+                    const SizedBox(height: 10),
+                    Text(
+                      product.name,
+                      maxLines: 2,
+                      overflow: TextOverflow.ellipsis,
+                      style: const TextStyle(
+                        fontWeight: FontWeight.bold,
+                        fontSize: 15,
+                      ),
                     ),
-                  ),
-                  const SizedBox(height: 2),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Text(
-                        product.originalPrice,
-                        style: const TextStyle(
-                          decoration: TextDecoration.lineThrough,
-                          fontSize: 12,
-                          color: Colors.grey,
-                        ),
+                    const SizedBox(height: 10),
+                    Text(
+                      "Rp${product.pricePerDay.toStringAsFixed(0)}/hari",
+                      style: const TextStyle(
+                        color: Color(0xFF2F4E3E),
+                        fontSize: 14,
+                        fontWeight: FontWeight.bold,
                       ),
-                      const Text(
-                        '24%',
-                        style: TextStyle(
-                          fontSize: 12,
-                          fontWeight: FontWeight.bold,
-                          color: Colors.red,
+                    ),
+                    const SizedBox(height: 2),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Text(
+                          "Rp${product.originalPrice.toStringAsFixed(0)}/hari",
+                          style: const TextStyle(
+                            decoration: TextDecoration.lineThrough,
+                            fontSize: 12,
+                            color: Colors.grey,
+                          ),
                         ),
-                      ),
-                    ],
-                  ),
-                ],
+                        Text(
+                          '${product.discountPercentage}%',
+                          style: const TextStyle(
+                            fontSize: 12,
+                            fontWeight: FontWeight.bold,
+                            color: Colors.red,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ],
+                ),
               ),
-            ),
-          ],
+            ],
+          ),
         ),
       ),
     );

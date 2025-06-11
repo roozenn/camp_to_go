@@ -3,7 +3,7 @@
  * 
  * 1. Import Statements
  *    - flutter/material.dart
- *    - carousel_slider/carousel_slider.dart
+ *    - flutter_carousel_widget/flutter_carousel_widget.dart
  *    - camp_to_go/screen/my-home.dart
  * 
  * 2. Class Utama
@@ -58,39 +58,30 @@
 
 import 'package:camp_to_go/main.dart';
 import 'package:flutter/material.dart';
-import 'package:carousel_slider/carousel_slider.dart';
+import 'package:flutter_carousel_widget/flutter_carousel_widget.dart';
 import 'package:camp_to_go/screen/cart-page-gpt.dart';
 import 'package:camp_to_go/screen/transaction-page.dart';
 import 'package:camp_to_go/screen/akun-page.dart';
 import 'package:camp_to_go/screen/product-detail-page.dart';
+import 'package:camp_to_go/services/api_service.dart';
+import 'package:camp_to_go/models/banner_model.dart';
+import 'package:camp_to_go/models/category_model.dart';
+import 'package:camp_to_go/models/product_model.dart';
+import 'package:get/get.dart';
+import 'package:camp_to_go/controllers/home_controller.dart';
+import 'package:camp_to_go/routes/routes.dart';
 
-class HomePage extends StatefulWidget {
+class HomePage extends StatelessWidget {
   const HomePage({super.key});
 
   @override
-  State<HomePage> createState() => _HomePageState();
-}
-
-class _HomePageState extends State<HomePage> {
-  int _selectedIndex = 0;
-
-  final List<Widget> _pages = [
-    const HomeContent(),
-    const CartPage(),
-    TransaksiPage(),
-    const AkunPage(),
-  ];
-
-  void _onItemTapped(int index) {
-    setState(() {
-      _selectedIndex = index;
-    });
-  }
-
-  @override
   Widget build(BuildContext context) {
+    final controller = Get.find<HomeController>();
+
     return Scaffold(
-      body: _pages[_selectedIndex],
+      body: Obx(() => controller.state.value?.isLoading == true
+          ? const Center(child: CircularProgressIndicator())
+          : controller.pages[controller.selectedIndex.value]),
       bottomNavigationBar: Container(
         decoration: BoxDecoration(
           boxShadow: [
@@ -102,31 +93,31 @@ class _HomePageState extends State<HomePage> {
             ),
           ],
         ),
-        child: BottomNavigationBar(
-          currentIndex: _selectedIndex,
-          onTap: _onItemTapped,
-          selectedItemColor: const Color(0xFF2F4E3E),
-          unselectedItemColor: Colors.grey,
-          type: BottomNavigationBarType.fixed,
-          items: const [
-            BottomNavigationBarItem(
-              icon: Icon(Icons.home_outlined),
-              label: 'Beranda',
-            ),
-            BottomNavigationBarItem(
-              icon: Icon(Icons.shopping_cart),
-              label: 'Keranjang',
-            ),
-            BottomNavigationBarItem(
-              icon: Icon(Icons.receipt_long),
-              label: 'Transaksi',
-            ),
-            BottomNavigationBarItem(
-              icon: Icon(Icons.person_outline),
-              label: 'Akun',
-            ),
-          ],
-        ),
+        child: Obx(() => BottomNavigationBar(
+              currentIndex: controller.selectedIndex.value,
+              onTap: controller.changeIndex,
+              selectedItemColor: const Color(0xFF2F4E3E),
+              unselectedItemColor: Colors.grey,
+              type: BottomNavigationBarType.fixed,
+              items: const [
+                BottomNavigationBarItem(
+                  icon: Icon(Icons.home_outlined),
+                  label: 'Beranda',
+                ),
+                BottomNavigationBarItem(
+                  icon: Icon(Icons.shopping_cart),
+                  label: 'Keranjang',
+                ),
+                BottomNavigationBarItem(
+                  icon: Icon(Icons.receipt_long),
+                  label: 'Transaksi',
+                ),
+                BottomNavigationBarItem(
+                  icon: Icon(Icons.person_outline),
+                  label: 'Akun',
+                ),
+              ],
+            )),
       ),
     );
   }
@@ -137,49 +128,20 @@ class HomeContent extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final controller = Get.find<HomeController>();
+
     return SafeArea(
       child: CustomScrollView(
         slivers: [
           SliverToBoxAdapter(child: _buildHeader()),
           SliverToBoxAdapter(child: _buildLocationSelector()),
-          SliverToBoxAdapter(child: _buildPromoCarousel()),
+          SliverToBoxAdapter(child: _buildPromoCarousel(controller)),
           SliverToBoxAdapter(child: _buildCategoryMenu()),
           SliverToBoxAdapter(
-            child: _buildProductSection(
-              title: 'Ramah Pemula',
-              products: [
-                Product(
-                  'Quechua Arpenaz 4.1',
-                  'Rp120.000/hari',
-                  'https://raw.githubusercontent.com/roozenn/camp_to_go/refs/heads/main/lib/image/tenda1.webp',
-                  'Rp150.000/hari',
-                ),
-                Product(
-                  'Forclaz MT500 Hiking Boots',
-                  'Rp85.000/hari',
-                  'https://raw.githubusercontent.com/roozenn/camp_to_go/refs/heads/main/lib/image/sepatu1.webp',
-                  'Rp120.000/hari',
-                ),
-                Product(
-                  'Quechua Air Fresh 500',
-                  'Rp65.000/hari',
-                  'https://raw.githubusercontent.com/roozenn/camp_to_go/refs/heads/main/lib/image/tenda2.webp',
-                  'Rp90.000/hari',
-                ),
-                Product(
-                  'Simond Rock 2.0 Hiking Boots',
-                  'Rp90.000/hari',
-                  'https://raw.githubusercontent.com/roozenn/camp_to_go/refs/heads/main/lib/image/sepatu2.webp',
-                  'Rp130.000/hari',
-                ),
-                Product(
-                  'NH Escape 500 23L',
-                  'Rp45.000/hari',
-                  'https://raw.githubusercontent.com/roozenn/camp_to_go/refs/heads/main/lib/image/tas1.webp',
-                  'Rp70.000/hari',
-                ),
-              ],
-            ),
+            child: Obx(() => _buildProductSection(
+                  title: 'Ramah Pemula',
+                  products: controller.state.value?.beginnerProducts ?? [],
+                )),
           ),
           SliverToBoxAdapter(child: _buildPopularBanner()),
           SliverToBoxAdapter(
@@ -188,79 +150,34 @@ class HomeContent extends StatelessWidget {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  GridView.builder(
-                    shrinkWrap: true,
-                    physics: const NeverScrollableScrollPhysics(),
-                    gridDelegate:
-                        const SliverGridDelegateWithFixedCrossAxisCount(
+                  Obx(() => GridView.builder(
+                        shrinkWrap: true,
+                        physics: const NeverScrollableScrollPhysics(),
+                        gridDelegate:
+                            const SliverGridDelegateWithFixedCrossAxisCount(
                           crossAxisCount: 2,
                           childAspectRatio: 0.625,
                           crossAxisSpacing: 10,
                           mainAxisSpacing: 10,
                         ),
-                    itemCount: 6,
-                    itemBuilder: (context, index) {
-                      final products = [
-                        {
-                          'imageUrl':
-                              'https://raw.githubusercontent.com/roozenn/camp_to_go/refs/heads/main/lib/image/tenda3.webp',
-                          'productName': 'Quechua 2 Second Easy Tent',
-                          'currentPrice': 'Rp150.000/hari',
-                          'originalPrice': 'Rp200.000/hari',
-                          'discount': '25%',
+                        itemCount:
+                            controller.state.value?.popularProducts.length ?? 0,
+                        itemBuilder: (context, index) {
+                          final product =
+                              controller.state.value?.popularProducts[index];
+                          return _buildProductCard(
+                            imageUrl: product?.imageUrl ?? '',
+                            productName: product?.name ?? '',
+                            currentPrice:
+                                'Rp${product?.pricePerDay.toStringAsFixed(0) ?? ''}/hari',
+                            originalPrice:
+                                'Rp${product?.originalPrice.toStringAsFixed(0) ?? ''}/hari',
+                            discount: '${product?.discountPercentage ?? ''}%',
+                            context: context,
+                            productId: product?.id ?? 0,
+                          );
                         },
-                        {
-                          'imageUrl':
-                              'https://raw.githubusercontent.com/roozenn/camp_to_go/refs/heads/main/lib/image/sepatu3.webp',
-                          'productName': 'Forclaz Trek 900',
-                          'currentPrice': 'Rp95.000/hari',
-                          'originalPrice': 'Rp120.000/hari',
-                          'discount': '21%',
-                        },
-                        {
-                          'imageUrl':
-                              'https://raw.githubusercontent.com/roozenn/camp_to_go/refs/heads/main/lib/image/kompor1.webp',
-                          'productName': 'Quechua Camping Stove',
-                          'currentPrice': 'Rp55.000/hari',
-                          'originalPrice': 'Rp75.000/hari',
-                          'discount': '27%',
-                        },
-                        {
-                          'imageUrl':
-                              'https://raw.githubusercontent.com/roozenn/camp_to_go/refs/heads/main/lib/image/kasur1.webp',
-                          'productName': 'NH Comfort 500 Sleeping Bag',
-                          'currentPrice': 'Rp70.000/hari',
-                          'originalPrice': 'Rp90.000/hari',
-                          'discount': '22%',
-                        },
-                        {
-                          'imageUrl':
-                              'https://raw.githubusercontent.com/roozenn/camp_to_go/refs/heads/main/lib/image/kompor2.webp',
-                          'productName': 'Eiger Stove Lipat',
-                          'currentPrice': 'Rp20.000/hari',
-                          'originalPrice': 'Rp40.000/hari',
-                          'discount': '22%',
-                        },
-                        {
-                          'imageUrl':
-                              'https://raw.githubusercontent.com/roozenn/camp_to_go/refs/heads/main/lib/image/kasur2.webp',
-                          'productName': 'The East 700 Sleeping Bag',
-                          'currentPrice': 'Rp100.000/hari',
-                          'originalPrice': 'Rp120.000/hari',
-                          'discount': '22%',
-                        },
-                      ];
-
-                      return _buildProductCard(
-                        imageUrl: products[index]['imageUrl']!,
-                        productName: products[index]['productName']!,
-                        currentPrice: products[index]['currentPrice']!,
-                        originalPrice: products[index]['originalPrice']!,
-                        discount: products[index]['discount']!,
-                        context: context,
-                      );
-                    },
-                  ),
+                      )),
                 ],
               ),
             ),
@@ -293,18 +210,17 @@ class HomeContent extends StatelessWidget {
           const SizedBox(width: 10),
           Icon(Icons.notifications_none),
           const SizedBox(width: 10),
-          Builder(
-            builder:
-                (context) => GestureDetector(
-                  onTap: () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(builder: (context) => const MyHome()),
-                    );
-                  },
-                  child: const Icon(Icons.headset_mic_outlined),
-                ),
-          ),
+          // Builder(
+          //   builder: (context) => GestureDetector(
+          //     onTap: () {
+          //       Navigator.push(
+          //         context,
+          //         MaterialPageRoute(builder: (context) => const MyHome()),
+          //       );
+          //     },
+          //     child: const Icon(Icons.headset_mic_outlined),
+          //   ),
+          // ),
         ],
       ),
     );
@@ -322,89 +238,67 @@ class HomeContent extends StatelessWidget {
     );
   }
 
-  Widget _buildPromoCarousel() {
-    final List<Map<String, dynamic>> promos = [
-      {
-        'title': 'Paket Camping Hemat',
-        'discount': 'Diskon 30%',
-        'image':
-            'https://raw.githubusercontent.com/roozenn/camp_to_go/refs/heads/main/lib/image/promo-pakethemat.webp',
-      },
-      {
-        'title': 'Sewa 3 Hari Gratis 1',
-        'discount': 'Promo Spesial',
-        'image':
-            'https://raw.githubusercontent.com/roozenn/camp_to_go/refs/heads/main/lib/image/promo-3plus1.webp',
-      },
-      {
-        'title': 'Paket Keluarga',
-        'discount': 'Diskon 25%',
-        'image':
-            'https://raw.githubusercontent.com/roozenn/camp_to_go/refs/heads/main/lib/image/promo-paketkeluarga.webp',
-      },
-      {
-        'title': 'Weekend Special',
-        'discount': 'Diskon 40%',
-        'image':
-            'https://raw.githubusercontent.com/roozenn/camp_to_go/refs/heads/main/lib/image/promo-weekend.webp',
-      },
-    ];
+  Widget _buildPromoCarousel(HomeController controller) {
+    return Obx(() {
+      if (controller.state.value?.banners.isEmpty == true) {
+        return const SizedBox.shrink();
+      }
 
-    return Padding(
-      padding: const EdgeInsets.only(top: 16, bottom: 16),
-      child: CarouselSlider(
-        options: CarouselOptions(
-          height: 160,
-          autoPlay: true,
-          enlargeCenterPage: true,
-        ),
-        items:
-            promos.map((promo) {
-              return Stack(
-                children: [
-                  Container(
-                    width: double.infinity,
-                    decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(12),
-                      image: DecorationImage(
-                        fit: BoxFit.cover,
-                        image: NetworkImage(promo['image']),
+      return Padding(
+        padding: const EdgeInsets.only(top: 16, bottom: 16),
+        child: FlutterCarousel(
+          options: CarouselOptions(
+            height: 160,
+            autoPlay: true,
+            enlargeCenterPage: true,
+          ),
+          items: (controller.state.value?.banners ?? []).map((banner) {
+            return Stack(
+              children: [
+                Container(
+                  width: double.infinity,
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(12),
+                    image: DecorationImage(
+                      fit: BoxFit.cover,
+                      image: NetworkImage(banner.imageUrl),
+                    ),
+                  ),
+                ),
+                Positioned(
+                  left: 18,
+                  top: 16,
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        banner.title,
+                        style: const TextStyle(
+                          color: Colors.white,
+                          fontWeight: FontWeight.bold,
+                          fontSize: 22,
+                        ),
                       ),
-                    ),
-                  ),
-                  Positioned(
-                    left: 18,
-                    top: 16,
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(
-                          promo['title'],
-                          style: const TextStyle(
-                            color: Colors.white,
-                            fontWeight: FontWeight.bold,
-                            fontSize: 22,
-                          ),
+                      Text(
+                        banner.description,
+                        style: const TextStyle(
+                          color: Colors.white,
+                          fontSize: 18,
                         ),
-                        Text(
-                          promo['discount'],
-                          style: const TextStyle(
-                            color: Colors.white,
-                            fontSize: 18,
-                          ),
-                        ),
-                      ],
-                    ),
+                      ),
+                    ],
                   ),
-                ],
-              );
-            }).toList(),
-      ),
-    );
+                ),
+              ],
+            );
+          }).toList(),
+        ),
+      );
+    });
   }
 
   Widget _buildCategoryMenu() {
-    final categories = [
+    final List<Map<String, dynamic>> categories = [
       {'icon': Icons.terrain, 'label': 'Tenda'},
       {'icon': Icons.backpack, 'label': 'Tas'},
       {'icon': Icons.bed, 'label': 'Tidur'},
@@ -433,35 +327,32 @@ class HomeContent extends StatelessWidget {
           padding: const EdgeInsets.symmetric(horizontal: 16),
           child: Row(
             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-            children:
-                categories.map((cat) {
-                  return Column(
-                    children: [
-                      Container(
-                        decoration: BoxDecoration(
-                          shape: BoxShape.circle,
-                          border: Border.all(
-                            color: Color(0xFF2F4E3E),
-                            width: 1,
-                          ),
-                        ),
-                        child: CircleAvatar(
-                          radius: 26,
-                          backgroundColor: Colors.white,
-                          child: Icon(
-                            cat['icon'] as IconData,
-                            color: Color(0xFF2F4E3E),
-                          ),
-                        ),
+            children: categories.map((category) {
+              return Column(
+                children: [
+                  Container(
+                    decoration: BoxDecoration(
+                      shape: BoxShape.circle,
+                      border: Border.all(
+                        color: Color(0xFF2F4E3E),
+                        width: 1,
                       ),
-                      const SizedBox(height: 6),
-                      Text(
-                        cat['label'] as String,
-                        style: const TextStyle(fontSize: 12),
+                    ),
+                    child: CircleAvatar(
+                      radius: 26,
+                      backgroundColor: Colors.white,
+                      child: Icon(
+                        category['icon'],
+                        color: Color(0xFF2F4E3E),
+                        size: 32,
                       ),
-                    ],
-                  );
-                }).toList(),
+                    ),
+                  ),
+                  const SizedBox(height: 6),
+                  Text(category['label'], style: const TextStyle(fontSize: 12)),
+                ],
+              );
+            }).toList(),
           ),
         ),
       ],
@@ -470,8 +361,10 @@ class HomeContent extends StatelessWidget {
 
   Widget _buildProductSection({
     required String title,
-    required List<Product> products,
+    required List<ProductModel> products,
   }) {
+    if (products.isEmpty) return const SizedBox.shrink();
+
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -507,12 +400,10 @@ class HomeContent extends StatelessWidget {
                   ),
                   child: InkWell(
                     onTap: () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder:
-                              (context) => ProductDetailPage(product: product),
-                        ),
+                      print('Product ID: ${product.id}');
+                      Get.toNamed(
+                        Routes.PRODUCT_DETAIL,
+                        arguments: {'productId': product.id},
                       );
                     },
                     child: Column(
@@ -541,7 +432,7 @@ class HomeContent extends StatelessWidget {
                               ),
                               const SizedBox(height: 10),
                               Text(
-                                product.price,
+                                'Rp${product.pricePerDay.toStringAsFixed(0)}/hari',
                                 style: const TextStyle(
                                   color: Color(0xFF2F4E3E),
                                   fontSize: 14,
@@ -554,16 +445,16 @@ class HomeContent extends StatelessWidget {
                                     MainAxisAlignment.spaceBetween,
                                 children: [
                                   Text(
-                                    product.originalPrice,
+                                    'Rp${product.originalPrice.toStringAsFixed(0)}/hari',
                                     style: const TextStyle(
                                       decoration: TextDecoration.lineThrough,
                                       fontSize: 12,
                                       color: Colors.grey,
                                     ),
                                   ),
-                                  const Text(
-                                    '24%',
-                                    style: TextStyle(
+                                  Text(
+                                    '${product.discountPercentage}%',
+                                    style: const TextStyle(
                                       fontSize: 12,
                                       fontWeight: FontWeight.bold,
                                       color: Colors.red,
@@ -632,24 +523,16 @@ class HomeContent extends StatelessWidget {
     required String originalPrice,
     required String discount,
     required BuildContext context,
+    required int productId,
   }) {
     return Card(
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
       child: InkWell(
         onTap: () {
-          Navigator.push(
-            context,
-            MaterialPageRoute(
-              builder:
-                  (context) => ProductDetailPage(
-                    product: Product(
-                      productName,
-                      currentPrice,
-                      imageUrl,
-                      originalPrice,
-                    ),
-                  ),
-            ),
+          print('Product ID from card: $productId');
+          Get.toNamed(
+            Routes.PRODUCT_DETAIL,
+            arguments: {'productId': productId},
           );
         },
         child: Column(

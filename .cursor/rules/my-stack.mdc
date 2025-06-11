@@ -1,0 +1,10 @@
+---
+description: 
+globs: 
+alwaysApply: true
+---
+#this project thecnical stack
+
+-fastAPI
+
+-SQL Lite

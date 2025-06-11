@@ -1,0 +1,2 @@
+url fast api dasar saya = http://127.0.0.1:8000
+state management yang ingin di pakai = getX

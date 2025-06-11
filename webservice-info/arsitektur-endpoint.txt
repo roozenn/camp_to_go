@@ -1,0 +1,927 @@
+Arsitektur endpoint
+
+# ===============================
+# 1. AUTHENTICATION ENDPOINTS
+# ===============================
+
+# POST /auth/register
+# Registrasi pengguna baru
+{
+    "endpoint": "/auth/register",
+    "method": "POST",
+    "description": "Register new user",
+    "request_body": {
+        "full_name": "string",
+        "email": "string",
+        "password": "string",
+        "confirm_password": "string"
+    },
+    "response": {
+        "success": "boolean",
+        "message": "string",
+        "data": {
+            "user_id": "integer",
+            "email": "string",
+            "full_name": "string"
+        }
+    }
+}
+
+# POST /auth/login
+# Login pengguna
+{
+    "endpoint": "/auth/login",
+    "method": "POST",
+    "description": "User login",
+    "request_body": {
+        "email": "string",
+        "password": "string"
+    },
+    "response": {
+        "success": "boolean",
+        "message": "string",
+        "data": {
+            "access_token": "string",
+            "token_type": "bearer",
+            "expires_in": "integer",
+            "user": {
+                "id": "integer",
+                "email": "string",
+                "full_name": "string",
+                "profile_picture": "string"
+            }
+        }
+    }
+}
+
+# POST /auth/refresh
+# Refresh access token
+{
+    "endpoint": "/auth/refresh",
+    "method": "POST",
+    "description": "Refresh access token",
+    "headers": {"Authorization": "Bearer <token>"},
+    "response": {
+        "access_token": "string",
+        "expires_in": "integer"
+    }
+}
+
+# POST /auth/logout
+# Logout pengguna
+{
+    "endpoint": "/auth/logout",
+    "method": "POST",
+    "description": "User logout",
+    "headers": {"Authorization": "Bearer <token>"},
+    "response": {
+        "success": "boolean",
+        "message": "string"
+    }
+}
+
+# ===============================
+# 2. HOME/BERANDA ENDPOINTS
+# ===============================
+
+# GET /home/banners
+# Mendapatkan banner carousel
+{
+    "endpoint": "/home/banners",
+    "method": "GET",
+    "description": "Get carousel banners",
+    "response": {
+        "success": "boolean",
+        "data": [
+            {
+                "id": "integer",
+                "title": "string",
+                "description": "string",
+                "image_url": "string",
+                "link_url": "string"
+            }
+        ]
+    }
+}
+
+# GET /home/categories
+# Mendapatkan kategori produk
+{
+    "endpoint": "/home/categories",
+    "method": "GET",
+    "description": "Get product categories",
+    "response": {
+        "success": "boolean",
+        "data": [
+            {
+                "id": "integer",
+                "name": "string",
+                "description": "string",
+                "icon_url": "string"
+            }
+        ]
+    }
+}
+
+# GET /home/recommendations/beginner
+# Produk rekomendasi untuk pemula
+{
+    "endpoint": "/home/recommendations/beginner",
+    "method": "GET",
+    "description": "Get beginner-friendly products",
+    "query_params": {
+        "limit": "integer (default: 10)"
+    },
+    "response": {
+        "success": "boolean",
+        "data": [
+            {
+                "id": "integer",
+                "name": "string",
+                "price_per_day": "decimal",
+                "original_price": "decimal",
+                "discount_percentage": "integer",
+                "rating": "decimal",
+                "review_count": "integer",
+                "image_url": "string",
+                "is_favorited": "boolean"
+            }
+        ]
+    }
+}
+
+# GET /home/recommendations/popular
+# Produk paling populer
+{
+    "endpoint": "/home/recommendations/popular",
+    "method": "GET",
+    "description": "Get most popular products",
+    "query_params": {
+        "limit": "integer (default: 10)"
+    },
+    "response": {
+        "success": "boolean",
+        "data": [
+            {
+                "id": "integer",
+                "name": "string",
+                "price_per_day": "decimal",
+                "original_price": "decimal",
+                "discount_percentage": "integer",
+                "rating": "decimal",
+                "review_count": "integer",
+                "image_url": "string",
+                "is_favorited": "boolean"
+            }
+        ]
+    }
+}
+
+# ===============================
+# 3. PRODUCT ENDPOINTS
+# ===============================
+
+# GET /products
+# Mendapatkan daftar produk dengan filter
+{
+    "endpoint": "/products",
+    "method": "GET",
+    "description": "Get products with filters",
+    "query_params": {
+        "category_id": "integer (optional)",
+        "search": "string (optional)",
+        "min_price": "decimal (optional)",
+        "max_price": "decimal (optional)",
+        "sort_by": "string (price_asc, price_desc, rating, popular)",
+        "page": "integer (default: 1)",
+        "limit": "integer (default: 20)"
+    },
+    "response": {
+        "success": "boolean",
+        "data": {
+            "products": [
+                {
+                    "id": "integer",
+                    "name": "string",
+                    "price_per_day": "decimal",
+                    "original_price": "decimal",
+                    "discount_percentage": "integer",
+                    "rating": "decimal",
+                    "review_count": "integer",
+                    "image_url": "string",
+                    "is_favorited": "boolean"
+                }
+            ],
+            "pagination": {
+                "current_page": "integer",
+                "total_pages": "integer",
+                "total_items": "integer",
+                "has_next": "boolean",
+                "has_prev": "boolean"
+            }
+        }
+    }
+}
+
+# GET /products/{product_id}
+# Detail produk
+{
+    "endpoint": "/products/{product_id}",
+    "method": "GET",
+    "description": "Get product details",
+    "response": {
+        "success": "boolean",
+        "data": {
+            "id": "integer",
+            "name": "string",
+            "description": "string",
+            "price_per_day": "decimal",
+            "original_price": "decimal",
+            "discount_percentage": "integer",
+            "deposit_amount": "decimal",
+            "rating": "decimal",
+            "review_count": "integer",
+            "stock_quantity": "integer",
+            "category": {
+                "id": "integer",
+                "name": "string"
+            },
+            "images": [
+                {
+                    "id": "integer",
+                    "image_url": "string",
+                    "is_primary": "boolean"
+                }
+            ],
+            "is_favorited": "boolean"
+        }
+    }
+}
+
+# GET /products/{product_id}/reviews
+# Ulasan produk
+{
+    "endpoint": "/products/{product_id}/reviews",
+    "method": "GET",
+    "description": "Get product reviews",
+    "query_params": {
+        "page": "integer (default: 1)",
+        "limit": "integer (default: 10)"
+    },
+    "response": {
+        "success": "boolean",
+        "data": {
+            "reviews": [
+                {
+                    "id": "integer",
+                    "user": {
+                        "name": "string",
+                        "profile_picture": "string"
+                    },
+                    "rating": "integer",
+                    "comment": "string",
+                    "images": ["string"],
+                    "created_at": "datetime"
+                }
+            ],
+            "summary": {
+                "average_rating": "decimal",
+                "total_reviews": "integer",
+                "rating_distribution": {
+                    "5": "integer",
+                    "4": "integer",
+                    "3": "integer",
+                    "2": "integer",
+                    "1": "integer"
+                }
+            }
+        }
+    }
+}
+
+# GET /products/{product_id}/similar
+# Produk serupa
+{
+    "endpoint": "/products/{product_id}/similar",
+    "method": "GET",
+    "description": "Get similar products",
+    "query_params": {
+        "limit": "integer (default: 10)"
+    },
+    "response": {
+        "success": "boolean",
+        "data": [
+            {
+                "id": "integer",
+                "name": "string",
+                "price_per_day": "decimal",
+                "original_price": "decimal",
+                "discount_percentage": "integer",
+                "rating": "decimal",
+                "review_count": "integer",
+                "image_url": "string",
+                "is_favorited": "boolean"
+            }
+        ]
+    }
+}
+
+# ===============================
+# 4. SEARCH ENDPOINTS
+# ===============================
+
+# GET /search
+# Pencarian produk
+{
+    "endpoint": "/search",
+    "method": "GET",
+    "description": "Search products",
+    "query_params": {
+        "q": "string (required)",
+        "category_id": "integer (optional)",
+        "page": "integer (default: 1)",
+        "limit": "integer (default: 20)"
+    },
+    "response": {
+        "success": "boolean",
+        "data": {
+            "query": "string",
+            "total_results": "integer",
+            "products": [
+                {
+                    "id": "integer",
+                    "name": "string",
+                    "price_per_day": "decimal",
+                    "original_price": "decimal",
+                    "discount_percentage": "integer",
+                    "rating": "decimal",
+                    "review_count": "integer",
+                    "image_url": "string",
+                    "is_favorited": "boolean"
+                }
+            ]
+        }
+    }
+}
+
+# GET /search/suggestions
+# Saran pencarian
+{
+    "endpoint": "/search/suggestions",
+    "method": "GET",
+    "description": "Get search suggestions",
+    "query_params": {
+        "q": "string (required)"
+    },
+    "response": {
+        "success": "boolean",
+        "data": {
+            "suggestions": ["string"]
+        }
+    }
+}
+
+# ===============================
+# 5. FAVORITES ENDPOINTS
+# ===============================
+
+# GET /favorites
+# Daftar produk favorit
+{
+    "endpoint": "/favorites",
+    "method": "GET",
+    "description": "Get user favorites",
+    "headers": {"Authorization": "Bearer <token>"},
+    "response": {
+        "success": "boolean",
+        "data": [
+            {
+                "id": "integer",
+                "name": "string",
+                "price_per_day": "decimal",
+                "original_price": "decimal",
+                "discount_percentage": "integer",
+                "rating": "decimal",
+                "review_count": "integer",
+                "image_url": "string",
+                "added_at": "datetime"
+            }
+        ]
+    }
+}
+
+# POST /favorites/{product_id}
+# Tambah ke favorit
+{
+    "endpoint": "/favorites/{product_id}",
+    "method": "POST",
+    "description": "Add to favorites",
+    "headers": {"Authorization": "Bearer <token>"},
+    "response": {
+        "success": "boolean",
+        "message": "string"
+    }
+}
+
+# DELETE /favorites/{product_id}
+# Hapus dari favorit
+{
+    "endpoint": "/favorites/{product_id}",
+    "method": "DELETE",
+    "description": "Remove from favorites",
+    "headers": {"Authorization": "Bearer <token>"},
+    "response": {
+        "success": "boolean",
+        "message": "string"
+    }
+}
+
+# ===============================
+# 6. CART ENDPOINTS
+# ===============================
+
+# GET /cart
+# Daftar keranjang
+{
+    "endpoint": "/cart",
+    "method": "GET",
+    "description": "Get cart items",
+    "headers": {"Authorization": "Bearer <token>"},
+    "response": {
+        "success": "boolean",
+        "data": {
+            "items": [
+                {
+                    "id": "integer",
+                    "product": {
+                        "id": "integer",
+                        "name": "string",
+                        "image_url": "string",
+                        "price_per_day": "decimal",
+                        "deposit_amount": "decimal"
+                    },
+                    "start_date": "date",
+                    "end_date": "date",
+                    "days_count": "integer",
+                    "quantity": "integer",
+                    "subtotal": "decimal",
+                    "deposit_subtotal": "decimal"
+                }
+            ],
+            "summary": {
+                "total_rental": "decimal",
+                "total_deposit": "decimal",
+                "total_amount": "decimal"
+            }
+        }
+    }
+}
+
+# POST /cart
+# Tambah ke keranjang
+{
+    "endpoint": "/cart",
+    "method": "POST",
+    "description": "Add to cart",
+    "headers": {"Authorization": "Bearer <token>"},
+    "request_body": {
+        "product_id": "integer",
+        "start_date": "date",
+        "end_date": "date",
+        "quantity": "integer"
+    },
+    "response": {
+        "success": "boolean",
+        "message": "string"
+    }
+}
+
+# PUT /cart/{cart_id}
+# Update item keranjang
+{
+    "endpoint": "/cart/{cart_id}",
+    "method": "PUT",
+    "description": "Update cart item",
+    "headers": {"Authorization": "Bearer <token>"},
+    "request_body": {
+        "start_date": "date",
+        "end_date": "date",
+        "quantity": "integer"
+    },
+    "response": {
+        "success": "boolean",
+        "message": "string"
+    }
+}
+
+# DELETE /cart/{cart_id}
+# Hapus dari keranjang
+{
+    "endpoint": "/cart/{cart_id}",
+    "method": "DELETE",
+    "description": "Remove from cart",
+    "headers": {"Authorization": "Bearer <token>"},
+    "response": {
+        "success": "boolean",
+        "message": "string"
+    }
+}
+
+# POST /cart/validate-coupon
+# Validasi kupon
+{
+    "endpoint": "/cart/validate-coupon",
+    "method": "POST",
+    "description": "Validate coupon code",
+    "headers": {"Authorization": "Bearer <token>"},
+    "request_body": {
+        "coupon_code": "string"
+    },
+    "response": {
+        "success": "boolean",
+        "data": {
+            "valid": "boolean",
+            "discount_amount": "decimal",
+            "message": "string"
+        }
+    }
+}
+
+# ===============================
+# 7. ADDRESS ENDPOINTS
+# ===============================
+
+# GET /addresses
+# Daftar alamat pengguna
+{
+    "endpoint": "/addresses",
+    "method": "GET",
+    "description": "Get user addresses",
+    "headers": {"Authorization": "Bearer <token>"},
+    "response": {
+        "success": "boolean",
+        "data": [
+            {
+                "id": "integer",
+                "recipient_name": "string",
+                "full_address": "string",
+                "phone_number": "string",
+                "is_default": "boolean"
+            }
+        ]
+    }
+}
+
+# POST /addresses
+# Tambah alamat baru
+{
+    "endpoint": "/addresses",
+    "method": "POST",
+    "description": "Add new address",
+    "headers": {"Authorization": "Bearer <token>"},
+    "request_body": {
+        "recipient_name": "string",
+        "full_address": "string",
+        "phone_number": "string",
+        "is_default": "boolean"
+    },
+    "response": {
+        "success": "boolean",
+        "message": "string",
+        "data": {
+            "id": "integer"
+        }
+    }
+}
+
+# PUT /addresses/{address_id}
+# Update alamat
+{
+    "endpoint": "/addresses/{address_id}",
+    "method": "PUT",
+    "description": "Update address",
+    "headers": {"Authorization": "Bearer <token>"},
+    "request_body": {
+        "recipient_name": "string",
+        "full_address": "string",
+        "phone_number": "string",
+        "is_default": "boolean"
+    },
+    "response": {
+        "success": "boolean",
+        "message": "string"
+    }
+}
+
+# DELETE /addresses/{address_id}
+# Hapus alamat
+{
+    "endpoint": "/addresses/{address_id}",
+    "method": "DELETE",
+    "description": "Delete address",
+    "headers": {"Authorization": "Bearer <token>"},
+    "response": {
+        "success": "boolean",
+        "message": "string"
+    }
+}
+
+# ===============================
+# 8. PAYMENT METHODS ENDPOINTS
+# ===============================
+
+# GET /payment-methods
+# Daftar metode pembayaran
+{
+    "endpoint": "/payment-methods",
+    "method": "GET",
+    "description": "Get payment methods",
+    "headers": {"Authorization": "Bearer <token>"},
+    "response": {
+        "success": "boolean",
+        "data": [
+            {
+                "id": "integer",
+                "method_type": "string",
+                "provider_name": "string",
+                "account_number": "string",
+                "account_name": "string",
+                "is_default": "boolean"
+            }
+        ]
+    }
+}
+
+# POST /payment-methods
+# Tambah metode pembayaran
+{
+    "endpoint": "/payment-methods",
+    "method": "POST",
+    "description": "Add payment method",
+    "headers": {"Authorization": "Bearer <token>"},
+    "request_body": {
+        "method_type": "string",
+        "provider_name": "string",
+        "account_number": "string",
+        "account_name": "string",
+        "is_default": "boolean"
+    },
+    "response": {
+        "success": "boolean",
+        "message": "string"
+    }
+}
+
+# ===============================
+# 9. ORDER ENDPOINTS
+# ===============================
+
+# POST /orders
+# Buat pesanan baru
+{
+    "endpoint": "/orders",
+    "method": "POST",
+    "description": "Create new order",
+    "headers": {"Authorization": "Bearer <token>"},
+    "request_body": {
+        "address_id": "integer",
+        "payment_method_id": "integer",
+        "coupon_code": "string (optional)",
+        "notes": "string (optional)"
+    },
+    "response": {
+        "success": "boolean",
+        "message": "string",
+        "data": {
+            "order_id": "integer",
+            "order_number": "string",
+            "total_amount": "decimal"
+        }
+    }
+}
+
+# GET /orders
+# Daftar pesanan pengguna
+{
+    "endpoint": "/orders",
+    "method": "GET",
+    "description": "Get user orders",
+    "headers": {"Authorization": "Bearer <token>"},
+    "query_params": {
+        "status": "string (optional)",
+        "page": "integer (default: 1)",
+        "limit": "integer (default: 10)"
+    },
+    "response": {
+        "success": "boolean",
+        "data": {
+            "orders": [
+                {
+                    "id": "integer",
+                    "order_number": "string",
+                    "status": "string",
+                    "total_amount": "decimal",
+                    "item_count": "integer",
+                    "created_at": "datetime",
+                    "shipping_date": "date",
+                    "return_date": "date"
+                }
+            ]
+        }
+    }
+}
+
+# GET /orders/{order_id}
+# Detail pesanan
+{
+    "endpoint": "/orders/{order_id}",
+    "method": "GET",
+    "description": "Get order details",
+    "headers": {"Authorization": "Bearer <token>"},
+    "response": {
+        "success": "boolean",
+        "data": {
+            "id": "integer",
+            "order_number": "string",
+            "status": "string",
+            "items": [
+                {
+                    "product": {
+                        "id": "integer",
+                        "name": "string",
+                        "image_url": "string"
+                    },
+                    "quantity": "integer",
+                    "start_date": "date",
+                    "end_date": "date",
+                    "subtotal": "decimal",
+                    "deposit_subtotal": "decimal"
+                }
+            ],
+            "address": {
+                "recipient_name": "string",
+                "full_address": "string",
+                "phone_number": "string"
+            },
+            "payment_summary": {
+                "subtotal": "decimal",
+                "deposit_total": "decimal",
+                "discount_amount": "decimal",
+                "total_amount": "decimal"
+            },
+            "timeline": [
+                {
+                    "status": "string",
+                    "description": "string",
+                    "created_at": "datetime"
+                }
+            ]
+        }
+    }
+}
+
+# POST /orders/{order_id}/return
+# Konfirmasi pengembalian barang
+{
+    "endpoint": "/orders/{order_id}/return",
+    "method": "POST",
+    "description": "Confirm item return",
+    "headers": {"Authorization": "Bearer <token>"},
+    "response": {
+        "success": "boolean",
+        "message": "string"
+    }
+}
+
+# ===============================
+# 10. REVIEW ENDPOINTS
+# ===============================
+
+# POST /reviews
+# Tambah ulasan
+{
+    "endpoint": "/reviews",
+    "method": "POST",
+    "description": "Add product review",
+    "headers": {"Authorization": "Bearer <token>"},
+    "request_body": {
+        "product_id": "integer",
+        "order_id": "integer",
+        "rating": "integer",
+        "comment": "string",
+        "images": ["string"]
+    },
+    "response": {
+        "success": "boolean",
+        "message": "string"
+    }
+}
+
+# ===============================
+# 11. USER PROFILE ENDPOINTS
+# ===============================
+
+# GET /profile
+# Profil pengguna
+{
+    "endpoint": "/profile",
+    "method": "GET",
+    "description": "Get user profile",
+    "headers": {"Authorization": "Bearer <token>"},
+    "response": {
+        "success": "boolean",
+        "data": {
+            "id": "integer",
+            "full_name": "string",
+            "email": "string",
+            "username": "string",
+            "gender": "string",
+            "date_of_birth": "date",
+            "phone_number": "string",
+            "profile_picture": "string"
+        }
+    }
+}
+
+# PUT /profile
+# Update profil
+{
+    "endpoint": "/profile",
+    "method": "PUT",
+    "description": "Update user profile",
+    "headers": {"Authorization": "Bearer <token>"},
+    "request_body": {
+        "full_name": "string",
+        "username": "string",
+        "gender": "string",
+        "date_of_birth": "date",
+        "phone_number": "string"
+    },
+    "response": {
+        "success": "boolean",
+        "message": "string"
+    }
+}
+
+# POST /profile/upload-photo
+# Upload foto profil
+{
+    "endpoint": "/profile/upload-photo",
+    "method": "POST",
+    "description": "Upload profile picture",
+    "headers": {"Authorization": "Bearer <token>"},
+    "request_body": {
+        "file": "multipart/form-data"
+    },
+    "response": {
+        "success": "boolean",
+        "message": "string",
+        "data": {
+            "profile_picture": "string"
+        }
+    }
+}
+
+# PUT /profile/change-password
+# Ubah kata sandi
+{
+    "endpoint": "/profile/change-password",
+    "method": "PUT",
+    "description": "Change password",
+    "headers": {"Authorization": "Bearer <token>"},
+    "request_body": {
+        "current_password": "string",
+        "new_password": "string",
+        "confirm_password": "string"
+    },
+    "response": {
+        "success": "boolean",
+        "message": "string"
+    }
+}
+
+# ===============================
+# ERROR RESPONSES
+# ===============================
+
+"""
+Standard Error Response Format:
+{
+    "success": false,
+    "error": {
+        "code": "string",
+        "message": "string",
+        "detail": "string (optional)"
+    }
+}
+
+Common HTTP Status Codes:
+- 200: OK
+- 201: Created
+- 400: Bad Request
+- 401: Unauthorized
+- 403: Forbidden
+- 404: Not Found
+- 422: Validation Error
+- 500: Internal Server Error
+"""
