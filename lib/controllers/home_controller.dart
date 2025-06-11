@@ -35,7 +35,7 @@ class HomeController extends GetxController {
       const HomeContent(),
       CartPage(),
       TransaksiPage(),
-      const AkunPage(),
+      AkunPage(),
     ];
     loadData();
   }

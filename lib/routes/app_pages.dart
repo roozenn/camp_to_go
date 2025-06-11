@@ -33,7 +33,7 @@ class AppPages {
     ),
     GetPage(
       name: Routes.ACCOUNT,
-      page: () => const AkunPage(),
+      page: () => AkunPage(),
     ),
     GetPage(
       name: Routes.PRODUCT_DETAIL,

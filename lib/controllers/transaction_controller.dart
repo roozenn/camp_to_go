@@ -3,6 +3,7 @@ import 'package:get/get.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 import '../models/transaction_model.dart';
+import '../services/token_service.dart';
 
 class TransactionController extends GetxController {
   final String baseUrl = 'http://127.0.0.1:8000';
@@ -10,6 +11,7 @@ class TransactionController extends GetxController {
   var isLoading = false.obs;
   var error = ''.obs;
   late AuthController authController;
+  final TokenService _tokenService = Get.find<TokenService>();
 
   @override
   void onInit() {
@@ -23,16 +25,17 @@ class TransactionController extends GetxController {
       isLoading.value = true;
       error.value = '';
 
-      if (authController.token.isEmpty) {
+      // Tunggu token dimuat
+      await authController.loadToken();
+
+      if (!_tokenService.isLoggedIn) {
         error.value = 'Anda belum login';
         return;
       }
 
       final response = await http.get(
         Uri.parse('$baseUrl/orders'),
-        headers: {
-          'Authorization': 'Bearer ${authController.token}',
-        },
+        headers: _tokenService.getAuthHeader(),
       );
 
       if (response.statusCode == 200) {
@@ -108,9 +111,6 @@ class TransactionController extends GetxController {
   }
 
   String formatCurrency(double amount) {
-    return 'Rp${amount.toStringAsFixed(0).replaceAllMapped(
-          RegExp(r'(\d)(?=(\d{3})+(?!\d))'),
-          (Match m) => '${m[1]}.',
-        )}';
+    return 'Rp ${amount.toStringAsFixed(0)}';
   }
 }

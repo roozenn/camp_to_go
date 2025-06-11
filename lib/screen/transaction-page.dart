@@ -2,10 +2,21 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import '../controllers/transaction_controller.dart';
 
-class TransaksiPage extends StatelessWidget {
+class TransaksiPage extends StatefulWidget {
+  const TransaksiPage({super.key});
+
+  @override
+  State<TransaksiPage> createState() => _TransaksiPageState();
+}
+
+class _TransaksiPageState extends State<TransaksiPage> {
   final TransactionController controller = Get.put(TransactionController());
 
-  TransaksiPage({super.key});
+  @override
+  void initState() {
+    super.initState();
+    controller.fetchTransactions();
+  }
 
   @override
   Widget build(BuildContext context) {
