@@ -3,8 +3,7 @@ description:
 globs: 
 alwaysApply: true
 ---
-#this project thecnical stack
+#this project technical stack
 
--fastAPI
-
--SQL Lite
+-flutter
+-GetX

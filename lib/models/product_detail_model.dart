@@ -39,57 +39,6 @@ class ProductDetailModel {
     // Handle nested data structure
     final data = json['data'] as Map<String, dynamic>? ?? json;
 
-    // Parse reviews
-    List<ProductReviewModel> reviews = [];
-    if (json['reviews'] != null) {
-      print('Found reviews data: ${json['reviews']}'); // Debug print
-      try {
-        if (json['reviews'] is Map && json['reviews']['reviews'] != null) {
-          // Handle new format where reviews are nested under 'reviews' key
-          reviews = (json['reviews']['reviews'] as List<dynamic>).map((review) {
-            final user = review['user'] as Map<String, dynamic>;
-            return ProductReviewModel(
-              id: review['id'] as int? ?? 0,
-              userName: user['name'] as String? ?? 'Anonymous',
-              userProfilePicture: user['profile_picture'] as String? ?? '',
-              rating: review['rating'] as int? ?? 0,
-              comment: review['comment'] as String? ?? '',
-              images: (review['images'] as List<dynamic>?)
-                      ?.map((e) => e.toString())
-                      .toList() ??
-                  [],
-              createdAt:
-                  DateTime.tryParse(review['created_at'] as String? ?? '') ??
-                      DateTime.now(),
-            );
-          }).toList();
-          print(
-              'Successfully parsed ${reviews.length} reviews from new format'); // Debug print
-        } else {
-          // Handle old format where reviews are directly in the list
-          reviews = (json['reviews'] as List<dynamic>)
-              .map(
-                  (e) => ProductReviewModel.fromJson(e as Map<String, dynamic>))
-              .toList();
-          print(
-              'Successfully parsed ${reviews.length} reviews from old format'); // Debug print
-        }
-      } catch (e) {
-        print('Error parsing reviews: $e');
-      }
-    } else {
-      print('No reviews data found in response'); // Debug print
-    }
-
-    // Calculate average rating from reviews
-    double averageRating = 0.0;
-    if (reviews.isNotEmpty) {
-      averageRating =
-          reviews.map((r) => r.rating).reduce((a, b) => a + b) / reviews.length;
-      // Round to 1 decimal place without rounding up
-      averageRating = double.parse(averageRating.toStringAsFixed(1));
-    }
-
     return ProductDetailModel(
       id: data['id'] as int? ?? 0,
       name: data['name'] as String? ?? '',
@@ -98,8 +47,8 @@ class ProductDetailModel {
       originalPrice: (data['original_price'] as num?)?.toDouble() ?? 0.0,
       discountPercentage: (data['discount_percentage'] as num?)?.toInt() ?? 0,
       depositAmount: (data['deposit_amount'] as num?)?.toDouble() ?? 0.0,
-      rating: averageRating, // Use calculated average rating
-      reviewCount: reviews.length, // Use actual review count
+      rating: (data['rating'] as num?)?.toDouble() ?? 0.0,
+      reviewCount: (data['review_count'] as num?)?.toInt() ?? 0,
       stockQuantity: (data['stock_quantity'] as num?)?.toInt() ?? 0,
       category: data['category'] != null
           ? CategoryModel.fromJson(data['category'] as Map<String, dynamic>)
@@ -109,7 +58,7 @@ class ProductDetailModel {
                   (e) => ProductImageModel.fromJson(e as Map<String, dynamic>))
               .toList() ??
           [],
-      reviews: reviews,
+      reviews: [], // Reviews will be populated separately
       isFavorited: data['is_favorited'] as bool? ?? false,
     );
   }
@@ -155,14 +104,19 @@ class ProductReviewModel {
   });
 
   factory ProductReviewModel.fromJson(Map<String, dynamic> json) {
+    final user = json['user'] as Map<String, dynamic>? ?? {};
     return ProductReviewModel(
-      id: json['id'],
-      userName: json['user_name'],
-      userProfilePicture: json['user_profile_picture'],
-      rating: json['rating'],
-      comment: json['comment'],
-      images: List<String>.from(json['images']),
-      createdAt: DateTime.parse(json['created_at']),
+      id: json['id'] as int? ?? 0,
+      userName: user['name'] as String? ?? 'Anonymous',
+      userProfilePicture: user['profile_picture'] as String? ?? '',
+      rating: json['rating'] as int? ?? 0,
+      comment: json['comment'] as String? ?? '',
+      images: (json['images'] as List<dynamic>?)
+              ?.map((e) => e.toString())
+              .toList() ??
+          [],
+      createdAt: DateTime.tryParse(json['created_at'] as String? ?? '') ??
+          DateTime.now(),
     );
   }
 }

@@ -6,6 +6,7 @@ import 'services/token_service.dart';
 import 'services/api_service.dart';
 import 'services/cart_service.dart';
 import 'controllers/cart_controller.dart';
+import 'theme-colors.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -31,10 +32,7 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return GetMaterialApp(
       title: 'CAMPtoGo',
-      theme: ThemeData(
-        primarySwatch: Colors.green,
-        visualDensity: VisualDensity.adaptivePlatformDensity,
-      ),
+      theme: buildLightTheme(),
       initialRoute: AppPages.INITIAL,
       getPages: AppPages.routes,
       debugShowCheckedModeBanner: false, // Menghilangkan banner debug

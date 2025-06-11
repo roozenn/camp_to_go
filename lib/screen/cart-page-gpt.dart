@@ -2,26 +2,39 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import '../controllers/cart_controller.dart';
 import '../models/cart_model.dart';
+import '../theme-colors.dart';
 
-class CartPage extends StatelessWidget {
+class CartPage extends StatefulWidget {
+  const CartPage({super.key});
+
+  @override
+  State<CartPage> createState() => _CartPageState();
+}
+
+class _CartPageState extends State<CartPage> {
   final CartController cartController = Get.find<CartController>();
 
-  CartPage({super.key});
+  @override
+  void initState() {
+    super.initState();
+    cartController.getCart();
+  }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: Colors.white,
+        backgroundColor: CAMPtoGoColors.white,
         surfaceTintColor: Colors.transparent,
         elevation: 0,
-        title: const Text(
+        title: Text(
           'Keranjang',
-          style: TextStyle(color: Colors.black, fontWeight: FontWeight.w600),
+          style: TextStyle(
+              color: CAMPtoGoColors.black, fontWeight: FontWeight.w600),
         ),
         actions: [
           IconButton(
-            icon: const Icon(Icons.headset_mic_outlined, color: Colors.black),
+            icon: Icon(Icons.headset_mic_outlined, color: CAMPtoGoColors.black),
             onPressed: () {},
             padding: const EdgeInsets.only(right: 20),
           ),
@@ -37,14 +50,17 @@ class CartPage extends StatelessWidget {
             child: Text(
               'Terjadi kesalahan: ${cartController.error}',
               textAlign: TextAlign.center,
-              style: const TextStyle(color: Colors.red),
+              style: TextStyle(color: CAMPtoGoColors.error),
             ),
           );
         }
 
         if (cartController.cartItems.isEmpty) {
-          return const Center(
-            child: Text('Keranjang kosong'),
+          return Center(
+            child: Text(
+              'Keranjang kosong',
+              style: TextStyle(color: CAMPtoGoColors.darkGrey),
+            ),
           );
         }
 
@@ -59,9 +75,10 @@ class CartPage extends StatelessWidget {
                         padding: const EdgeInsets.only(bottom: 12),
                         child: CartItemCard(
                           itemName: item.product.name,
-                          price:
-                              'Rp ${cartController.formatCurrency(item.subtotal)}',
+                          price: cartController.formatCurrency(item.subtotal),
                           imageUrl: item.product.imageUrl,
+                          startDate: item.startDate,
+                          endDate: item.endDate,
                           onDelete: () =>
                               cartController.removeFromCart(item.id),
                         ),
@@ -86,7 +103,7 @@ class CartPage extends StatelessWidget {
                       const SizedBox(width: 12),
                       ElevatedButton(
                         style: ElevatedButton.styleFrom(
-                          backgroundColor: const Color(0xFF2F4E3E),
+                          backgroundColor: CAMPtoGoColors.primaryGreen,
                           padding: const EdgeInsets.symmetric(
                             horizontal: 24,
                             vertical: 16,
@@ -104,9 +121,9 @@ class CartPage extends StatelessWidget {
                   Container(
                     padding: const EdgeInsets.all(16),
                     decoration: BoxDecoration(
-                      color: const Color(0xFFF9FAFB),
+                      color: CAMPtoGoColors.lightGrey,
                       borderRadius: BorderRadius.circular(12),
-                      border: Border.all(color: Colors.grey.shade200),
+                      border: Border.all(color: CAMPtoGoColors.mediumGrey),
                     ),
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
@@ -114,20 +131,23 @@ class CartPage extends StatelessWidget {
                         CostRow(
                           label:
                               'Biaya Sewa Barang (${cartController.cartItems.length})',
-                          value:
-                              'Rp ${cartController.formatCurrency(cartController.cartSummary.value?.totalRental ?? 0)}',
+                          value: cartController.formatCurrency(
+                              cartController.cartSummary.value?.totalRental ??
+                                  0),
                         ),
                         const SizedBox(height: 8),
                         CostRow(
                           label: 'Deposit (${cartController.cartItems.length})',
-                          value:
-                              'Rp ${cartController.formatCurrency(cartController.cartSummary.value?.totalDeposit ?? 0)}',
+                          value: cartController.formatCurrency(
+                              cartController.cartSummary.value?.totalDeposit ??
+                                  0),
                         ),
                         const Divider(height: 24),
                         CostRow(
                           label: 'Total Biaya',
-                          value:
-                              'Rp ${cartController.formatCurrency(cartController.cartSummary.value?.totalAmount ?? 0)}',
+                          value: cartController.formatCurrency(
+                              cartController.cartSummary.value?.totalAmount ??
+                                  0),
                           isBold: true,
                         ),
                       ],
@@ -142,7 +162,7 @@ class CartPage extends StatelessWidget {
                 width: double.infinity,
                 child: ElevatedButton(
                   style: ElevatedButton.styleFrom(
-                    backgroundColor: const Color(0xFF2F4E3E),
+                    backgroundColor: CAMPtoGoColors.primaryGreen,
                     padding: const EdgeInsets.symmetric(vertical: 16),
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(8),
@@ -164,6 +184,8 @@ class CartItemCard extends StatelessWidget {
   final String itemName;
   final String price;
   final String imageUrl;
+  final String startDate;
+  final String endDate;
   final VoidCallback onDelete;
 
   const CartItemCard({
@@ -171,6 +193,8 @@ class CartItemCard extends StatelessWidget {
     required this.itemName,
     required this.price,
     required this.imageUrl,
+    required this.startDate,
+    required this.endDate,
     required this.onDelete,
   });
 
@@ -179,7 +203,7 @@ class CartItemCard extends StatelessWidget {
     return Container(
       padding: const EdgeInsets.all(12),
       decoration: BoxDecoration(
-        border: Border.all(color: Colors.grey.shade200),
+        border: Border.all(color: CAMPtoGoColors.mediumGrey),
         borderRadius: BorderRadius.circular(12),
       ),
       child: Row(
@@ -203,15 +227,16 @@ class CartItemCard extends StatelessWidget {
                   style: const TextStyle(fontWeight: FontWeight.w600),
                 ),
                 const SizedBox(height: 4),
-                const Text(
-                  '24 Apr - 25 Apr 2025',
-                  style: TextStyle(color: Colors.grey, fontSize: 12),
+                Text(
+                  '$startDate - $endDate',
+                  style:
+                      TextStyle(color: CAMPtoGoColors.darkGrey, fontSize: 12),
                 ),
                 const SizedBox(height: 4),
                 Text(
                   price,
-                  style: const TextStyle(
-                    color: Colors.black,
+                  style: TextStyle(
+                    color: CAMPtoGoColors.black,
                     fontWeight: FontWeight.w600,
                   ),
                 ),
@@ -222,11 +247,12 @@ class CartItemCard extends StatelessWidget {
             children: [
               IconButton(
                 onPressed: () {},
-                icon: const Icon(Icons.favorite_border),
+                icon: Icon(Icons.favorite_border,
+                    color: CAMPtoGoColors.primaryGreen),
               ),
               IconButton(
                 onPressed: onDelete,
-                icon: const Icon(Icons.delete_outline),
+                icon: Icon(Icons.delete_outline, color: CAMPtoGoColors.error),
               ),
             ],
           ),
@@ -251,8 +277,8 @@ class CostRow extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final textStyle = isBold
-        ? const TextStyle(fontWeight: FontWeight.bold)
-        : const TextStyle();
+        ? TextStyle(fontWeight: FontWeight.bold, color: CAMPtoGoColors.black)
+        : TextStyle(color: CAMPtoGoColors.darkGrey);
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [Text(label, style: textStyle), Text(value, style: textStyle)],

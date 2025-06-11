@@ -1,18 +1,25 @@
 import 'package:get/get.dart';
 import 'package:camp_to_go/models/product_detail_model.dart';
 import 'package:camp_to_go/services/api_service.dart';
+import 'package:camp_to_go/services/product_service.dart';
+import 'package:camp_to_go/services/cart_service.dart';
+import 'package:flutter/material.dart';
 
 class ProductDetailState {
   final bool isLoading;
   final String? error;
   final ProductDetailModel? product;
   final List<ProductDetailModel> recommendedProducts;
+  final DateTime? selectedStartDate;
+  final DateTime? selectedEndDate;
 
   ProductDetailState({
     this.isLoading = false,
     this.error,
     this.product,
     this.recommendedProducts = const [],
+    this.selectedStartDate,
+    this.selectedEndDate,
   });
 
   ProductDetailState copyWith({
@@ -20,21 +27,29 @@ class ProductDetailState {
     String? error,
     ProductDetailModel? product,
     List<ProductDetailModel>? recommendedProducts,
+    DateTime? selectedStartDate,
+    DateTime? selectedEndDate,
   }) {
     return ProductDetailState(
       isLoading: isLoading ?? this.isLoading,
       error: error,
       product: product ?? this.product,
       recommendedProducts: recommendedProducts ?? this.recommendedProducts,
+      selectedStartDate: selectedStartDate ?? this.selectedStartDate,
+      selectedEndDate: selectedEndDate ?? this.selectedEndDate,
     );
   }
 }
 
 class ProductDetailController extends GetxController {
-  final _state = Rx<ProductDetailState>(ProductDetailState());
+  final ProductService _productService = Get.find<ProductService>();
+  final CartService _cartService = Get.find<CartService>();
+
+  final _state = ProductDetailState().obs;
   ProductDetailState get state => _state.value;
 
   final ApiService _apiService = Get.find<ApiService>();
+
   final Rx<ProductDetailModel?> product = Rx<ProductDetailModel?>(null);
   final RxList<ProductDetailModel> recommendedProducts =
       <ProductDetailModel>[].obs;
@@ -43,18 +58,9 @@ class ProductDetailController extends GetxController {
   final RxString errorMessage = ''.obs;
 
   Future<void> loadProductDetail(int productId) async {
-    if (productId <= 0) {
-      _state.value = _state.value.copyWith(
-        isLoading: false,
-        error: 'ID produk tidak valid',
-      );
-      return;
-    }
-
     _state.value = _state.value.copyWith(isLoading: true, error: null);
-
     try {
-      final product = await _apiService.getProductDetail(productId);
+      final product = await _productService.getProductDetail(productId);
       _state.value = _state.value.copyWith(
         isLoading: false,
         product: product,
@@ -73,13 +79,63 @@ class ProductDetailController extends GetxController {
     } catch (e) {
       _state.value = _state.value.copyWith(
         isLoading: false,
-        error: 'Gagal memuat data produk: ${e.toString()}',
+        error: e.toString(),
       );
     }
   }
 
-  Future<void> refreshData(int productId) async {
-    await loadProductDetail(productId);
+  void updateSelectedDates(DateTime startDate, DateTime endDate) {
+    _state.value = _state.value.copyWith(
+      selectedStartDate: startDate,
+      selectedEndDate: endDate,
+    );
+  }
+
+  Future<void> addToCart({
+    required DateTime startDate,
+    required DateTime endDate,
+    required int quantity,
+  }) async {
+    if (state.product == null) return;
+
+    try {
+      final success = await _cartService.addToCart(
+        productId: state.product!.id,
+        startDate: startDate,
+        endDate: endDate,
+        quantity: quantity,
+      );
+
+      if (success) {
+        Get.snackbar(
+          'Berhasil',
+          'Produk berhasil ditambahkan ke keranjang',
+          snackPosition: SnackPosition.BOTTOM,
+          backgroundColor: Colors.green,
+          colorText: Colors.white,
+        );
+      } else {
+        Get.snackbar(
+          'Gagal',
+          'Gagal menambahkan produk ke keranjang',
+          snackPosition: SnackPosition.BOTTOM,
+          backgroundColor: Colors.red,
+          colorText: Colors.white,
+        );
+      }
+    } catch (e) {
+      Get.snackbar(
+        'Error',
+        'Terjadi kesalahan saat menambahkan ke keranjang',
+        snackPosition: SnackPosition.BOTTOM,
+        backgroundColor: Colors.red,
+        colorText: Colors.white,
+      );
+    }
+  }
+
+  void refreshData(int productId) {
+    loadProductDetail(productId);
   }
 
   Future<void> fetchProductDetail(int productId) async {

@@ -51,7 +51,23 @@ class ProductDetailPage extends StatelessWidget {
             Expanded(
               child: ElevatedButton(
                 onPressed: () {
-                  // TODO: Implementasi logika keranjang
+                  if (controller.state.selectedStartDate == null ||
+                      controller.state.selectedEndDate == null) {
+                    Get.snackbar(
+                      'Peringatan',
+                      'Silakan pilih tanggal sewa terlebih dahulu',
+                      snackPosition: SnackPosition.BOTTOM,
+                      backgroundColor: Colors.orange,
+                      colorText: Colors.white,
+                    );
+                    return;
+                  }
+
+                  controller.addToCart(
+                    startDate: controller.state.selectedStartDate!,
+                    endDate: controller.state.selectedEndDate!,
+                    quantity: 1,
+                  );
                 },
                 style: ElevatedButton.styleFrom(
                   backgroundColor: Colors.white,
@@ -72,6 +88,17 @@ class ProductDetailPage extends StatelessWidget {
             Expanded(
               child: ElevatedButton(
                 onPressed: () {
+                  if (controller.state.selectedStartDate == null ||
+                      controller.state.selectedEndDate == null) {
+                    Get.snackbar(
+                      'Peringatan',
+                      'Silakan pilih tanggal sewa terlebih dahulu',
+                      snackPosition: SnackPosition.BOTTOM,
+                      backgroundColor: Colors.orange,
+                      colorText: Colors.white,
+                    );
+                    return;
+                  }
                   // TODO: Implementasi logika sewa
                 },
                 style: ElevatedButton.styleFrom(
@@ -166,7 +193,7 @@ class ProductDetailPage extends StatelessWidget {
                         color: Colors.amber, size: 20);
                   }),
                   const SizedBox(width: 8),
-                  Text("${product.rating} (${product.reviewCount} Ulasan)"),
+                  Text("${product.rating} (${product.reviews.length} Ulasan)"),
                 ],
               ),
               const SizedBox(height: 4),
@@ -181,24 +208,69 @@ class ProductDetailPage extends StatelessWidget {
               const SizedBox(height: 2),
               Text("Deposit : Rp${product.depositAmount.toStringAsFixed(0)}"),
               const SizedBox(height: 20),
-              // Date Picker (Placeholder)
+              // Date Picker
               const Text(
                 "Pilih Tanggal",
                 style: TextStyle(fontWeight: FontWeight.bold),
               ),
               const SizedBox(height: 8),
-              Container(
-                padding:
-                    const EdgeInsets.symmetric(horizontal: 12, vertical: 14),
-                decoration: BoxDecoration(
-                  border: Border.all(color: Colors.grey.shade400),
-                  borderRadius: BorderRadius.circular(8),
-                ),
-                child: Row(
-                  children: [
-                    Expanded(child: Text("14 April - 16 April 2025")),
-                    Icon(Icons.calendar_today, size: 20),
-                  ],
+              GestureDetector(
+                onTap: () async {
+                  final DateTimeRange? picked = await showDateRangePicker(
+                    context: context,
+                    firstDate: DateTime.now(),
+                    lastDate: DateTime.now().add(const Duration(days: 365)),
+                    initialDateRange:
+                        controller.state.selectedStartDate != null &&
+                                controller.state.selectedEndDate != null
+                            ? DateTimeRange(
+                                start: controller.state.selectedStartDate!,
+                                end: controller.state.selectedEndDate!,
+                              )
+                            : null,
+                    builder: (context, child) {
+                      return Theme(
+                        data: Theme.of(context).copyWith(
+                          colorScheme: const ColorScheme.light(
+                            primary: Color(0xFF2F4E3E),
+                            onPrimary: Colors.white,
+                            surface: Colors.white,
+                            onSurface: Colors.black,
+                          ),
+                        ),
+                        child: child!,
+                      );
+                    },
+                  );
+
+                  if (picked != null) {
+                    controller.updateSelectedDates(picked.start, picked.end);
+                  }
+                },
+                child: Container(
+                  padding:
+                      const EdgeInsets.symmetric(horizontal: 12, vertical: 14),
+                  decoration: BoxDecoration(
+                    border: Border.all(color: Colors.grey.shade400),
+                    borderRadius: BorderRadius.circular(8),
+                  ),
+                  child: Row(
+                    children: [
+                      Expanded(
+                        child: Obx(() {
+                          if (controller.state.selectedStartDate == null ||
+                              controller.state.selectedEndDate == null) {
+                            return const Text("Pilih tanggal sewa");
+                          }
+                          return Text(
+                            "${DateFormat('d MMMM yyyy').format(controller.state.selectedStartDate!)} - "
+                            "${DateFormat('d MMMM yyyy').format(controller.state.selectedEndDate!)}",
+                          );
+                        }),
+                      ),
+                      const Icon(Icons.calendar_today, size: 20),
+                    ],
+                  ),
                 ),
               ),
               const SizedBox(height: 30),

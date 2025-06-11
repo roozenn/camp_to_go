@@ -49,25 +49,26 @@ class CartService extends GetxService {
   }
 
   // Menambahkan item ke cart
-  Future<void> addToCart({
+  Future<bool> addToCart({
     required int productId,
-    required String startDate,
-    required String endDate,
+    required DateTime startDate,
+    required DateTime endDate,
     required int quantity,
   }) async {
     try {
-      final response = await _apiService.post('/cart', data: {
-        'product_id': productId,
-        'start_date': startDate,
-        'end_date': endDate,
-        'quantity': quantity,
-      });
-      if (response.data['success'] != true) {
-        throw Exception(
-            response.data['message'] ?? 'Gagal menambahkan ke cart');
-      }
+      final response = await _apiService.post(
+        '/cart',
+        data: {
+          'product_id': productId,
+          'start_date': startDate.toIso8601String().split('T')[0],
+          'end_date': endDate.toIso8601String().split('T')[0],
+          'quantity': quantity,
+        },
+      );
+
+      return response.data['success'] ?? false;
     } catch (e) {
-      rethrow;
+      return false;
     }
   }
 
