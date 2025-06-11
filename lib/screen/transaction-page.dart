@@ -1,43 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
+import '../controllers/transaction_controller.dart';
 
 class TransaksiPage extends StatelessWidget {
-  final List<Map<String, String>> transaksiList = [
-    {
-      'kode': 'TRX2301ABC',
-      'tanggal': '4 Mei, 2025',
-      'status': 'Dalam Penyewaan',
-      'jumlah': '3 Barang disewa',
-      'total': 'Rp450.000',
-    },
-    {
-      'kode': 'TRX2104XYZ',
-      'tanggal': '28 April, 2025',
-      'status': 'Selesai',
-      'jumlah': '1 Barang disewa',
-      'total': 'Rp150.000',
-    },
-    {
-      'kode': 'TRX2003LMN',
-      'tanggal': '15 April, 2025',
-      'status': 'Dibatalkan',
-      'jumlah': '2 Barang disewa',
-      'total': 'Rp300.000',
-    },
-    {
-      'kode': 'TRX1902PQR',
-      'tanggal': '2 Maret, 2025',
-      'status': 'Selesai',
-      'jumlah': '4 Barang disewa',
-      'total': 'Rp600.000',
-    },
-    {
-      'kode': 'TRX1801DEF',
-      'tanggal': '25 Februari, 2025',
-      'status': 'Dalam Proses',
-      'jumlah': '1 Barang disewa',
-      'total': 'Rp120.000',
-    },
-  ];
+  final TransactionController controller = Get.put(TransactionController());
 
   TransaksiPage({super.key});
 
@@ -53,95 +19,98 @@ class TransaksiPage extends StatelessWidget {
         ),
         centerTitle: false,
       ),
-      body: ListView.builder(
-        padding: EdgeInsets.all(16),
-        itemCount: transaksiList.length,
-        itemBuilder: (context, index) {
-          final transaksi = transaksiList[index];
-          return Card(
-            margin: EdgeInsets.only(bottom: 16),
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(8),
-              side: BorderSide(color: Colors.grey.shade200),
-            ),
-            child: Padding(
-              padding: const EdgeInsets.all(16.0),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    transaksi['kode']!,
-                    style: TextStyle(fontWeight: FontWeight.bold),
-                  ),
-                  SizedBox(height: 4),
-                  Text(
-                    transaksi['tanggal']!,
-                    style: TextStyle(color: Colors.grey),
-                  ),
-                  Padding(
-                    padding: const EdgeInsets.symmetric(vertical: 12.0),
-                    child: DashedLine(),
-                  ),
+      body: Obx(() {
+        if (controller.isLoading.value) {
+          return Center(child: CircularProgressIndicator());
+        }
 
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Text('Status Order'),
-                      Text(transaksi['status']!),
-                    ],
-                  ),
-                  SizedBox(height: 8),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Text('Jumlah Barang'),
-                      Text(transaksi['jumlah']!),
-                    ],
-                  ),
-                  SizedBox(height: 8),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Text('Total Biaya'),
-                      Text(
-                        transaksi['total']!,
-                        style: TextStyle(
-                          color: Color(0xFF2F4E3E),
-                          fontWeight: FontWeight.bold,
-                        ),
-                      ),
-                    ],
-                  ),
-                ],
-              ),
+        if (controller.error.value.isNotEmpty) {
+          return Center(
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Text(controller.error.value),
+                SizedBox(height: 16),
+                ElevatedButton(
+                  onPressed: () => controller.fetchTransactions(),
+                  child: Text('Coba Lagi'),
+                ),
+              ],
             ),
           );
-        },
-      ),
-      // bottomNavigationBar: BottomNavigationBar(
-      //   currentIndex: 2,
-      //   selectedItemColor: Color(0xFF2F4E3E),
-      //   unselectedItemColor: Colors.grey,
-      //   showUnselectedLabels: true,
-      //   items: const [
-      //     BottomNavigationBarItem(
-      //       icon: Icon(Icons.home_outlined),
-      //       label: 'Home',
-      //     ),
-      //     BottomNavigationBarItem(
-      //       icon: Icon(Icons.shopping_cart_outlined),
-      //       label: 'Cart',
-      //     ),
-      //     BottomNavigationBarItem(
-      //       icon: Icon(Icons.receipt_long_outlined),
-      //       label: 'Transaksi',
-      //     ),
-      //     BottomNavigationBarItem(
-      //       icon: Icon(Icons.person_outline),
-      //       label: 'Akun',
-      //     ),
-      //   ],
-      // ),
+        }
+
+        if (controller.transactions.isEmpty) {
+          return Center(
+            child: Text('Belum ada transaksi'),
+          );
+        }
+
+        return ListView.builder(
+          padding: EdgeInsets.all(16),
+          itemCount: controller.transactions.length,
+          itemBuilder: (context, index) {
+            final transaksi = controller.transactions[index];
+            return Card(
+              margin: EdgeInsets.only(bottom: 16),
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(8),
+                side: BorderSide(color: Colors.grey.shade200),
+              ),
+              child: Padding(
+                padding: const EdgeInsets.all(16.0),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      transaksi.orderNumber,
+                      style: TextStyle(fontWeight: FontWeight.bold),
+                    ),
+                    SizedBox(height: 4),
+                    Text(
+                      controller.formatDate(transaksi.createdAt),
+                      style: TextStyle(color: Colors.grey),
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.symmetric(vertical: 12.0),
+                      child: DashedLine(),
+                    ),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Text('Status Order'),
+                        Text(controller.getStatusText(transaksi.status)),
+                      ],
+                    ),
+                    SizedBox(height: 8),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Text('Jumlah Barang'),
+                        Text('${transaksi.items.length} Barang disewa'),
+                      ],
+                    ),
+                    SizedBox(height: 8),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Text('Total Biaya'),
+                        Text(
+                          controller.formatCurrency(transaksi.totalAmount),
+                          style: TextStyle(
+                            color: Color(0xFF2F4E3E),
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ],
+                ),
+              ),
+            );
+          },
+        );
+      }),
     );
   }
 }

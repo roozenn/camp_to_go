@@ -6,6 +6,7 @@ import 'services/token_service.dart';
 import 'services/api_service.dart';
 import 'services/cart_service.dart';
 import 'controllers/cart_controller.dart';
+import 'controllers/auth_controller.dart';
 import 'theme-colors.dart';
 
 void main() async {
@@ -21,6 +22,7 @@ void main() async {
 
   // Inisialisasi controllers
   Get.put(CartController());
+  Get.put(AuthController());
 
   runApp(const MyApp());
 }
