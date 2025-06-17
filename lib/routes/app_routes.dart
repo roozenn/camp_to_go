@@ -7,4 +7,6 @@ abstract class Routes {
   static const TRANSACTION = '/transaction';
   static const ACCOUNT = '/account';
   static const PRODUCT_DETAIL = '/product-detail';
+  static const ADDRESS_LIST = '/address-list';
+  static const PAYMENT = '/payment';
 }

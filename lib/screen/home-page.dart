@@ -69,7 +69,8 @@ import 'package:camp_to_go/models/category_model.dart';
 import 'package:camp_to_go/models/product_model.dart';
 import 'package:get/get.dart';
 import 'package:camp_to_go/controllers/home_controller.dart';
-import 'package:camp_to_go/routes/routes.dart';
+import 'package:camp_to_go/routes/app_pages.dart';
+import 'package:camp_to_go/widgets/main_bottom_nav.dart';
 
 class HomePage extends StatelessWidget {
   const HomePage({super.key});
@@ -82,43 +83,7 @@ class HomePage extends StatelessWidget {
       body: Obx(() => controller.state.value?.isLoading == true
           ? const Center(child: CircularProgressIndicator())
           : controller.pages[controller.selectedIndex.value]),
-      bottomNavigationBar: Container(
-        decoration: BoxDecoration(
-          boxShadow: [
-            BoxShadow(
-              color: Colors.black.withOpacity(0.2),
-              spreadRadius: 1,
-              blurRadius: 10,
-              offset: const Offset(0, -2),
-            ),
-          ],
-        ),
-        child: Obx(() => BottomNavigationBar(
-              currentIndex: controller.selectedIndex.value,
-              onTap: controller.changeIndex,
-              selectedItemColor: const Color(0xFF2F4E3E),
-              unselectedItemColor: Colors.grey,
-              type: BottomNavigationBarType.fixed,
-              items: const [
-                BottomNavigationBarItem(
-                  icon: Icon(Icons.home_outlined),
-                  label: 'Beranda',
-                ),
-                BottomNavigationBarItem(
-                  icon: Icon(Icons.shopping_cart),
-                  label: 'Keranjang',
-                ),
-                BottomNavigationBarItem(
-                  icon: Icon(Icons.receipt_long),
-                  label: 'Transaksi',
-                ),
-                BottomNavigationBarItem(
-                  icon: Icon(Icons.person_outline),
-                  label: 'Akun',
-                ),
-              ],
-            )),
-      ),
+      bottomNavigationBar: const MainBottomNav(),
     );
   }
 }

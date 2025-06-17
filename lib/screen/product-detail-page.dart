@@ -4,7 +4,7 @@ import 'package:get/get.dart';
 import 'package:camp_to_go/controllers/product_detail_controller.dart';
 import 'package:camp_to_go/models/product_detail_model.dart';
 import 'package:intl/intl.dart';
-import 'package:camp_to_go/routes/routes.dart';
+import 'package:camp_to_go/routes/app_pages.dart';
 import 'package:camp_to_go/bindings/product_detail_binding.dart';
 
 class ProductDetailPage extends StatelessWidget {
@@ -36,11 +36,21 @@ class ProductDetailPage extends StatelessWidget {
                 color: Colors.black,
               ),
             )),
-        actions: const [
-          Icon(Icons.search, color: Colors.black),
-          SizedBox(width: 16),
-          Icon(Icons.favorite_border, color: Colors.black),
-          SizedBox(width: 16),
+        actions: [
+          const Icon(Icons.search, color: Colors.black),
+          const SizedBox(width: 16),
+          Obx(() => GestureDetector(
+                onTap: () => controller.toggleFavorite(),
+                child: Icon(
+                  controller.state.product?.isFavorited ?? false
+                      ? Icons.favorite
+                      : Icons.favorite_border,
+                  color: controller.state.product?.isFavorited ?? false
+                      ? Colors.red
+                      : Colors.black,
+                ),
+              )),
+          const SizedBox(width: 16),
         ],
       ),
       floatingActionButton: Container(

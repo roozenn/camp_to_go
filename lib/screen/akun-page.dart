@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import '../controllers/auth_controller.dart';
+import '../widgets/main_bottom_nav.dart';
 
 class AkunPage extends StatelessWidget {
   final AuthController authController = Get.find<AuthController>();
@@ -22,6 +23,7 @@ class AkunPage extends StatelessWidget {
       appBar: AppBar(
         backgroundColor: Colors.white,
         elevation: 0,
+        automaticallyImplyLeading: false,
         title: Text(
           'Akun',
           style: TextStyle(color: Colors.black, fontWeight: FontWeight.bold),
@@ -67,6 +69,7 @@ class AkunPage extends StatelessWidget {
           ),
         ],
       ),
+      bottomNavigationBar: const MainBottomNav(),
     );
   }
 }

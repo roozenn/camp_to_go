@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import '../controllers/transaction_controller.dart';
+import '../widgets/main_bottom_nav.dart';
+import 'transaction_detail_page.dart';
 
 class TransaksiPage extends StatefulWidget {
   const TransaksiPage({super.key});
@@ -24,6 +26,7 @@ class _TransaksiPageState extends State<TransaksiPage> {
       appBar: AppBar(
         backgroundColor: Colors.white,
         elevation: 0,
+        automaticallyImplyLeading: false,
         title: Text(
           'Transaksi',
           style: TextStyle(color: Colors.black, fontWeight: FontWeight.bold),
@@ -68,60 +71,95 @@ class _TransaksiPageState extends State<TransaksiPage> {
                 borderRadius: BorderRadius.circular(8),
                 side: BorderSide(color: Colors.grey.shade200),
               ),
-              child: Padding(
-                padding: const EdgeInsets.all(16.0),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      transaksi.orderNumber,
-                      style: TextStyle(fontWeight: FontWeight.bold),
-                    ),
-                    SizedBox(height: 4),
-                    Text(
-                      controller.formatDate(transaksi.createdAt),
-                      style: TextStyle(color: Colors.grey),
-                    ),
-                    Padding(
-                      padding: const EdgeInsets.symmetric(vertical: 12.0),
-                      child: DashedLine(),
-                    ),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              elevation: 0,
+              child: Material(
+                color: Colors.transparent,
+                child: InkWell(
+                  borderRadius: BorderRadius.circular(8),
+                  splashColor: Colors.grey.withOpacity(0.1),
+                  highlightColor: Colors.grey.withOpacity(0.1),
+                  onTap: () {
+                    Get.to(() => TransaksiDetailPage(
+                          orderId: transaksi.id,
+                        ));
+                  },
+                  child: Padding(
+                    padding: const EdgeInsets.all(16.0),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        Text('Status Order'),
-                        Text(controller.getStatusText(transaksi.status)),
-                      ],
-                    ),
-                    SizedBox(height: 8),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        Text('Jumlah Barang'),
-                        Text('${transaksi.items.length} Barang disewa'),
-                      ],
-                    ),
-                    SizedBox(height: 8),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        Text('Total Biaya'),
                         Text(
-                          controller.formatCurrency(transaksi.totalAmount),
-                          style: TextStyle(
-                            color: Color(0xFF2F4E3E),
-                            fontWeight: FontWeight.bold,
-                          ),
+                          transaksi.orderNumber,
+                          style: TextStyle(fontWeight: FontWeight.bold),
+                        ),
+                        SizedBox(height: 4),
+                        Text(
+                          controller.formatDate(transaksi.createdAt),
+                          style: TextStyle(color: Colors.grey),
+                        ),
+                        Padding(
+                          padding: const EdgeInsets.symmetric(vertical: 12.0),
+                          child: DashedLine(),
+                        ),
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            Text('Status Order'),
+                            Text(
+                              transaksi.status == 'pending'
+                                  ? 'Pending'
+                                  : transaksi.status == 'processing'
+                                      ? 'Processing'
+                                      : transaksi.status == 'completed'
+                                          ? 'Completed'
+                                          : transaksi.status == 'cancelled'
+                                              ? 'Cancelled'
+                                              : transaksi.status,
+                              style: TextStyle(
+                                color: transaksi.status == 'pending'
+                                    ? Colors.orange
+                                    : transaksi.status == 'completed'
+                                        ? Colors.green
+                                        : transaksi.status == 'cancelled'
+                                            ? Colors.red
+                                            : Colors.blue,
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
+                          ],
+                        ),
+                        SizedBox(height: 8),
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            Text('Jumlah Barang'),
+                            Text('${transaksi.itemCount} Barang Disewa'),
+                          ],
+                        ),
+                        SizedBox(height: 8),
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            Text('Total Biaya'),
+                            Text(
+                              controller.formatCurrency(transaksi.totalAmount),
+                              style: TextStyle(
+                                color: Color(0xFF2F4E3E),
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
+                          ],
                         ),
                       ],
                     ),
-                  ],
+                  ),
                 ),
               ),
             );
           },
         );
       }),
+      bottomNavigationBar: const MainBottomNav(),
     );
   }
 }

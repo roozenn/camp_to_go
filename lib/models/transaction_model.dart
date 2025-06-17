@@ -10,6 +10,7 @@ class TransactionModel {
   final String shippingDate;
   final String returnDate;
   final List<TransactionItem> items;
+  final int itemCount;
 
   TransactionModel({
     required this.id,
@@ -23,6 +24,7 @@ class TransactionModel {
     required this.shippingDate,
     required this.returnDate,
     required this.items,
+    required this.itemCount,
   });
 
   factory TransactionModel.fromJson(Map<String, dynamic> json) {
@@ -43,6 +45,7 @@ class TransactionModel {
               ?.map((item) => TransactionItem.fromJson(item))
               .toList() ??
           [],
+      itemCount: json['item_count'] ?? 0,
     );
   }
 }

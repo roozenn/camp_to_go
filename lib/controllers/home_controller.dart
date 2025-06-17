@@ -8,6 +8,7 @@ import 'package:camp_to_go/screen/home-page.dart';
 import 'package:camp_to_go/screen/cart-page-gpt.dart';
 import 'package:camp_to_go/screen/transaction-page.dart';
 import 'package:camp_to_go/screen/akun-page.dart';
+import 'package:camp_to_go/routes/app_pages.dart';
 
 class HomeState {
   bool isLoading = false;
@@ -38,6 +39,26 @@ class HomeController extends GetxController {
       AkunPage(),
     ];
     loadData();
+    // Set initial index berdasarkan route saat ini
+    setIndexFromRoute();
+  }
+
+  void setIndexFromRoute() {
+    final currentRoute = Get.currentRoute;
+    switch (currentRoute) {
+      case Routes.HOME:
+        selectedIndex.value = 0;
+        break;
+      case Routes.CART:
+        selectedIndex.value = 1;
+        break;
+      case Routes.TRANSACTION:
+        selectedIndex.value = 2;
+        break;
+      case Routes.ACCOUNT:
+        selectedIndex.value = 3;
+        break;
+    }
   }
 
   Future<void> loadData() async {
@@ -78,5 +99,19 @@ class HomeController extends GetxController {
 
   void changeIndex(int index) {
     selectedIndex.value = index;
+    switch (index) {
+      case 0:
+        Get.offAllNamed(Routes.HOME);
+        break;
+      case 1:
+        Get.offAllNamed(Routes.CART);
+        break;
+      case 2:
+        Get.offAllNamed(Routes.TRANSACTION);
+        break;
+      case 3:
+        Get.offAllNamed(Routes.ACCOUNT);
+        break;
+    }
   }
 }

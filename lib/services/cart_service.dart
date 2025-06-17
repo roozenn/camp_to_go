@@ -37,8 +37,12 @@ class CartService extends GetxService {
   Future<CartResponse> getCart() async {
     try {
       final response = await _apiService.get('/cart');
+      print('Cart Response: ${response.data}'); // Debug print
       if (response.data['success'] == true) {
-        return CartResponse.fromJson(response.data['data']);
+        final cartResponse = CartResponse.fromJson(response.data['data']);
+        print(
+            'Cart Items: ${cartResponse.items.map((item) => 'ID: ${item.id}, IsFavorited: ${item.isFavorited}').join('\n')}'); // Debug print
+        return cartResponse;
       } else {
         throw Exception(
             response.data['message'] ?? 'Gagal mendapatkan data cart');

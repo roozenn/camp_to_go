@@ -26,6 +26,13 @@ class CartController extends GetxController {
       final response = await _cartService.getCart();
       cartItems.value = response.items;
       cartSummary.value = response.summary;
+
+      // Load active coupon if exists
+      if (response.activeCoupon != null) {
+        couponCode.value = response.activeCoupon!['code'] as String;
+        discountAmount.value =
+            (response.activeCoupon!['discount_amount'] as num).toDouble();
+      }
     } catch (e) {
       error.value = e.toString();
     } finally {
@@ -71,7 +78,7 @@ class CartController extends GetxController {
     }
   }
 
-  Future<void> validateCoupon(String code) async {
+  Future<bool> validateCoupon(String code) async {
     try {
       isLoading.value = true;
       error.value = '';
@@ -80,11 +87,14 @@ class CartController extends GetxController {
       if (result['valid'] == true) {
         couponCode.value = code;
         discountAmount.value = (result['discount_amount'] as num).toDouble();
+        return true;
       } else {
         error.value = result['message'] as String;
+        return false;
       }
     } catch (e) {
       error.value = e.toString();
+      return false;
     } finally {
       isLoading.value = false;
     }

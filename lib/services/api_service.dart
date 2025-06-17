@@ -198,13 +198,14 @@ class ApiService extends GetxService {
         }
 
         print('Final product data with reviews: $data'); // Debug print
-        return ProductDetailModel.fromJson(data);
+
+        return ProductDetailModel.fromJson(data['data']);
       } else {
-        throw Exception('Gagal memuat data produk: ${response.statusMessage}');
+        throw Exception('Gagal mengambil data produk');
       }
     } catch (e) {
-      print('Error in getProductDetail: $e'); // Debug print
-      throw Exception('Gagal memuat data produk: $e');
+      print('Error in getProductDetail: $e');
+      rethrow;
     }
   }
 
@@ -266,6 +267,20 @@ class ApiService extends GetxService {
     try {
       return await _dio.delete(path);
     } catch (e) {
+      rethrow;
+    }
+  }
+
+  // Toggle favorite status
+  Future<void> toggleFavorite(int productId, bool isFavorited) async {
+    try {
+      if (isFavorited) {
+        await _dio.delete('/favorites/$productId');
+      } else {
+        await _dio.post('/favorites/$productId');
+      }
+    } catch (e) {
+      print('Error in toggleFavorite: $e');
       rethrow;
     }
   }

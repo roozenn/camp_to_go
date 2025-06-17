@@ -33,6 +33,7 @@ class CartItem {
   final int quantity;
   final double subtotal;
   final double depositSubtotal;
+  final bool isFavorited;
 
   CartItem({
     required this.id,
@@ -43,6 +44,7 @@ class CartItem {
     required this.quantity,
     required this.subtotal,
     required this.depositSubtotal,
+    this.isFavorited = false,
   });
 
   factory CartItem.fromJson(Map<String, dynamic> json) {
@@ -55,6 +57,7 @@ class CartItem {
       quantity: json['quantity'] as int,
       subtotal: (json['subtotal'] as num).toDouble(),
       depositSubtotal: (json['deposit_subtotal'] as num).toDouble(),
+      isFavorited: json['product']?['isFavorited'] ?? false,
     );
   }
 }
@@ -82,10 +85,12 @@ class CartSummary {
 class CartResponse {
   final List<CartItem> items;
   final CartSummary summary;
+  final Map<String, dynamic>? activeCoupon;
 
   CartResponse({
     required this.items,
     required this.summary,
+    this.activeCoupon,
   });
 
   factory CartResponse.fromJson(Map<String, dynamic> json) {
@@ -94,6 +99,7 @@ class CartResponse {
           .map((item) => CartItem.fromJson(item as Map<String, dynamic>))
           .toList(),
       summary: CartSummary.fromJson(json['summary'] as Map<String, dynamic>),
+      activeCoupon: json['active_coupon'] as Map<String, dynamic>?,
     );
   }
 }

@@ -5,8 +5,13 @@ import 'package:camp_to_go/screen/transaction-page.dart';
 import 'package:camp_to_go/screen/akun-page.dart';
 import 'package:camp_to_go/screen/product-detail-page.dart';
 import 'package:camp_to_go/screen/login-screen.dart';
+import 'package:camp_to_go/screen/address-list-screen.dart';
+import 'package:camp_to_go/screen/payment-page.dart';
 import 'package:camp_to_go/bindings/home_binding.dart' as bindings;
 import 'package:camp_to_go/bindings/product_detail_binding.dart';
+import 'package:camp_to_go/middleware/home_middleware.dart';
+import '../bindings/address_binding.dart';
+import '../bindings/payment_binding.dart';
 
 part 'app_routes.dart';
 
@@ -22,18 +27,25 @@ class AppPages {
       name: Routes.HOME,
       page: () => const HomePage(),
       binding: bindings.HomeBinding(),
+      middlewares: [HomeMiddleware()],
     ),
     GetPage(
       name: Routes.CART,
       page: () => CartPage(),
+      binding: bindings.HomeBinding(),
+      middlewares: [HomeMiddleware()],
     ),
     GetPage(
       name: Routes.TRANSACTION,
       page: () => TransaksiPage(),
+      binding: bindings.HomeBinding(),
+      middlewares: [HomeMiddleware()],
     ),
     GetPage(
       name: Routes.ACCOUNT,
       page: () => AkunPage(),
+      binding: bindings.HomeBinding(),
+      middlewares: [HomeMiddleware()],
     ),
     GetPage(
       name: Routes.PRODUCT_DETAIL,
@@ -49,6 +61,16 @@ class AppPages {
         return ProductDetailPage(productId: productId ?? 1);
       },
       binding: ProductDetailBinding(),
+    ),
+    GetPage(
+      name: Routes.ADDRESS_LIST,
+      page: () => const AddressListScreen(),
+      binding: AddressBinding(),
+    ),
+    GetPage(
+      name: Routes.PAYMENT,
+      page: () => const PembayaranPage(),
+      binding: PaymentBinding(),
     ),
   ];
 }

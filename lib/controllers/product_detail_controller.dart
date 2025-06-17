@@ -164,4 +164,53 @@ class ProductDetailController extends GetxController {
       );
     }
   }
+
+  Future<void> toggleFavorite() async {
+    if (state.product == null) return;
+
+    try {
+      await _apiService.toggleFavorite(
+        state.product!.id,
+        state.product!.isFavorited,
+      );
+
+      // Update state
+      final updatedProduct = ProductDetailModel(
+        id: state.product!.id,
+        name: state.product!.name,
+        description: state.product!.description,
+        pricePerDay: state.product!.pricePerDay,
+        originalPrice: state.product!.originalPrice,
+        discountPercentage: state.product!.discountPercentage,
+        depositAmount: state.product!.depositAmount,
+        rating: state.product!.rating,
+        reviewCount: state.product!.reviewCount,
+        stockQuantity: state.product!.stockQuantity,
+        category: state.product!.category,
+        images: state.product!.images,
+        isFavorited: !state.product!.isFavorited,
+        reviews: state.product!.reviews,
+      );
+      _state.value = _state.value.copyWith(product: updatedProduct);
+
+      // Tampilkan snackbar
+      Get.snackbar(
+        'Berhasil',
+        updatedProduct.isFavorited
+            ? 'Produk berhasil ditambahkan ke favorit'
+            : 'Produk berhasil dihapus dari favorit',
+        snackPosition: SnackPosition.BOTTOM,
+        backgroundColor: Colors.green,
+        colorText: Colors.white,
+      );
+    } catch (e) {
+      Get.snackbar(
+        'Error',
+        'Terjadi kesalahan saat mengubah status favorit',
+        snackPosition: SnackPosition.BOTTOM,
+        backgroundColor: Colors.red,
+        colorText: Colors.white,
+      );
+    }
+  }
 }
