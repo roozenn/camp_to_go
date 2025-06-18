@@ -1,39 +1,36 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:camp_to_go/routes/app_pages.dart';
-import 'package:camp_to_go/controllers/auth_controller.dart';
+import '../controllers/profile_controller.dart';
 
-class RegistrationPage extends StatefulWidget {
-  const RegistrationPage({Key? key}) : super(key: key);
+class ChangePasswordPage extends StatefulWidget {
+  const ChangePasswordPage({Key? key}) : super(key: key);
 
   @override
-  State<RegistrationPage> createState() => _RegistrationPageState();
+  State<ChangePasswordPage> createState() => _ChangePasswordPageState();
 }
 
-class _RegistrationPageState extends State<RegistrationPage> {
-  final TextEditingController _nameController = TextEditingController();
-  final TextEditingController _emailController = TextEditingController();
-  final TextEditingController _passwordController = TextEditingController();
+class _ChangePasswordPageState extends State<ChangePasswordPage> {
+  final TextEditingController _currentPasswordController =
+      TextEditingController();
+  final TextEditingController _newPasswordController = TextEditingController();
   final TextEditingController _confirmPasswordController =
       TextEditingController();
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
-  final AuthController _authController = Get.find<AuthController>();
+  final ProfileController _profileController = Get.find<ProfileController>();
 
   @override
   void dispose() {
-    _nameController.dispose();
-    _emailController.dispose();
-    _passwordController.dispose();
+    _currentPasswordController.dispose();
+    _newPasswordController.dispose();
     _confirmPasswordController.dispose();
     super.dispose();
   }
 
-  void _handleRegister() {
+  void _handleChangePassword() {
     if (_formKey.currentState!.validate()) {
-      _authController.register(
-        _nameController.text.trim(),
-        _emailController.text.trim(),
-        _passwordController.text,
+      _profileController.changePassword(
+        _currentPasswordController.text,
+        _newPasswordController.text,
         _confirmPasswordController.text,
       );
     }
@@ -43,6 +40,15 @@ class _RegistrationPageState extends State<RegistrationPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.white,
+      appBar: AppBar(
+        leading: const BackButton(color: Colors.black87),
+        backgroundColor: Colors.white,
+        elevation: 1,
+        title: const Text(
+          'Ubah Kata Sandi',
+          style: TextStyle(color: Colors.black87, fontWeight: FontWeight.bold),
+        ),
+      ),
       body: SingleChildScrollView(
         child: SafeArea(
           child: Padding(
@@ -52,7 +58,7 @@ class _RegistrationPageState extends State<RegistrationPage> {
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  const SizedBox(height: 80),
+                  const SizedBox(height: 40),
                   Container(
                     width: 70,
                     height: 70,
@@ -62,7 +68,7 @@ class _RegistrationPageState extends State<RegistrationPage> {
                     ),
                     child: const Center(
                       child: Icon(
-                        Icons.diamond_outlined,
+                        Icons.lock_outline,
                         color: Colors.white,
                         size: 36,
                       ),
@@ -70,7 +76,7 @@ class _RegistrationPageState extends State<RegistrationPage> {
                   ),
                   const SizedBox(height: 20),
                   const Text(
-                    'Mari Kita Mulai',
+                    'Ubah Kata Sandi',
                     style: TextStyle(
                       fontSize: 20,
                       fontWeight: FontWeight.bold,
@@ -79,77 +85,48 @@ class _RegistrationPageState extends State<RegistrationPage> {
                   ),
                   const SizedBox(height: 8),
                   const Text(
-                    'Buat akun baru',
+                    'Masukkan kata sandi lama dan baru',
                     style: TextStyle(fontSize: 14, color: Colors.grey),
                   ),
                   const SizedBox(height: 30),
                   TextFormField(
-                    controller: _nameController,
-                    validator: (value) {
-                      if (value == null || value.isEmpty) {
-                        return 'Nama tidak boleh kosong';
-                      }
-                      if (value.length < 2) {
-                        return 'Nama minimal 2 karakter';
-                      }
-                      return null;
-                    },
-                    decoration: InputDecoration(
-                      hintText: 'Nama Panjang',
-                      prefixIcon: const Icon(
-                        Icons.person_outline,
-                        color: Colors.grey,
-                      ),
-                      filled: true,
-                      fillColor: Colors.grey[200],
-                      border: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(8),
-                        borderSide: BorderSide.none,
-                      ),
-                    ),
-                  ),
-                  const SizedBox(height: 16),
-                  TextFormField(
-                    controller: _emailController,
-                    keyboardType: TextInputType.emailAddress,
-                    validator: (value) {
-                      if (value == null || value.isEmpty) {
-                        return 'Email tidak boleh kosong';
-                      }
-                      if (!value.contains('@')) {
-                        return 'Email tidak valid';
-                      }
-                      return null;
-                    },
-                    decoration: InputDecoration(
-                      hintText: 'Email Anda',
-                      prefixIcon: const Icon(
-                        Icons.email_outlined,
-                        color: Colors.grey,
-                      ),
-                      filled: true,
-                      fillColor: Colors.grey[200],
-                      border: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(8),
-                        borderSide: BorderSide.none,
-                      ),
-                    ),
-                  ),
-                  const SizedBox(height: 16),
-                  TextFormField(
-                    controller: _passwordController,
+                    controller: _currentPasswordController,
                     obscureText: true,
                     validator: (value) {
                       if (value == null || value.isEmpty) {
-                        return 'Password tidak boleh kosong';
-                      }
-                      if (value.length < 6) {
-                        return 'Password minimal 6 karakter';
+                        return 'Kata sandi saat ini tidak boleh kosong';
                       }
                       return null;
                     },
                     decoration: InputDecoration(
-                      hintText: 'Password',
+                      hintText: 'Kata Sandi Saat Ini',
+                      prefixIcon: const Icon(
+                        Icons.lock_outline,
+                        color: Colors.grey,
+                      ),
+                      filled: true,
+                      fillColor: Colors.grey[200],
+                      border: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(8),
+                        borderSide: BorderSide.none,
+                      ),
+                    ),
+                  ),
+                  const SizedBox(height: 16),
+                  TextFormField(
+                    controller: _newPasswordController,
+                    obscureText: true,
+                    validator: (value) {
+                      if (value == null || value.isEmpty) {
+                        return 'Kata sandi baru tidak boleh kosong';
+                      }
+                      if (value.length < 6) {
+                        return 'Kata sandi minimal 6 karakter';
+                      }
+                      return null;
+                    },
+                    decoration: InputDecoration(
+                      hintText: 'Kata Sandi Baru',
                       prefixIcon: const Icon(
                         Icons.lock_outline,
                         color: Colors.grey,
@@ -168,15 +145,15 @@ class _RegistrationPageState extends State<RegistrationPage> {
                     obscureText: true,
                     validator: (value) {
                       if (value == null || value.isEmpty) {
-                        return 'Konfirmasi password tidak boleh kosong';
+                        return 'Konfirmasi kata sandi tidak boleh kosong';
                       }
-                      if (value != _passwordController.text) {
-                        return 'Password tidak cocok';
+                      if (value != _newPasswordController.text) {
+                        return 'Kata sandi tidak cocok';
                       }
                       return null;
                     },
                     decoration: InputDecoration(
-                      hintText: 'Password Lagi',
+                      hintText: 'Konfirmasi Kata Sandi Baru',
                       prefixIcon: const Icon(
                         Icons.lock_outline,
                         color: Colors.grey,
@@ -199,40 +176,18 @@ class _RegistrationPageState extends State<RegistrationPage> {
                             borderRadius: BorderRadius.circular(8),
                           ),
                         ),
-                        onPressed: _authController.isLoading.value
+                        onPressed: _profileController.isChangingPassword.value
                             ? null
-                            : _handleRegister,
-                        child: _authController.isLoading.value
+                            : _handleChangePassword,
+                        child: _profileController.isChangingPassword.value
                             ? const CircularProgressIndicator(
                                 color: Colors.white)
                             : const Text(
-                                'Daftar',
+                                'Ubah Kata Sandi',
                                 style: TextStyle(
                                     fontSize: 16, fontWeight: FontWeight.bold),
                               ),
                       )),
-                  const SizedBox(height: 20),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      const Text(
-                        'Punya akun?',
-                        style: TextStyle(color: Colors.grey),
-                      ),
-                      TextButton(
-                        onPressed: () {
-                          Get.offNamed(Routes.LOGIN);
-                        },
-                        child: const Text(
-                          'Masuk',
-                          style: TextStyle(
-                            color: Color(0xFF3A5649),
-                            fontWeight: FontWeight.bold,
-                          ),
-                        ),
-                      ),
-                    ],
-                  ),
                 ],
               ),
             ),

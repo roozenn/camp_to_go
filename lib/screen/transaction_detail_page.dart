@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import '../controllers/transaction_detail_controller.dart';
 import '../routes/app_pages.dart';
+import '../widgets/review_dialog.dart';
 
 class TransactionDetailPage extends StatelessWidget {
   final int orderId;
@@ -188,6 +189,47 @@ class TransactionDetailPage extends StatelessWidget {
                                             ],
                                           ),
                                         ),
+                                        // Tombol Review untuk status returned
+                                        if (detail['status'] == 'returned')
+                                          Column(
+                                            children: [
+                                              SizedBox(height: 8),
+                                              ElevatedButton(
+                                                onPressed: () {
+                                                  Get.dialog(
+                                                    ReviewDialog(
+                                                      productName:
+                                                          item['product']
+                                                              ['name'],
+                                                      productId: item['product']
+                                                          ['id'],
+                                                      orderId: orderId,
+                                                    ),
+                                                  );
+                                                },
+                                                style: ElevatedButton.styleFrom(
+                                                  backgroundColor:
+                                                      Color(0xFF2F4E3E),
+                                                  foregroundColor: Colors.white,
+                                                  padding: EdgeInsets.symmetric(
+                                                      horizontal: 16,
+                                                      vertical: 8),
+                                                  shape: RoundedRectangleBorder(
+                                                    borderRadius:
+                                                        BorderRadius.circular(
+                                                            20),
+                                                  ),
+                                                ),
+                                                child: Text(
+                                                  'Review',
+                                                  style: TextStyle(
+                                                    fontSize: 12,
+                                                    fontWeight: FontWeight.w500,
+                                                  ),
+                                                ),
+                                              ),
+                                            ],
+                                          ),
                                       ],
                                     ),
                                     if (item != detail['items'].last)

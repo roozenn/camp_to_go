@@ -394,7 +394,7 @@ class _HomeContentState extends State<HomeContent> {
                   style: const TextStyle(fontWeight: FontWeight.bold),
                 ),
                 const Spacer(),
-                Text('Lihat Semua', style: TextStyle(color: Color(0xFF2F4E3E))),
+                // Text('Lihat Semua', style: TextStyle(color: Color(0xFF2F4E3E))),
               ],
             ),
           ),

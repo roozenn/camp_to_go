@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import '../controllers/profile_controller.dart';
+import '../routes/app_pages.dart';
 
 class ProfilePage extends StatelessWidget {
   const ProfilePage({super.key});
@@ -86,29 +87,15 @@ class ProfilePage extends StatelessWidget {
               ),
             ),
             ProfileTile(
-              icon: Icons.wc,
-              label: 'Jenis Kelamin',
-              value: profile.gender,
-            ),
-            ProfileTile(
-              icon: Icons.calendar_today,
-              label: 'Tanggal Lahir',
-              value: profile.dateOfBirth,
-            ),
-            ProfileTile(
               icon: Icons.email_outlined,
               label: 'Email',
               value: profile.email,
             ),
             ProfileTile(
-              icon: Icons.phone_iphone,
-              label: 'Telepon',
-              value: profile.phoneNumber,
-            ),
-            const ProfileTile(
               icon: Icons.lock_outline,
               label: 'Ubah Kata Sandi',
               value: '••••••••••',
+              onTap: () => Get.toNamed(Routes.CHANGE_PASSWORD),
             ),
           ],
         );
@@ -121,39 +108,45 @@ class ProfileTile extends StatelessWidget {
   final IconData icon;
   final String label;
   final String value;
+  final VoidCallback? onTap;
 
   const ProfileTile({
     super.key,
     required this.icon,
     required this.label,
     required this.value,
+    this.onTap,
   });
 
   @override
   Widget build(BuildContext context) {
     return Column(
       children: [
-        Row(
-          crossAxisAlignment: CrossAxisAlignment.center,
-          children: [
-            Icon(icon, color: Color(0xFF2F4E3E)),
-            const SizedBox(width: 16),
-            Expanded(
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Text(
-                    label,
-                    style: const TextStyle(fontWeight: FontWeight.bold),
-                  ),
-                  Text(value, style: const TextStyle(color: Colors.grey)),
-                ],
+        InkWell(
+          onTap: onTap,
+          borderRadius: BorderRadius.circular(8),
+          child: Row(
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: [
+              Icon(icon, color: Color(0xFF2F4E3E)),
+              const SizedBox(width: 16),
+              Expanded(
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Text(
+                      label,
+                      style: const TextStyle(fontWeight: FontWeight.bold),
+                    ),
+                    Text(value, style: const TextStyle(color: Colors.grey)),
+                  ],
+                ),
               ),
-            ),
-            const SizedBox(width: 12),
-
-            // const Icon(Icons.chevron_right, color: Colors.grey),
-          ],
+              const SizedBox(width: 12),
+              if (onTap != null)
+                const Icon(Icons.chevron_right, color: Colors.grey),
+            ],
+          ),
         ),
         const SizedBox(height: 16),
       ],

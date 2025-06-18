@@ -3,39 +3,27 @@ import 'package:get/get.dart';
 import 'package:camp_to_go/routes/app_pages.dart';
 import 'package:camp_to_go/controllers/auth_controller.dart';
 
-class RegistrationPage extends StatefulWidget {
-  const RegistrationPage({Key? key}) : super(key: key);
+class ForgotPasswordPage extends StatefulWidget {
+  const ForgotPasswordPage({Key? key}) : super(key: key);
 
   @override
-  State<RegistrationPage> createState() => _RegistrationPageState();
+  State<ForgotPasswordPage> createState() => _ForgotPasswordPageState();
 }
 
-class _RegistrationPageState extends State<RegistrationPage> {
-  final TextEditingController _nameController = TextEditingController();
+class _ForgotPasswordPageState extends State<ForgotPasswordPage> {
   final TextEditingController _emailController = TextEditingController();
-  final TextEditingController _passwordController = TextEditingController();
-  final TextEditingController _confirmPasswordController =
-      TextEditingController();
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
   final AuthController _authController = Get.find<AuthController>();
 
   @override
   void dispose() {
-    _nameController.dispose();
     _emailController.dispose();
-    _passwordController.dispose();
-    _confirmPasswordController.dispose();
     super.dispose();
   }
 
-  void _handleRegister() {
+  void _handleForgotPassword() {
     if (_formKey.currentState!.validate()) {
-      _authController.register(
-        _nameController.text.trim(),
-        _emailController.text.trim(),
-        _passwordController.text,
-        _confirmPasswordController.text,
-      );
+      _authController.forgotPassword(_emailController.text.trim());
     }
   }
 
@@ -43,6 +31,14 @@ class _RegistrationPageState extends State<RegistrationPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.white,
+      appBar: AppBar(
+        backgroundColor: Colors.white,
+        elevation: 0,
+        leading: IconButton(
+          icon: const Icon(Icons.arrow_back, color: Colors.black),
+          onPressed: () => Get.back(),
+        ),
+      ),
       body: SingleChildScrollView(
         child: SafeArea(
           child: Padding(
@@ -52,7 +48,7 @@ class _RegistrationPageState extends State<RegistrationPage> {
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  const SizedBox(height: 80),
+                  const SizedBox(height: 40),
                   Container(
                     width: 70,
                     height: 70,
@@ -62,7 +58,7 @@ class _RegistrationPageState extends State<RegistrationPage> {
                     ),
                     child: const Center(
                       child: Icon(
-                        Icons.diamond_outlined,
+                        Icons.lock_reset,
                         color: Colors.white,
                         size: 36,
                       ),
@@ -70,7 +66,7 @@ class _RegistrationPageState extends State<RegistrationPage> {
                   ),
                   const SizedBox(height: 20),
                   const Text(
-                    'Mari Kita Mulai',
+                    'Lupa Password?',
                     style: TextStyle(
                       fontSize: 20,
                       fontWeight: FontWeight.bold,
@@ -79,36 +75,11 @@ class _RegistrationPageState extends State<RegistrationPage> {
                   ),
                   const SizedBox(height: 8),
                   const Text(
-                    'Buat akun baru',
+                    'Masukkan email Anda untuk reset password',
                     style: TextStyle(fontSize: 14, color: Colors.grey),
+                    textAlign: TextAlign.center,
                   ),
                   const SizedBox(height: 30),
-                  TextFormField(
-                    controller: _nameController,
-                    validator: (value) {
-                      if (value == null || value.isEmpty) {
-                        return 'Nama tidak boleh kosong';
-                      }
-                      if (value.length < 2) {
-                        return 'Nama minimal 2 karakter';
-                      }
-                      return null;
-                    },
-                    decoration: InputDecoration(
-                      hintText: 'Nama Panjang',
-                      prefixIcon: const Icon(
-                        Icons.person_outline,
-                        color: Colors.grey,
-                      ),
-                      filled: true,
-                      fillColor: Colors.grey[200],
-                      border: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(8),
-                        borderSide: BorderSide.none,
-                      ),
-                    ),
-                  ),
-                  const SizedBox(height: 16),
                   TextFormField(
                     controller: _emailController,
                     keyboardType: TextInputType.emailAddress,
@@ -135,60 +106,6 @@ class _RegistrationPageState extends State<RegistrationPage> {
                       ),
                     ),
                   ),
-                  const SizedBox(height: 16),
-                  TextFormField(
-                    controller: _passwordController,
-                    obscureText: true,
-                    validator: (value) {
-                      if (value == null || value.isEmpty) {
-                        return 'Password tidak boleh kosong';
-                      }
-                      if (value.length < 6) {
-                        return 'Password minimal 6 karakter';
-                      }
-                      return null;
-                    },
-                    decoration: InputDecoration(
-                      hintText: 'Password',
-                      prefixIcon: const Icon(
-                        Icons.lock_outline,
-                        color: Colors.grey,
-                      ),
-                      filled: true,
-                      fillColor: Colors.grey[200],
-                      border: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(8),
-                        borderSide: BorderSide.none,
-                      ),
-                    ),
-                  ),
-                  const SizedBox(height: 16),
-                  TextFormField(
-                    controller: _confirmPasswordController,
-                    obscureText: true,
-                    validator: (value) {
-                      if (value == null || value.isEmpty) {
-                        return 'Konfirmasi password tidak boleh kosong';
-                      }
-                      if (value != _passwordController.text) {
-                        return 'Password tidak cocok';
-                      }
-                      return null;
-                    },
-                    decoration: InputDecoration(
-                      hintText: 'Password Lagi',
-                      prefixIcon: const Icon(
-                        Icons.lock_outline,
-                        color: Colors.grey,
-                      ),
-                      filled: true,
-                      fillColor: Colors.grey[200],
-                      border: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(8),
-                        borderSide: BorderSide.none,
-                      ),
-                    ),
-                  ),
                   const SizedBox(height: 30),
                   Obx(() => ElevatedButton(
                         style: ElevatedButton.styleFrom(
@@ -201,12 +118,12 @@ class _RegistrationPageState extends State<RegistrationPage> {
                         ),
                         onPressed: _authController.isLoading.value
                             ? null
-                            : _handleRegister,
+                            : _handleForgotPassword,
                         child: _authController.isLoading.value
                             ? const CircularProgressIndicator(
                                 color: Colors.white)
                             : const Text(
-                                'Daftar',
+                                'Kirim Kode OTP',
                                 style: TextStyle(
                                     fontSize: 16, fontWeight: FontWeight.bold),
                               ),
@@ -216,7 +133,7 @@ class _RegistrationPageState extends State<RegistrationPage> {
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
                       const Text(
-                        'Punya akun?',
+                        'Ingat password?',
                         style: TextStyle(color: Colors.grey),
                       ),
                       TextButton(

@@ -5,8 +5,13 @@ import 'package:camp_to_go/screen/transaction-page.dart';
 import 'package:camp_to_go/screen/transaction_detail_page.dart';
 import 'package:camp_to_go/screen/akun-page.dart';
 import 'package:camp_to_go/screen/profile-page.dart';
+import 'package:camp_to_go/screen/change-password-page.dart';
 import 'package:camp_to_go/screen/product-detail-page.dart';
 import 'package:camp_to_go/screen/login-screen.dart';
+import 'package:camp_to_go/screen/regist-page.dart';
+import 'package:camp_to_go/screen/forgot-password-page.dart';
+import 'package:camp_to_go/screen/verify-otp-page.dart';
+import 'package:camp_to_go/screen/reset-password-page.dart';
 import 'package:camp_to_go/screen/address-list-screen.dart';
 import 'package:camp_to_go/screen/payment-page.dart';
 import 'package:camp_to_go/screen/search-page.dart';
@@ -19,6 +24,8 @@ import 'package:camp_to_go/bindings/profile_binding.dart';
 import 'package:camp_to_go/bindings/search_binding.dart';
 import 'package:camp_to_go/bindings/listing_binding.dart';
 import 'package:camp_to_go/bindings/favorite_binding.dart';
+import 'package:camp_to_go/bindings/registration_binding.dart';
+import 'package:camp_to_go/bindings/login_binding.dart';
 import 'package:camp_to_go/middleware/home_middleware.dart';
 import '../bindings/address_binding.dart';
 import '../bindings/payment_binding.dart';
@@ -32,6 +39,27 @@ class AppPages {
     GetPage(
       name: Routes.LOGIN,
       page: () => const LoginScreen(),
+      binding: LoginBinding(),
+    ),
+    GetPage(
+      name: Routes.REGISTRATION,
+      page: () => const RegistrationPage(),
+      binding: RegistrationBinding(),
+    ),
+    GetPage(
+      name: Routes.FORGOT_PASSWORD,
+      page: () => const ForgotPasswordPage(),
+      binding: LoginBinding(),
+    ),
+    GetPage(
+      name: Routes.VERIFY_OTP,
+      page: () => const VerifyOtpPage(),
+      binding: LoginBinding(),
+    ),
+    GetPage(
+      name: Routes.RESET_PASSWORD,
+      page: () => const ResetPasswordPage(),
+      binding: LoginBinding(),
     ),
     GetPage(
       name: Routes.HOME,
@@ -110,6 +138,11 @@ class AppPages {
     GetPage(
       name: Routes.PROFILE,
       page: () => const ProfilePage(),
+      binding: ProfileBinding(),
+    ),
+    GetPage(
+      name: Routes.CHANGE_PASSWORD,
+      page: () => const ChangePasswordPage(),
       binding: ProfileBinding(),
     ),
     GetPage(

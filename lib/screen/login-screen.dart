@@ -200,7 +200,9 @@ class _LoginScreenState extends State<LoginScreen> {
                   const SizedBox(height: 24),
                   // Forgot password text
                   TextButton(
-                    onPressed: () {},
+                    onPressed: () {
+                      Get.toNamed(Routes.FORGOT_PASSWORD);
+                    },
                     child: const Text(
                       'Lupa Password?',
                       style: TextStyle(color: Colors.black54, fontSize: 14),
@@ -215,7 +217,9 @@ class _LoginScreenState extends State<LoginScreen> {
                         style: TextStyle(color: Colors.black54, fontSize: 14),
                       ),
                       TextButton(
-                        onPressed: () {},
+                        onPressed: () {
+                          Get.offNamed(Routes.REGISTRATION);
+                        },
                         style: TextButton.styleFrom(
                           padding: EdgeInsets.zero,
                           minimumSize: const Size(50, 30),

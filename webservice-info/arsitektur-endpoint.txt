@@ -900,6 +900,84 @@ Arsitektur endpoint
     }
 }
 
+
+A. POST /auth/forgot-password
+────────────────────────────────────────────────────────────────────────────────
+
+Frontend Request:
+POST /auth/forgot-password
+Content-Type: application/json
+
+{
+  "email": "user@example.com"
+}
+
+Response:
+{
+  "success": true,
+  "message": "Kode OTP telah dikirim ke email Anda. Gunakan kode: 0602"
+}
+
+Error Response:
+{
+  "success": false,
+  "message": "Email tidak terdaftar"
+}
+
+────────────────────────────────────────────────────────────────────────────────
+
+B. POST /auth/verify-otp
+────────────────────────────────────────────────────────────────────────────────
+
+Frontend Request:
+POST /auth/verify-otp
+Content-Type: application/json
+
+{
+  "email": "user@example.com",
+  "otp": "0602"
+}
+
+Response:
+{
+  "success": true,
+  "message": "Kode OTP valid"
+}
+
+Error Response:
+{
+  "success": false,
+  "message": "Kode OTP salah"
+}
+
+────────────────────────────────────────────────────────────────────────────────
+
+C. POST /auth/reset-password
+────────────────────────────────────────────────────────────────────────────────
+
+Frontend Request:
+POST /auth/reset-password
+Content-Type: application/json
+
+{
+  "email": "user@example.com",
+  "otp": "0602",
+  "new_password": "newpassword123",
+  "confirm_password": "newpassword123"
+}
+
+Response:
+{
+  "success": true,
+  "message": "Password berhasil diubah"
+}
+
+Error Response:
+{
+  "success": false,
+  "message": "Password tidak cocok"
+}
+
 # ===============================
 # ERROR RESPONSES
 # ===============================
