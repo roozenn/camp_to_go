@@ -5,6 +5,7 @@
  *    - flutter/material.dart
  *    - flutter_carousel_widget/flutter_carousel_widget.dart
  *    - camp_to_go/screen/my-home.dart
+ *    - font_awesome_flutter/font_awesome_flutter.dart
  * 
  * 2. Class Utama
  *    - HomePage (StatefulWidget)
@@ -71,6 +72,7 @@ import 'package:get/get.dart';
 import 'package:camp_to_go/controllers/home_controller.dart';
 import 'package:camp_to_go/routes/app_pages.dart';
 import 'package:camp_to_go/widgets/main_bottom_nav.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
 class HomePage extends StatelessWidget {
   const HomePage({super.key});
@@ -297,11 +299,11 @@ class _HomeContentState extends State<HomeContent> {
 
   Widget _buildCategoryMenu() {
     final List<Map<String, dynamic>> categories = [
-      {'icon': Icons.terrain, 'label': 'Tenda'},
-      {'icon': Icons.backpack, 'label': 'Tas'},
-      {'icon': Icons.bed, 'label': 'Tidur'},
-      {'icon': Icons.restaurant, 'label': 'Masak'},
-      {'icon': Icons.more_horiz, 'label': 'Semua'},
+      {'icon': Icons.terrain, 'label': 'Tenda', 'categoryId': 1},
+      {'icon': Icons.backpack, 'label': 'Tas', 'categoryId': 5},
+      {'icon': Icons.bed, 'label': 'Tidur', 'categoryId': 2},
+      {'icon': Icons.restaurant, 'label': 'Masak', 'categoryId': 3},
+      {'icon': FontAwesomeIcons.shoePrints, 'label': 'Sepatu', 'categoryId': 4},
     ];
 
     return Column(
@@ -315,8 +317,6 @@ class _HomeContentState extends State<HomeContent> {
                 'Kategori',
                 style: TextStyle(fontWeight: FontWeight.bold),
               ),
-              const Spacer(),
-              Text('Lihat Semua', style: TextStyle(color: Color(0xFF2F4E3E))),
             ],
           ),
         ),
@@ -326,34 +326,51 @@ class _HomeContentState extends State<HomeContent> {
           child: Row(
             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
             children: categories.map((category) {
-              return Column(
-                children: [
-                  Container(
-                    decoration: BoxDecoration(
-                      shape: BoxShape.circle,
-                      border: Border.all(
-                        color: Color(0xFF2F4E3E),
-                        width: 1,
+              return InkWell(
+                onTap: () => _onCategoryTap(category),
+                splashColor: Colors.white,
+                highlightColor: Colors.white,
+                child: Column(
+                  children: [
+                    Container(
+                      decoration: BoxDecoration(
+                        shape: BoxShape.circle,
+                        border: Border.all(
+                          color: Color(0xFF2F4E3E),
+                          width: 1,
+                        ),
+                      ),
+                      child: CircleAvatar(
+                        radius: 26,
+                        backgroundColor: Colors.white,
+                        child: Icon(
+                          category['icon'],
+                          color: Color(0xFF2F4E3E),
+                          size: 32,
+                        ),
                       ),
                     ),
-                    child: CircleAvatar(
-                      radius: 26,
-                      backgroundColor: Colors.white,
-                      child: Icon(
-                        category['icon'],
-                        color: Color(0xFF2F4E3E),
-                        size: 32,
-                      ),
-                    ),
-                  ),
-                  const SizedBox(height: 6),
-                  Text(category['label'], style: const TextStyle(fontSize: 12)),
-                ],
+                    const SizedBox(height: 6),
+                    Text(category['label'],
+                        style: const TextStyle(fontSize: 12)),
+                  ],
+                ),
               );
             }).toList(),
           ),
         ),
       ],
+    );
+  }
+
+  void _onCategoryTap(Map<String, dynamic> category) {
+    // Navigate to listing page with category filter
+    Get.toNamed(
+      Routes.LISTING,
+      arguments: {
+        'category': category['label'],
+        'categoryId': category['categoryId'],
+      },
     );
   }
 

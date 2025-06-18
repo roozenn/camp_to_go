@@ -1,84 +1,16 @@
-/*
- * 1. Import Statements
- *    - flutter/material.dart
- *    - get/get.dart
- *    - app_pages.dart (untuk navigasi)
- * 
- * 2. Class Utama
- *    - ProductListPage (StatelessWidget)
- *      - build() method
- *        - Scaffold dengan backgroundColor putih
- *        - SafeArea dengan Column layout:
- *          a. SearchAndFilterBar
- *          b. GridView.builder untuk produk
- * 
- * 3. Widget Methods (Urutan Implementasi)
- *    a. SearchAndFilterBar [Line ~100]
- *       - Row layout
- *       - TextField untuk pencarian
- *       - IconButton untuk sort
- *       - IconButton untuk filter
- * 
- *    b. _buildProductCard() [Line ~150]
- *       - InkWell untuk efek tap dan navigasi
- *       - Card layout dengan border radius
- *       - Column layout dengan:
- *         - Image.network untuk gambar produk
- *         - Text untuk nama produk
- *         - Text untuk harga saat ini
- *         - Row untuk harga asli dan diskon
- *       - Navigasi ke ProductDetailPage saat diklik
- *       - Loading indicator saat navigasi
- * 
- * 4. Data Statis
- *    - List products dalam ProductListPage:
- *      - 6 item produk camping
- *      - Setiap produk memiliki:
- *        * id: ID produk untuk navigasi
- *        * imageUrl: URL gambar produk
- *        * productName: Nama produk
- *        * currentPrice: Harga sewa per hari
- *        * originalPrice: Harga asli per hari
- *        * discount: Persentase diskon
- * 
- * 5. Styling
- *    - GridView.builder:
- *      - crossAxisCount: 2
- *      - childAspectRatio: 0.625
- *      - crossAxisSpacing: 10
- *      - mainAxisSpacing: 10
- *    - Card:
- *      - BorderRadius: 12
- *      - Padding: 12
- *    - InkWell:
- *      - BorderRadius: 12 (sesuai dengan card)
- *      - Efek splash saat diklik
- *    - Text Styles:
- *      - Product Name: bold, 15px
- *      - Current Price: bold, 14px, color: 0xFF2F4E3E
- *      - Original Price: 12px, grey, line-through
- *      - Discount: 12px, bold, red
- * 
- * 6. Navigasi
- *    - Menggunakan Get.toNamed() untuk navigasi ke ProductDetailPage
- *    - Passing productId sebagai argument
- *    - Loading indicator selama navigasi
- *    - Mencegah event bubble untuk tombol favorit
- */
-
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import '../controllers/listing_controller.dart';
+import '../controllers/favorite_controller.dart';
 import '../models/product_list_model.dart';
 import '../widgets/filter_dialog.dart';
-import '../routes/app_pages.dart';
+import '../widgets/main_bottom_nav.dart';
 
-class ProductListPage extends StatelessWidget {
-  const ProductListPage({super.key});
+class FavoritePage extends StatelessWidget {
+  const FavoritePage({super.key});
 
   @override
   Widget build(BuildContext context) {
-    final controller = Get.find<ListingController>();
+    final controller = Get.find<FavoriteController>();
 
     return Scaffold(
       backgroundColor: Colors.white,
@@ -128,20 +60,41 @@ class ProductListPage extends StatelessWidget {
             }),
             Expanded(
               child: Obx(() {
-                if (controller.isLoading.value && controller.products.isEmpty) {
+                if (controller.isLoading.value &&
+                    controller.favorites.isEmpty) {
                   return const Center(
                     child: CircularProgressIndicator(),
                   );
                 }
 
-                if (controller.products.isEmpty) {
+                if (controller.favorites.isEmpty) {
                   return const Center(
-                    child: Text(
-                      'Tidak ada produk ditemukan',
-                      style: TextStyle(
-                        fontSize: 16,
-                        color: Colors.grey,
-                      ),
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Icon(
+                          Icons.favorite_border,
+                          size: 64,
+                          color: Colors.grey,
+                        ),
+                        SizedBox(height: 16),
+                        Text(
+                          'Belum ada produk favorit',
+                          style: TextStyle(
+                            fontSize: 16,
+                            color: Colors.grey,
+                          ),
+                        ),
+                        SizedBox(height: 8),
+                        Text(
+                          'Tambahkan produk ke favorit untuk melihatnya di sini',
+                          style: TextStyle(
+                            fontSize: 14,
+                            color: Colors.grey,
+                          ),
+                          textAlign: TextAlign.center,
+                        ),
+                      ],
                     ),
                   );
                 }
@@ -152,7 +105,7 @@ class ProductListPage extends StatelessWidget {
                     children: [
                       Expanded(
                         child: RefreshIndicator(
-                          onRefresh: controller.refreshProducts,
+                          onRefresh: controller.refreshFavorites,
                           child: GridView.builder(
                             gridDelegate:
                                 const SliverGridDelegateWithFixedCrossAxisCount(
@@ -161,10 +114,11 @@ class ProductListPage extends StatelessWidget {
                               crossAxisSpacing: 10,
                               mainAxisSpacing: 10,
                             ),
-                            itemCount: controller.products.length,
+                            itemCount: controller.favorites.length,
                             itemBuilder: (context, index) {
-                              final product = controller.products[index];
-                              return _buildProductCard(product: product);
+                              final product = controller.favorites[index];
+                              return _buildProductCard(
+                                  product: product, controller: controller);
                             },
                           ),
                         ),
@@ -208,7 +162,7 @@ class ProductListPage extends StatelessWidget {
 }
 
 class SearchAndFilterBar extends StatelessWidget {
-  final ListingController controller;
+  final FavoriteController controller;
 
   const SearchAndFilterBar({super.key, required this.controller});
 
@@ -217,7 +171,7 @@ class SearchAndFilterBar extends StatelessWidget {
     return Row(
       children: [
         GestureDetector(
-          onTap: () => Get.back(),
+          onTap: () => Get.offAllNamed('/account'),
           child: const Icon(
             Icons.arrow_back,
             size: 24,
@@ -231,7 +185,7 @@ class SearchAndFilterBar extends StatelessWidget {
             onSubmitted: controller.updateSearchQuery,
             decoration: InputDecoration(
               prefixIcon: const Icon(Icons.search),
-              hintText: 'Cari produk...',
+              hintText: 'Cari produk favorit...',
               border: OutlineInputBorder(
                 borderRadius: BorderRadius.circular(12),
               ),
@@ -276,6 +230,8 @@ class SearchAndFilterBar extends StatelessWidget {
                       FilterDialog(
                         onApplyFilter: controller.applyFilters,
                         currentFilters: controller.getCurrentFilters(),
+                        showCategoryFilter:
+                            true, // Show category filter for favorites
                       ),
                     );
                   },
@@ -300,42 +256,28 @@ class SearchAndFilterBar extends StatelessWidget {
   }
 }
 
-Widget _buildProductCard({required ProductItemModel product}) {
-  return InkWell(
-    onTap: () async {
-      // Tampilkan loading indicator
-      Get.dialog(
-        const Center(
-          child: CircularProgressIndicator(
-            valueColor: AlwaysStoppedAnimation<Color>(Color(0xFF2F4E3E)),
-          ),
-        ),
-        barrierDismissible: false,
-      );
-
-      // Navigasi ke halaman detail produk
-      await Get.toNamed(
-        Routes.PRODUCT_DETAIL,
-        arguments: {'productId': product.id},
-      );
-
-      // Tutup loading indicator
-      Get.back();
-    },
-    borderRadius: BorderRadius.circular(12),
-    child: Card(
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Padding(
-            padding: const EdgeInsets.all(12),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Stack(
-                  children: [
-                    Image.network(
+Widget _buildProductCard({
+  required ProductItemModel product,
+  required FavoriteController controller,
+}) {
+  return Card(
+    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+    child: Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Padding(
+          padding: const EdgeInsets.all(12),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Stack(
+                children: [
+                  GestureDetector(
+                    onTap: () {
+                      Get.toNamed('/product-detail',
+                          arguments: {'productId': product.id});
+                    },
+                    child: Image.network(
                       product.imageUrl,
                       height: 150,
                       width: double.infinity,
@@ -349,20 +291,16 @@ Widget _buildProductCard({required ProductItemModel product}) {
                         );
                       },
                     ),
-                    Positioned(
-                      top: 8,
-                      right: 8,
-                      child: GestureDetector(
-                        onTap: () {
-                          // Mencegah event tap bubble ke parent
-                          // TODO: Implement favorite toggle
-                        },
-                      ),
-                    ),
-                  ],
-                ),
-                const SizedBox(height: 8),
-                Text(
+                  ),
+                ],
+              ),
+              const SizedBox(height: 8),
+              GestureDetector(
+                onTap: () {
+                  Get.toNamed('/product-detail',
+                      arguments: {'productId': product.id});
+                },
+                child: Text(
                   product.name,
                   maxLines: 2,
                   overflow: TextOverflow.ellipsis,
@@ -371,59 +309,59 @@ Widget _buildProductCard({required ProductItemModel product}) {
                     fontSize: 15,
                   ),
                 ),
-                const SizedBox(height: 4),
-                Row(
-                  children: [
-                    Icon(Icons.star, size: 16, color: Colors.amber),
-                    const SizedBox(width: 4),
-                    Text(
-                      product.rating.toStringAsFixed(1),
-                      style: const TextStyle(fontSize: 12),
-                    ),
-                    const SizedBox(width: 4),
-                    Text(
-                      '(${product.reviewCount})',
-                      style: const TextStyle(fontSize: 12, color: Colors.grey),
-                    ),
-                  ],
-                ),
-                const SizedBox(height: 12),
-                Text(
-                  'Rp${product.pricePerDay.toStringAsFixed(0)}/hari',
-                  style: const TextStyle(
-                    color: Color(0xFF2F4E3E),
-                    fontWeight: FontWeight.bold,
-                    fontSize: 14,
+              ),
+              const SizedBox(height: 4),
+              Row(
+                children: [
+                  const Icon(Icons.star, size: 16, color: Colors.amber),
+                  const SizedBox(width: 4),
+                  Text(
+                    product.rating.toStringAsFixed(1),
+                    style: const TextStyle(fontSize: 12),
                   ),
+                  const SizedBox(width: 4),
+                  Text(
+                    '(${product.reviewCount})',
+                    style: const TextStyle(fontSize: 12, color: Colors.grey),
+                  ),
+                ],
+              ),
+              const SizedBox(height: 12),
+              Text(
+                'Rp${product.pricePerDay.toStringAsFixed(0)}/hari',
+                style: const TextStyle(
+                  color: Color(0xFF2F4E3E),
+                  fontWeight: FontWeight.bold,
+                  fontSize: 14,
                 ),
-                const SizedBox(height: 2),
-                Row(
-                  children: [
-                    Text(
-                      'Rp${product.originalPrice.toStringAsFixed(0)}/hari',
-                      style: const TextStyle(
-                        decoration: TextDecoration.lineThrough,
-                        fontSize: 12,
-                        color: Colors.grey,
-                      ),
+              ),
+              const SizedBox(height: 2),
+              Row(
+                children: [
+                  Text(
+                    'Rp${product.originalPrice.toStringAsFixed(0)}/hari',
+                    style: const TextStyle(
+                      decoration: TextDecoration.lineThrough,
+                      fontSize: 12,
+                      color: Colors.grey,
                     ),
-                    const SizedBox(width: 8),
-                    const Spacer(),
-                    Text(
-                      '${product.discountPercentage}%',
-                      style: const TextStyle(
-                        fontSize: 12,
-                        fontWeight: FontWeight.bold,
-                        color: Colors.red,
-                      ),
+                  ),
+                  const SizedBox(width: 8),
+                  const Spacer(),
+                  Text(
+                    '${product.discountPercentage}%',
+                    style: const TextStyle(
+                      fontSize: 12,
+                      fontWeight: FontWeight.bold,
+                      color: Colors.red,
                     ),
-                  ],
-                ),
-              ],
-            ),
+                  ),
+                ],
+              ),
+            ],
           ),
-        ],
-      ),
+        ),
+      ],
     ),
   );
 }

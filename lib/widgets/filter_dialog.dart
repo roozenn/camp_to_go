@@ -4,11 +4,13 @@ import 'package:get/get.dart';
 class FilterDialog extends StatefulWidget {
   final Function(Map<String, dynamic>) onApplyFilter;
   final Map<String, dynamic> currentFilters;
+  final bool showCategoryFilter;
 
   const FilterDialog({
     super.key,
     required this.onApplyFilter,
     required this.currentFilters,
+    this.showCategoryFilter = true,
   });
 
   @override
@@ -123,31 +125,33 @@ class _FilterDialogState extends State<FilterDialog> {
             const SizedBox(height: 20),
 
             // Categories Section
-            const Text(
-              'Kategori',
-              style: TextStyle(
-                fontSize: 16,
-                fontWeight: FontWeight.w600,
+            if (widget.showCategoryFilter) ...[
+              const Text(
+                'Kategori',
+                style: TextStyle(
+                  fontSize: 16,
+                  fontWeight: FontWeight.w600,
+                ),
               ),
-            ),
-            const SizedBox(height: 12),
-            Column(
-              children: categories.map((category) {
-                return RadioListTile<String>(
-                  title: Text(category),
-                  value: category,
-                  groupValue: selectedCategory,
-                  onChanged: (value) {
-                    setState(() {
-                      selectedCategory = value;
-                    });
-                  },
-                  contentPadding: EdgeInsets.zero,
-                  dense: true,
-                );
-              }).toList(),
-            ),
-            const SizedBox(height: 24),
+              const SizedBox(height: 12),
+              Column(
+                children: categories.map((category) {
+                  return RadioListTile<String>(
+                    title: Text(category),
+                    value: category,
+                    groupValue: selectedCategory,
+                    onChanged: (value) {
+                      setState(() {
+                        selectedCategory = value;
+                      });
+                    },
+                    contentPadding: EdgeInsets.zero,
+                    dense: true,
+                  );
+                }).toList(),
+              ),
+              const SizedBox(height: 24),
+            ],
 
             // Price Range Section
             const Text(

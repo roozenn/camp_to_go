@@ -6,7 +6,9 @@ import '../models/payment_method_model.dart';
 import '../controllers/payment_controller.dart';
 
 class PembayaranPage extends StatefulWidget {
-  const PembayaranPage({super.key});
+  final bool isFromAccount;
+
+  const PembayaranPage({super.key, this.isFromAccount = false});
 
   @override
   State<PembayaranPage> createState() => _PembayaranPageState();
@@ -44,189 +46,195 @@ class _PembayaranPageState extends State<PembayaranPage> {
   }
 
   void _selectDefaultPaymentMethod() {
-    final defaultIndex = _paymentService.paymentMethods.indexWhere(
-      (method) => method.isDefault,
-    );
-    if (defaultIndex != -1) {
-      setState(() {
-        selectedPaymentIndex = defaultIndex;
-      });
+    // Ambil argument dari Get.arguments jika ada
+    final Map<String, dynamic>? arguments =
+        Get.arguments as Map<String, dynamic>?;
+    final bool fromAccount =
+        arguments?['isFromAccount'] ?? widget.isFromAccount;
+
+    // Hanya pilih default jika bukan dari akun-page
+    if (!fromAccount) {
+      final defaultIndex = _paymentService.paymentMethods.indexWhere(
+        (method) => method.isDefault,
+      );
+      if (defaultIndex != -1) {
+        setState(() {
+          selectedPaymentIndex = defaultIndex;
+        });
+      }
     }
   }
 
   void _showAddPaymentMethodDialog() {
-    String selectedMethodType = METHOD_TYPES[0];
-    String selectedProvider = PROVIDERS[selectedMethodType]![0];
+    final RxString selectedMethodType = METHOD_TYPES[0].obs;
+    final RxString selectedProvider = PROVIDERS[METHOD_TYPES[0]]![0].obs;
     final accountNumberController = TextEditingController();
     final accountNameController = TextEditingController();
-    bool isDefault = false;
+    final RxBool isDefault = false.obs;
 
-    showDialog(
-      context: context,
-      builder: (context) => StatefulBuilder(
-        builder: (context, setState) => AlertDialog(
-          title: const Text('Tambah Metode Pembayaran'),
-          content: SingleChildScrollView(
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                // Dropdown untuk tipe metode pembayaran
-                DropdownButtonFormField<String>(
-                  value: selectedMethodType,
-                  decoration: const InputDecoration(
-                    labelText: 'Tipe Metode Pembayaran',
-                    border: OutlineInputBorder(),
-                  ),
-                  items: METHOD_TYPES.map((type) {
-                    String label;
-                    switch (type) {
-                      case 'bank_transfer':
-                        label = 'Transfer Bank';
-                        break;
-                      case 'ewallet':
-                        label = 'E-Wallet';
-                        break;
-                      case 'credit_card':
-                        label = 'Kartu Kredit';
-                        break;
-                      default:
-                        label = type;
-                    }
-                    return DropdownMenuItem(
-                      value: type,
-                      child: Text(label),
-                    );
-                  }).toList(),
-                  onChanged: (value) {
-                    if (value != null) {
-                      setState(() {
-                        selectedMethodType = value;
-                        selectedProvider = PROVIDERS[value]![0];
-                      });
-                    }
-                  },
+    Get.dialog(
+      AlertDialog(
+        title: const Text('Tambah Metode Pembayaran'),
+        content: SingleChildScrollView(
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              // Dropdown untuk tipe metode pembayaran
+              Obx(() => DropdownButtonFormField<String>(
+                    value: selectedMethodType.value,
+                    decoration: const InputDecoration(
+                      labelText: 'Tipe Metode Pembayaran',
+                      border: OutlineInputBorder(),
+                    ),
+                    items: METHOD_TYPES.map((type) {
+                      String label;
+                      switch (type) {
+                        case 'bank_transfer':
+                          label = 'Transfer Bank';
+                          break;
+                        case 'ewallet':
+                          label = 'E-Wallet';
+                          break;
+                        case 'credit_card':
+                          label = 'Kartu Kredit';
+                          break;
+                        default:
+                          label = type;
+                      }
+                      return DropdownMenuItem(
+                        value: type,
+                        child: Text(label),
+                      );
+                    }).toList(),
+                    onChanged: (value) {
+                      if (value != null) {
+                        selectedMethodType.value = value;
+                        selectedProvider.value = PROVIDERS[value]![0];
+                      }
+                    },
+                  )),
+              const SizedBox(height: 16),
+
+              // Dropdown untuk provider
+              Obx(() => DropdownButtonFormField<String>(
+                    value: selectedProvider.value,
+                    decoration: const InputDecoration(
+                      labelText: 'Provider',
+                      border: OutlineInputBorder(),
+                    ),
+                    items: PROVIDERS[selectedMethodType.value]!.map((provider) {
+                      return DropdownMenuItem(
+                        value: provider,
+                        child: Text(provider),
+                      );
+                    }).toList(),
+                    onChanged: (value) {
+                      if (value != null) {
+                        selectedProvider.value = value;
+                      }
+                    },
+                  )),
+              const SizedBox(height: 16),
+
+              // TextField untuk nomor rekening
+              TextField(
+                controller: accountNumberController,
+                decoration: const InputDecoration(
+                  labelText: 'Nomor Rekening',
+                  border: OutlineInputBorder(),
                 ),
-                const SizedBox(height: 16),
-
-                // Dropdown untuk provider
-                DropdownButtonFormField<String>(
-                  value: selectedProvider,
-                  decoration: const InputDecoration(
-                    labelText: 'Provider',
-                    border: OutlineInputBorder(),
-                  ),
-                  items: PROVIDERS[selectedMethodType]!.map((provider) {
-                    return DropdownMenuItem(
-                      value: provider,
-                      child: Text(provider),
-                    );
-                  }).toList(),
-                  onChanged: (value) {
-                    if (value != null) {
-                      setState(() {
-                        selectedProvider = value;
-                      });
-                    }
-                  },
-                ),
-                const SizedBox(height: 16),
-
-                // TextField untuk nomor rekening
-                TextField(
-                  controller: accountNumberController,
-                  decoration: const InputDecoration(
-                    labelText: 'Nomor Rekening',
-                    border: OutlineInputBorder(),
-                  ),
-                  keyboardType: TextInputType.number,
-                ),
-                const SizedBox(height: 16),
-
-                // TextField untuk nama pemilik rekening
-                TextField(
-                  controller: accountNameController,
-                  decoration: const InputDecoration(
-                    labelText: 'Nama Pemilik Rekening',
-                    border: OutlineInputBorder(),
-                  ),
-                ),
-                const SizedBox(height: 16),
-
-                // Switch untuk isDefault
-                SwitchListTile(
-                  title: const Text('Set sebagai metode default'),
-                  value: isDefault,
-                  onChanged: (value) {
-                    setState(() {
-                      isDefault = value;
-                    });
-                  },
-                ),
-              ],
-            ),
-          ),
-          actions: [
-            TextButton(
-              onPressed: () => Navigator.pop(context),
-              child: const Text('Batal'),
-            ),
-            ElevatedButton(
-              onPressed: () async {
-                if (accountNumberController.text.isEmpty ||
-                    accountNameController.text.isEmpty) {
-                  Get.snackbar(
-                    'Peringatan',
-                    'Semua field harus diisi',
-                    snackPosition: SnackPosition.BOTTOM,
-                    backgroundColor: Colors.red[100],
-                    colorText: Colors.red[900],
-                  );
-                  return;
-                }
-
-                try {
-                  await _paymentService.addPaymentMethod(
-                    methodType: selectedMethodType,
-                    providerName: selectedProvider,
-                    accountNumber: accountNumberController.text,
-                    accountName: accountNameController.text,
-                    isDefault: isDefault,
-                  );
-
-                  Navigator.pop(context);
-                  _loadPaymentMethods(); // Refresh list
-
-                  Get.snackbar(
-                    'Berhasil',
-                    'Metode pembayaran berhasil ditambahkan',
-                    snackPosition: SnackPosition.TOP,
-                    backgroundColor: Colors.green[100],
-                    colorText: Colors.green[900],
-                  );
-                } catch (e) {
-                  Get.snackbar(
-                    'Error',
-                    'Gagal menambahkan metode pembayaran: $e',
-                    snackPosition: SnackPosition.BOTTOM,
-                    backgroundColor: Colors.red[100],
-                    colorText: Colors.red[900],
-                  );
-                }
-              },
-              style: ElevatedButton.styleFrom(
-                backgroundColor: const Color(0xFF2F4E3E),
-                foregroundColor: Colors.white,
+                keyboardType: TextInputType.number,
               ),
-              child: const Text('Simpan'),
-            ),
-          ],
+              const SizedBox(height: 16),
+
+              // TextField untuk nama pemilik rekening
+              TextField(
+                controller: accountNameController,
+                decoration: const InputDecoration(
+                  labelText: 'Nama Pemilik Rekening',
+                  border: OutlineInputBorder(),
+                ),
+              ),
+              const SizedBox(height: 16),
+
+              // Switch untuk isDefault
+              Obx(() => SwitchListTile(
+                    title: const Text('Set sebagai metode default'),
+                    value: isDefault.value,
+                    onChanged: (value) {
+                      isDefault.value = value;
+                    },
+                  )),
+            ],
+          ),
         ),
+        actions: [
+          TextButton(
+            onPressed: () => Get.back(),
+            child: const Text('Batal'),
+          ),
+          ElevatedButton(
+            onPressed: () async {
+              if (accountNumberController.text.isEmpty ||
+                  accountNameController.text.isEmpty) {
+                Get.snackbar(
+                  'Peringatan',
+                  'Semua field harus diisi',
+                  snackPosition: SnackPosition.BOTTOM,
+                  backgroundColor: Colors.red[100],
+                  colorText: Colors.red[900],
+                );
+                return;
+              }
+
+              try {
+                await _paymentService.addPaymentMethod(
+                  methodType: selectedMethodType.value,
+                  providerName: selectedProvider.value,
+                  accountNumber: accountNumberController.text,
+                  accountName: accountNameController.text,
+                  isDefault: isDefault.value,
+                );
+
+                Get.back();
+                _loadPaymentMethods(); // Refresh list
+
+                Get.snackbar(
+                  'Berhasil',
+                  'Metode pembayaran berhasil ditambahkan',
+                  snackPosition: SnackPosition.TOP,
+                  backgroundColor: Colors.green[100],
+                  colorText: Colors.green[900],
+                );
+              } catch (e) {
+                Get.snackbar(
+                  'Error',
+                  'Gagal menambahkan metode pembayaran: $e',
+                  snackPosition: SnackPosition.BOTTOM,
+                  backgroundColor: Colors.red[100],
+                  colorText: Colors.red[900],
+                );
+              }
+            },
+            style: ElevatedButton.styleFrom(
+              backgroundColor: const Color(0xFF2F4E3E),
+              foregroundColor: Colors.white,
+            ),
+            child: const Text('Simpan'),
+          ),
+        ],
       ),
     );
   }
 
   @override
   Widget build(BuildContext context) {
+    // Ambil argument dari Get.arguments jika ada
+    final Map<String, dynamic>? arguments =
+        Get.arguments as Map<String, dynamic>?;
+    final bool fromAccount =
+        arguments?['isFromAccount'] ?? widget.isFromAccount;
+
     return Scaffold(
       appBar: AppBar(
         elevation: 0,
@@ -281,7 +289,8 @@ class _PembayaranPageState extends State<PembayaranPage> {
           itemCount: _paymentService.paymentMethods.length,
           itemBuilder: (context, index) {
             final method = _paymentService.paymentMethods[index];
-            final isSelected = selectedPaymentIndex == index;
+            final isSelected =
+                fromAccount ? false : selectedPaymentIndex == index;
 
             return Container(
               margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
@@ -357,7 +366,7 @@ class _PembayaranPageState extends State<PembayaranPage> {
                           style: TextStyle(color: Colors.white, fontSize: 12),
                         ),
                       ),
-                    if (isSelected)
+                    if (!fromAccount && isSelected)
                       Container(
                         width: 24,
                         height: 24,
@@ -373,73 +382,79 @@ class _PembayaranPageState extends State<PembayaranPage> {
                       ),
                   ],
                 ),
-                onTap: () {
-                  setState(() {
-                    selectedPaymentIndex = index;
-                  });
-                },
+                onTap: fromAccount
+                    ? null
+                    : () {
+                        setState(() {
+                          selectedPaymentIndex = index;
+                        });
+                      },
               ),
             );
           },
         );
       }),
-      floatingActionButton: Container(
-        padding: const EdgeInsets.symmetric(horizontal: 16),
-        width: double.infinity,
-        child: FloatingActionButton.extended(
-          onPressed: () async {
-            if (selectedPaymentIndex == -1) {
-              Get.snackbar(
-                'Peringatan',
-                'Silakan pilih metode pembayaran terlebih dahulu',
-                snackPosition: SnackPosition.BOTTOM,
-                backgroundColor: Colors.red[100],
-                colorText: Colors.red[900],
-                margin: const EdgeInsets.all(16),
-                duration: const Duration(seconds: 2),
-                icon:
-                    const Icon(Icons.warning_amber_rounded, color: Colors.red),
-              );
-              return;
-            }
+      floatingActionButton: fromAccount
+          ? null
+          : Container(
+              padding: const EdgeInsets.symmetric(horizontal: 16),
+              width: double.infinity,
+              child: FloatingActionButton.extended(
+                onPressed: () async {
+                  if (selectedPaymentIndex == -1) {
+                    Get.snackbar(
+                      'Peringatan',
+                      'Silakan pilih metode pembayaran terlebih dahulu',
+                      snackPosition: SnackPosition.BOTTOM,
+                      backgroundColor: Colors.red[100],
+                      colorText: Colors.red[900],
+                      margin: const EdgeInsets.all(16),
+                      duration: const Duration(seconds: 2),
+                      icon: const Icon(Icons.warning_amber_rounded,
+                          color: Colors.red),
+                    );
+                    return;
+                  }
 
-            // Tampilkan loading indicator
-            Get.dialog(
-              const Center(
-                child: CircularProgressIndicator(),
+                  // Tampilkan loading indicator
+                  Get.dialog(
+                    const Center(
+                      child: CircularProgressIndicator(),
+                    ),
+                    barrierDismissible: false,
+                  );
+
+                  // Ambil payment method yang dipilih
+                  final selectedPaymentMethod =
+                      _paymentService.paymentMethods[selectedPaymentIndex];
+
+                  // Buat order
+                  final success = await _paymentController.createOrder(
+                    selectedPaymentMethodId: selectedPaymentMethod.id,
+                    notes:
+                        null, // Bisa ditambahkan field untuk notes jika diperlukan
+                  );
+
+                  // Tutup loading dialog
+                  Get.back();
+
+                  if (!success) {
+                    // Error sudah ditangani di PaymentController
+                    return;
+                  }
+                },
+                backgroundColor: const Color(0xFF2F4E3E),
+                label: const Text(
+                  'Bayar Sekarang',
+                  style: TextStyle(
+                    fontSize: 16,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
               ),
-              barrierDismissible: false,
-            );
-
-            // Ambil payment method yang dipilih
-            final selectedPaymentMethod =
-                _paymentService.paymentMethods[selectedPaymentIndex];
-
-            // Buat order
-            final success = await _paymentController.createOrder(
-              selectedPaymentMethodId: selectedPaymentMethod.id,
-              notes: null, // Bisa ditambahkan field untuk notes jika diperlukan
-            );
-
-            // Tutup loading dialog
-            Get.back();
-
-            if (!success) {
-              // Error sudah ditangani di PaymentController
-              return;
-            }
-          },
-          backgroundColor: const Color(0xFF2F4E3E),
-          label: const Text(
-            'Bayar Sekarang',
-            style: TextStyle(
-              fontSize: 16,
-              fontWeight: FontWeight.bold,
             ),
-          ),
-        ),
-      ),
-      floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
+      floatingActionButtonLocation:
+          fromAccount ? null : FloatingActionButtonLocation.centerFloat,
     );
   }
 

@@ -37,9 +37,23 @@ class AkunPage extends StatelessWidget {
             'Profil',
             onTap: () => Get.toNamed('/profile'),
           ),
-          _buildMenuItem(Icons.favorite_border, 'Favorit'),
-          _buildMenuItem(Icons.location_on_outlined, 'Alamat'),
-          _buildMenuItem(Icons.payment_outlined, 'Metode Pembayaran'),
+          _buildMenuItem(
+            Icons.favorite_border,
+            'Favorit',
+            onTap: () => Get.toNamed('/favorite'),
+          ),
+          _buildMenuItem(
+            Icons.location_on_outlined,
+            'Alamat',
+            onTap: () => Get.toNamed('/address-list',
+                arguments: {'isFromAccount': true}),
+          ),
+          _buildMenuItem(
+            Icons.payment_outlined,
+            'Metode Pembayaran',
+            onTap: () =>
+                Get.toNamed('/payment', arguments: {'isFromAccount': true}),
+          ),
           _buildMenuItem(
             Icons.logout,
             'Logout',

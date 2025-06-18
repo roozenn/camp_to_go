@@ -40,6 +40,7 @@ dependencies:
   dio: ^5.4.0
   intl: ^0.18.1
   shared_preferences: ^2.5.3
+  font_awesome_flutter: ^10.7.0
 
 dev_dependencies:
   flutter_test:

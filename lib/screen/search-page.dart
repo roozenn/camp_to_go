@@ -161,7 +161,7 @@ class _SearchPageState extends State<SearchPage> {
                               _controller.text = suggestion;
                               _searchController.updateSearchQuery(suggestion);
                               // Navigate to listing page with search query
-                              Get.offNamed('/listing',
+                              Get.toNamed('/listing',
                                   arguments: {'search': suggestion});
                             },
                             child: Row(

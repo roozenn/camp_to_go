@@ -3,10 +3,10 @@ import 'package:get/get.dart';
 import '../services/api_service.dart';
 import '../models/product_list_model.dart';
 
-class ListingController extends GetxController {
+class FavoriteController extends GetxController {
   final ApiService _apiService = Get.find<ApiService>();
 
-  final RxList<ProductItemModel> products = <ProductItemModel>[].obs;
+  final RxList<ProductItemModel> favorites = <ProductItemModel>[].obs;
   final RxBool isLoading = false.obs;
   final RxString searchQuery = ''.obs;
   final RxString sortBy = ''.obs;
@@ -26,7 +26,7 @@ class ListingController extends GetxController {
   // Category mapping
   final Map<String, int> categoryMapping = {
     'Tenda': 1,
-    'Tidur': 2,
+    'Alat Tidur': 2,
     'Masak': 3,
     'Sepatu': 4,
     'Tas': 5,
@@ -35,28 +35,11 @@ class ListingController extends GetxController {
   @override
   void onInit() {
     super.onInit();
-    // Get arguments from route
-    final args = Get.arguments;
-    if (args != null && args is Map<String, dynamic>) {
-      // Handle search query
-      final search = args['search'];
-      if (search != null && search is String) {
-        searchQuery.value = search;
-      }
-
-      // Handle category filter
-      final category = args['category'];
-      if (category != null && category is String) {
-        selectedCategory.value = category;
-        hasActiveFilters.value = true;
-      }
-    }
-    // Always load products on init
-    loadProducts();
+    loadFavorites();
   }
 
-  // Load products with current filters
-  Future<void> loadProducts({bool refresh = false}) async {
+  // Load favorites with current filters
+  Future<void> loadFavorites({bool refresh = false}) async {
     if (refresh) {
       currentPage.value = 1;
     }
@@ -69,7 +52,7 @@ class ListingController extends GetxController {
         categoryId = categoryMapping[selectedCategory.value];
       }
 
-      final result = await _apiService.getProducts(
+      final result = await _apiService.getFavorites(
         categoryId: categoryId,
         search: searchQuery.value.isNotEmpty ? searchQuery.value : null,
         sortBy: sortBy.value.isNotEmpty ? sortBy.value : null,
@@ -81,22 +64,22 @@ class ListingController extends GetxController {
 
       if (result.success) {
         if (refresh) {
-          products.clear();
+          favorites.clear();
         }
-        products.addAll(result.products);
+        favorites.addAll(result.products);
 
         hasNextPage.value = result.pagination.hasNext;
         hasPrevPage.value = result.pagination.hasPrev;
         totalItems.value = result.pagination.totalItems;
       }
     } catch (e) {
-      print('Error loading products: $e');
+      print('Error loading favorites: $e');
     } finally {
       isLoading.value = false;
     }
   }
 
-  // Update search query and reload products with debouncing
+  // Update search query and reload favorites with debouncing
   void updateSearchQuery(String query) {
     searchQuery.value = query;
 
@@ -105,14 +88,14 @@ class ListingController extends GetxController {
 
     // Set new timer for debouncing (500ms delay)
     _debounceTimer = Timer(const Duration(milliseconds: 500), () {
-      loadProducts(refresh: true);
+      loadFavorites(refresh: true);
     });
   }
 
-  // Update sort and reload products
+  // Update sort and reload favorites
   void updateSort(String sort) {
     sortBy.value = sort;
-    loadProducts(refresh: true);
+    loadFavorites(refresh: true);
   }
 
   // Apply filters
@@ -126,7 +109,7 @@ class ListingController extends GetxController {
         minPrice.value > 0 ||
         maxPrice.value > 0;
 
-    loadProducts(refresh: true);
+    loadFavorites(refresh: true);
   }
 
   // Clear all filters
@@ -135,7 +118,7 @@ class ListingController extends GetxController {
     minPrice.value = 0.0;
     maxPrice.value = 0.0;
     hasActiveFilters.value = false;
-    loadProducts(refresh: true);
+    loadFavorites(refresh: true);
   }
 
   // Get current filters for dialog
@@ -151,7 +134,7 @@ class ListingController extends GetxController {
   void loadNextPage() {
     if (hasNextPage.value && !isLoading.value) {
       currentPage.value++;
-      loadProducts();
+      loadFavorites();
     }
   }
 
@@ -159,13 +142,24 @@ class ListingController extends GetxController {
   void loadPrevPage() {
     if (hasPrevPage.value && !isLoading.value && currentPage.value > 1) {
       currentPage.value--;
-      loadProducts();
+      loadFavorites();
     }
   }
 
-  // Refresh products
-  Future<void> refreshProducts() async {
-    await loadProducts(refresh: true);
+  // Refresh favorites
+  Future<void> refreshFavorites() async {
+    await loadFavorites(refresh: true);
+  }
+
+  // Remove from favorites
+  Future<void> removeFromFavorites(int productId) async {
+    try {
+      // Call API to remove from favorites
+      // For now, just refresh the list
+      await refreshFavorites();
+    } catch (e) {
+      print('Error removing from favorites: $e');
+    }
   }
 
   @override

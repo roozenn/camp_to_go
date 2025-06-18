@@ -11,12 +11,14 @@ import 'package:camp_to_go/screen/address-list-screen.dart';
 import 'package:camp_to_go/screen/payment-page.dart';
 import 'package:camp_to_go/screen/search-page.dart';
 import 'package:camp_to_go/screen/listing-page.dart';
+import 'package:camp_to_go/screen/favorite-page.dart';
 import 'package:camp_to_go/bindings/home_binding.dart' as bindings;
 import 'package:camp_to_go/bindings/product_detail_binding.dart';
 import 'package:camp_to_go/bindings/transaction_binding.dart';
 import 'package:camp_to_go/bindings/profile_binding.dart';
 import 'package:camp_to_go/bindings/search_binding.dart';
 import 'package:camp_to_go/bindings/listing_binding.dart';
+import 'package:camp_to_go/bindings/favorite_binding.dart';
 import 'package:camp_to_go/middleware/home_middleware.dart';
 import '../bindings/address_binding.dart';
 import '../bindings/payment_binding.dart';
@@ -109,6 +111,12 @@ class AppPages {
       name: Routes.PROFILE,
       page: () => const ProfilePage(),
       binding: ProfileBinding(),
+    ),
+    GetPage(
+      name: Routes.FAVORITE,
+      page: () => const FavoritePage(),
+      binding: FavoriteBinding(),
+      middlewares: [HomeMiddleware()],
     ),
   ];
 }

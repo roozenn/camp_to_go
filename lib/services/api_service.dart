@@ -383,4 +383,78 @@ class ApiService extends GetxService {
       rethrow;
     }
   }
+
+  // Get Favorites
+  Future<ProductListModel> getFavorites({
+    int? categoryId,
+    String? search,
+    double? minPrice,
+    double? maxPrice,
+    String? sortBy,
+    int page = 1,
+    int limit = 20,
+  }) async {
+    try {
+      final queryParams = <String, String>{};
+
+      if (categoryId != null)
+        queryParams['category_id'] = categoryId.toString();
+      if (search != null && search.isNotEmpty) queryParams['search'] = search;
+      if (minPrice != null) queryParams['min_price'] = minPrice.toString();
+      if (maxPrice != null) queryParams['max_price'] = maxPrice.toString();
+      if (sortBy != null) queryParams['sort_by'] = sortBy;
+      queryParams['page'] = page.toString();
+      queryParams['limit'] = limit.toString();
+
+      final response =
+          await _dio.get('/favorites', queryParameters: queryParams);
+      print('Favorites Response: ${response.data}'); // Debug print
+
+      if (response.statusCode == 200) {
+        final data = response.data;
+        if (data['success'] == true) {
+          // Convert favorites data to ProductListModel format
+          final List<dynamic> favoritesData = data['data'] ?? [];
+          final List<ProductItemModel> products = favoritesData.map((item) {
+            return ProductItemModel(
+              id: item['id'] ?? 0,
+              name: item['name'] ?? '',
+              pricePerDay: (item['price_per_day'] ?? 0).toDouble(),
+              originalPrice: (item['original_price'] ?? 0).toDouble(),
+              discountPercentage: item['discount_percentage'] ?? 0,
+              rating: (item['rating'] ?? 0).toDouble(),
+              reviewCount: item['review_count'] ?? 0,
+              imageUrl: item['image_url'] ?? '',
+              isFavorited: true, // Always true since this is favorites list
+            );
+          }).toList();
+
+          return ProductListModel(
+            success: true,
+            products: products,
+            pagination: PaginationModel(
+              currentPage: page,
+              totalPages: 1, // Since favorites don't have pagination info
+              totalItems: products.length,
+              hasNext: false,
+              hasPrev: false,
+            ),
+          );
+        }
+      }
+
+      return ProductListModel(
+        success: false,
+        products: [],
+        pagination: PaginationModel.empty(),
+      );
+    } catch (e) {
+      print('Error getting favorites: $e');
+      return ProductListModel(
+        success: false,
+        products: [],
+        pagination: PaginationModel.empty(),
+      );
+    }
+  }
 }
