@@ -113,4 +113,41 @@ class TransactionController extends GetxController {
   String formatCurrency(double amount) {
     return 'Rp ${amount.toStringAsFixed(0)}';
   }
+
+  Future<bool> returnItem(String orderId) async {
+    try {
+      // Tunggu token dimuat
+      await authController.loadToken();
+
+      if (!_tokenService.isLoggedIn) {
+        error.value = 'Anda belum login';
+        return false;
+      }
+
+      final response = await http.post(
+        Uri.parse('$baseUrl/orders/$orderId/return'),
+        headers: _tokenService.getAuthHeader(),
+      );
+
+      if (response.statusCode == 200) {
+        final data = json.decode(response.body);
+
+        if (data['success'] == true) {
+          // Refresh data transaksi setelah pengembalian berhasil
+          await fetchTransactions();
+          return true;
+        } else {
+          error.value = data['message'] ?? 'Gagal mengembalikan barang';
+          return false;
+        }
+      } else {
+        error.value = 'Gagal mengembalikan barang';
+        return false;
+      }
+    } catch (e) {
+      print('Error returning item: $e');
+      error.value = 'Terjadi kesalahan: $e';
+      return false;
+    }
+  }
 }

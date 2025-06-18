@@ -107,15 +107,73 @@ class _TransaksiPageState extends State<TransaksiPage> {
                                   color: Colors.transparent,
                                   child: InkWell(
                                     borderRadius: BorderRadius.circular(6),
-                                    onTap: () {
-                                      // TODO: Implementasi logika kembalikan barang
-                                      Get.snackbar(
-                                        'Info',
-                                        'Fitur kembalikan barang akan segera tersedia',
-                                        snackPosition: SnackPosition.TOP,
-                                        backgroundColor: Colors.blue,
-                                        colorText: Colors.white,
+                                    onTap: () async {
+                                      // Konfirmasi pengembalian barang
+                                      bool? confirm = await showDialog<bool>(
+                                        context: context,
+                                        builder: (BuildContext context) {
+                                          return AlertDialog(
+                                            title:
+                                                Text('Konfirmasi Pengembalian'),
+                                            content: Text(
+                                                'Apakah Anda yakin ingin mengembalikan barang ini?'),
+                                            actions: [
+                                              TextButton(
+                                                onPressed: () =>
+                                                    Navigator.of(context)
+                                                        .pop(false),
+                                                child: Text('Batal'),
+                                              ),
+                                              ElevatedButton(
+                                                onPressed: () =>
+                                                    Navigator.of(context)
+                                                        .pop(true),
+                                                style: ElevatedButton.styleFrom(
+                                                  backgroundColor:
+                                                      Color(0xFF2F4E3E),
+                                                ),
+                                                child: Text('Ya, Kembalikan'),
+                                              ),
+                                            ],
+                                          );
+                                        },
                                       );
+
+                                      if (confirm == true) {
+                                        // Tampilkan loading
+                                        Get.dialog(
+                                          Center(
+                                              child:
+                                                  CircularProgressIndicator()),
+                                          barrierDismissible: false,
+                                        );
+
+                                        // Panggil fungsi returnItem
+                                        bool success =
+                                            await controller.returnItem(
+                                                transaksi.id.toString());
+
+                                        // Tutup dialog loading
+                                        Get.back();
+
+                                        if (success) {
+                                          Get.snackbar(
+                                            'Sukses',
+                                            'Barang berhasil dikembalikan',
+                                            snackPosition: SnackPosition.TOP,
+                                            backgroundColor: Colors.green,
+                                            colorText: Colors.white,
+                                          );
+                                        } else {
+                                          Get.snackbar(
+                                            'Error',
+                                            controller.error.value,
+                                            snackPosition: SnackPosition.TOP,
+                                            backgroundColor: Colors.red,
+                                            colorText: Colors.white,
+                                          );
+                                        }
+                                      }
                                     },
                                     child: Padding(
                                       padding: const EdgeInsets.symmetric(
