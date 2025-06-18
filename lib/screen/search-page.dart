@@ -68,6 +68,12 @@ class _SearchPageState extends State<SearchPage> {
                       onChanged: (value) {
                         _searchController.updateSearchQuery(value);
                       },
+                      onSubmitted: (value) {
+                        if (value.trim().isNotEmpty) {
+                          Get.offNamed('/listing',
+                              arguments: {'search': value.trim()});
+                        }
+                      },
                       decoration: InputDecoration(
                         contentPadding: const EdgeInsets.symmetric(
                           vertical: 10,
@@ -154,7 +160,9 @@ class _SearchPageState extends State<SearchPage> {
                             onTap: () {
                               _controller.text = suggestion;
                               _searchController.updateSearchQuery(suggestion);
-                              // TODO: Navigate to search results page
+                              // Navigate to listing page with search query
+                              Get.offNamed('/listing',
+                                  arguments: {'search': suggestion});
                             },
                             child: Row(
                               children: [

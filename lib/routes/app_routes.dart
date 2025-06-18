@@ -12,4 +12,5 @@ abstract class Routes {
   static const ADDRESS_LIST = '/address-list';
   static const PAYMENT = '/payment';
   static const SEARCH = '/search';
+  static const LISTING = '/listing';
 }

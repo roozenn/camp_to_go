@@ -52,94 +52,137 @@
  */
 
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
+import '../controllers/listing_controller.dart';
+import '../models/product_list_model.dart';
+import '../widgets/filter_dialog.dart';
 
 class ProductListPage extends StatelessWidget {
   const ProductListPage({super.key});
 
   @override
   Widget build(BuildContext context) {
+    final controller = Get.find<ListingController>();
+
     return Scaffold(
       backgroundColor: Colors.white,
       body: SafeArea(
         child: Column(
           children: [
-            const Padding(
-              padding: EdgeInsets.symmetric(horizontal: 16.0, vertical: 8),
-              child: SearchAndFilterBar(),
+            Padding(
+              padding:
+                  const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8),
+              child: SearchAndFilterBar(controller: controller),
             ),
-            Expanded(
-              child: Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 12),
-                child: GridView.builder(
-                  gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                    crossAxisCount: 2,
-                    childAspectRatio: 0.625,
-                    crossAxisSpacing: 10,
-                    mainAxisSpacing: 10,
+            // Filter status indicator
+            Obx(() {
+              if (controller.hasActiveFilters.value) {
+                return Container(
+                  padding:
+                      const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                  child: Row(
+                    children: [
+                      const Icon(Icons.filter_alt,
+                          size: 16, color: Color(0xFF2F4E3E)),
+                      const SizedBox(width: 8),
+                      Expanded(
+                        child: Text(
+                          'Filter aktif: ${controller.selectedCategory.value.isNotEmpty ? controller.selectedCategory.value : ''}${controller.minPrice.value > 0 || controller.maxPrice.value > 0 ? ', harga ${controller.minPrice.value > 0 ? 'Rp${controller.minPrice.value.toStringAsFixed(0)}' : '0'} - ${controller.maxPrice.value > 0 ? 'Rp${controller.maxPrice.value.toStringAsFixed(0)}' : '∞'}' : ''}',
+                          style: const TextStyle(
+                            fontSize: 12,
+                            color: Color(0xFF2F4E3E),
+                          ),
+                        ),
+                      ),
+                      TextButton(
+                        onPressed: controller.clearFilters,
+                        child: const Text(
+                          'Hapus',
+                          style: TextStyle(
+                            fontSize: 12,
+                            color: Colors.red,
+                          ),
+                        ),
+                      ),
+                    ],
                   ),
-                  itemCount: 6,
-                  itemBuilder: (context, index) {
-                    final products = [
-                      {
-                        'imageUrl':
-                            'https://raw.githubusercontent.com/roozenn/camp_to_go/refs/heads/main/lib/image/tenda1.webp',
-                        'productName': 'Dome 4 Person Coleman',
-                        'currentPrice': 'Rp175.000/hari',
-                        'originalPrice': 'Rp250.000/hari',
-                        'discount': '30%',
-                      },
-                      {
-                        'imageUrl':
-                            'https://raw.githubusercontent.com/roozenn/camp_to_go/refs/heads/main/lib/image/tenda2.webp',
-                        'productName': 'Family 6 Person Eiger',
-                        'currentPrice': 'Rp250.000/hari',
-                        'originalPrice': 'Rp350.000/hari',
-                        'discount': '29%',
-                      },
-                      {
-                        'imageUrl':
-                            'https://raw.githubusercontent.com/roozenn/camp_to_go/refs/heads/main/lib/image/tenda3.webp',
-                        'productName': 'Ultralight 2 Person Naturehike',
-                        'currentPrice': 'Rp120.000/hari',
-                        'originalPrice': 'Rp180.000/hari',
-                        'discount': '33%',
-                      },
-                      {
-                        'imageUrl':
-                            'https://raw.githubusercontent.com/roozenn/camp_to_go/refs/heads/main/lib/image/tenda4.webp',
-                        'productName': 'Tunnel 8 Person Coleman',
-                        'currentPrice': 'Rp350.000/hari',
-                        'originalPrice': 'Rp500.000/hari',
-                        'discount': '30%',
-                      },
-                      {
-                        'imageUrl':
-                            'https://raw.githubusercontent.com/roozenn/camp_to_go/refs/heads/main/lib/image/tenda5.webp',
-                        'productName': 'Pop Up 3 Person Quechua',
-                        'currentPrice': 'Rp150.000/hari',
-                        'originalPrice': 'Rp220.000/hari',
-                        'discount': '32%',
-                      },
-                      {
-                        'imageUrl':
-                            'https://raw.githubusercontent.com/roozenn/camp_to_go/refs/heads/main/lib/image/tenda6.webp',
-                        'productName': 'Waterproof 2 Person Eiger',
-                        'currentPrice': 'Rp130.000/hari',
-                        'originalPrice': 'Rp190.000/hari',
-                        'discount': '32%',
-                      },
-                    ];
+                );
+              }
+              return const SizedBox.shrink();
+            }),
+            Expanded(
+              child: Obx(() {
+                if (controller.isLoading.value && controller.products.isEmpty) {
+                  return const Center(
+                    child: CircularProgressIndicator(),
+                  );
+                }
 
-                    return _buildProductCard(
-                      imageUrl: products[index]['imageUrl']!,
-                      productName: products[index]['productName']!,
-                      currentPrice: products[index]['currentPrice']!,
-                      originalPrice: products[index]['originalPrice']!,
-                      discount: products[index]['discount']!,
-                    );
-                  },
-                ),
-              ),
+                if (controller.products.isEmpty) {
+                  return const Center(
+                    child: Text(
+                      'Tidak ada produk ditemukan',
+                      style: TextStyle(
+                        fontSize: 16,
+                        color: Colors.grey,
+                      ),
+                    ),
+                  );
+                }
+
+                return Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 12),
+                  child: Column(
+                    children: [
+                      Expanded(
+                        child: RefreshIndicator(
+                          onRefresh: controller.refreshProducts,
+                          child: GridView.builder(
+                            gridDelegate:
+                                const SliverGridDelegateWithFixedCrossAxisCount(
+                              crossAxisCount: 2,
+                              childAspectRatio: 0.625,
+                              crossAxisSpacing: 10,
+                              mainAxisSpacing: 10,
+                            ),
+                            itemCount: controller.products.length,
+                            itemBuilder: (context, index) {
+                              final product = controller.products[index];
+                              return _buildProductCard(product: product);
+                            },
+                          ),
+                        ),
+                      ),
+                      // Pagination controls
+                      if (controller.hasNextPage.value ||
+                          controller.hasPrevPage.value)
+                        Padding(
+                          padding: const EdgeInsets.all(16.0),
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              if (controller.hasPrevPage.value)
+                                ElevatedButton(
+                                  onPressed: controller.loadPrevPage,
+                                  child: const Text('Sebelumnya'),
+                                )
+                              else
+                                const SizedBox.shrink(),
+                              Text('Halaman ${controller.currentPage.value}'),
+                              if (controller.hasNextPage.value)
+                                ElevatedButton(
+                                  onPressed: controller.loadNextPage,
+                                  child: const Text('Selanjutnya'),
+                                )
+                              else
+                                const SizedBox.shrink(),
+                            ],
+                          ),
+                        ),
+                    ],
+                  ),
+                );
+              }),
             ),
           ],
         ),
@@ -149,17 +192,30 @@ class ProductListPage extends StatelessWidget {
 }
 
 class SearchAndFilterBar extends StatelessWidget {
-  const SearchAndFilterBar({super.key});
+  final ListingController controller;
+
+  const SearchAndFilterBar({super.key, required this.controller});
 
   @override
   Widget build(BuildContext context) {
     return Row(
       children: [
+        GestureDetector(
+          onTap: () => Get.back(),
+          child: const Icon(
+            Icons.arrow_back,
+            size: 24,
+            color: Colors.black87,
+          ),
+        ),
+        const SizedBox(width: 12),
         Expanded(
           child: TextField(
+            onChanged: controller.updateSearchQuery,
+            onSubmitted: controller.updateSearchQuery,
             decoration: InputDecoration(
               prefixIcon: const Icon(Icons.search),
-              hintText: 'Tenda',
+              hintText: 'Cari produk...',
               border: OutlineInputBorder(
                 borderRadius: BorderRadius.circular(12),
               ),
@@ -168,23 +224,67 @@ class SearchAndFilterBar extends StatelessWidget {
           ),
         ),
         const SizedBox(width: 8),
-        IconButton(icon: const Icon(Icons.sort), onPressed: () {}),
-        IconButton(
-          icon: const Icon(Icons.filter_alt_outlined),
-          onPressed: () {},
+        PopupMenuButton<String>(
+          icon: const Icon(Icons.sort),
+          onSelected: controller.updateSort,
+          itemBuilder: (context) => [
+            const PopupMenuItem(
+              value: 'price_asc',
+              child: Text('Harga: Rendah ke Tinggi'),
+            ),
+            const PopupMenuItem(
+              value: 'price_desc',
+              child: Text('Harga: Tinggi ke Rendah'),
+            ),
+            const PopupMenuItem(
+              value: 'rating',
+              child: Text('Rating Tertinggi'),
+            ),
+            const PopupMenuItem(
+              value: 'popular',
+              child: Text('Terpopuler'),
+            ),
+          ],
         ),
+        Obx(() => Stack(
+              children: [
+                IconButton(
+                  icon: Icon(
+                    Icons.filter_alt_outlined,
+                    color: controller.hasActiveFilters.value
+                        ? const Color(0xFF2F4E3E)
+                        : null,
+                  ),
+                  onPressed: () {
+                    Get.dialog(
+                      FilterDialog(
+                        onApplyFilter: controller.applyFilters,
+                        currentFilters: controller.getCurrentFilters(),
+                      ),
+                    );
+                  },
+                ),
+                if (controller.hasActiveFilters.value)
+                  Positioned(
+                    right: 8,
+                    top: 8,
+                    child: Container(
+                      width: 8,
+                      height: 8,
+                      decoration: const BoxDecoration(
+                        color: Color(0xFF2F4E3E),
+                        shape: BoxShape.circle,
+                      ),
+                    ),
+                  ),
+              ],
+            )),
       ],
     );
   }
 }
 
-Widget _buildProductCard({
-  required String imageUrl,
-  required String productName,
-  required String currentPrice,
-  required String originalPrice,
-  required String discount,
-}) {
+Widget _buildProductCard({required ProductItemModel product}) {
   return Card(
     shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
     child: Column(
@@ -195,15 +295,42 @@ Widget _buildProductCard({
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Image.network(
-                imageUrl,
-                height: 150,
-                width: double.infinity,
-                fit: BoxFit.fill,
+              Stack(
+                children: [
+                  Image.network(
+                    product.imageUrl,
+                    height: 150,
+                    width: double.infinity,
+                    fit: BoxFit.fill,
+                    errorBuilder: (context, error, stackTrace) {
+                      return Container(
+                        height: 150,
+                        width: double.infinity,
+                        color: Colors.grey[300],
+                        child: const Icon(Icons.image_not_supported),
+                      );
+                    },
+                  ),
+                  Positioned(
+                    top: 8,
+                    right: 8,
+                    child: IconButton(
+                      icon: Icon(
+                        product.isFavorited
+                            ? Icons.favorite
+                            : Icons.favorite_border,
+                        color: product.isFavorited ? Colors.red : Colors.white,
+                      ),
+                      onPressed: () {
+                        // TODO: Implement favorite toggle
+                      },
+                    ),
+                  ),
+                ],
               ),
               const SizedBox(height: 8),
               Text(
-                productName,
+                product.name,
                 maxLines: 2,
                 overflow: TextOverflow.ellipsis,
                 style: const TextStyle(
@@ -211,9 +338,25 @@ Widget _buildProductCard({
                   fontSize: 15,
                 ),
               ),
+              const SizedBox(height: 4),
+              Row(
+                children: [
+                  Icon(Icons.star, size: 16, color: Colors.amber),
+                  const SizedBox(width: 4),
+                  Text(
+                    product.rating.toStringAsFixed(1),
+                    style: const TextStyle(fontSize: 12),
+                  ),
+                  const SizedBox(width: 4),
+                  Text(
+                    '(${product.reviewCount})',
+                    style: const TextStyle(fontSize: 12, color: Colors.grey),
+                  ),
+                ],
+              ),
               const SizedBox(height: 12),
               Text(
-                currentPrice,
+                'Rp${product.pricePerDay.toStringAsFixed(0)}/hari',
                 style: const TextStyle(
                   color: Color(0xFF2F4E3E),
                   fontWeight: FontWeight.bold,
@@ -224,7 +367,7 @@ Widget _buildProductCard({
               Row(
                 children: [
                   Text(
-                    originalPrice,
+                    'Rp${product.originalPrice.toStringAsFixed(0)}/hari',
                     style: const TextStyle(
                       decoration: TextDecoration.lineThrough,
                       fontSize: 12,
@@ -234,7 +377,7 @@ Widget _buildProductCard({
                   const SizedBox(width: 8),
                   const Spacer(),
                   Text(
-                    discount,
+                    '${product.discountPercentage}%',
                     style: const TextStyle(
                       fontSize: 12,
                       fontWeight: FontWeight.bold,

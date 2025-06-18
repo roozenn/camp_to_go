@@ -6,6 +6,7 @@ import '../models/category_model.dart';
 import '../models/product_model.dart';
 import 'package:camp_to_go/models/product_detail_model.dart';
 import 'package:camp_to_go/models/search_suggestions_model.dart';
+import 'package:camp_to_go/models/product_list_model.dart';
 import 'package:dio/dio.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'token_service.dart';
@@ -138,6 +139,54 @@ class ApiService extends GetxService {
     } catch (e) {
       print('Error getting search suggestions: $e');
       return [];
+    }
+  }
+
+  // Get Products with filters
+  Future<ProductListModel> getProducts({
+    int? categoryId,
+    String? search,
+    double? minPrice,
+    double? maxPrice,
+    String? sortBy,
+    int page = 1,
+    int limit = 20,
+  }) async {
+    try {
+      final queryParams = <String, String>{};
+
+      if (categoryId != null)
+        queryParams['category_id'] = categoryId.toString();
+      if (search != null && search.isNotEmpty) queryParams['search'] = search;
+      if (minPrice != null) queryParams['min_price'] = minPrice.toString();
+      if (maxPrice != null) queryParams['max_price'] = maxPrice.toString();
+      if (sortBy != null) queryParams['sort_by'] = sortBy;
+      queryParams['page'] = page.toString();
+      queryParams['limit'] = limit.toString();
+
+      final uri =
+          Uri.parse('$baseUrl/products').replace(queryParameters: queryParams);
+
+      final response = await http.get(uri, headers: _headers);
+      print('Products Response: ${response.body}'); // Debug print
+
+      if (response.statusCode == 200) {
+        final data = json.decode(response.body);
+        return ProductListModel.fromJson(data);
+      }
+
+      return ProductListModel(
+        success: false,
+        products: [],
+        pagination: PaginationModel.empty(),
+      );
+    } catch (e) {
+      print('Error getting products: $e');
+      return ProductListModel(
+        success: false,
+        products: [],
+        pagination: PaginationModel.empty(),
+      );
     }
   }
 

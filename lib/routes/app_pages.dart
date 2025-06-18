@@ -10,11 +10,13 @@ import 'package:camp_to_go/screen/login-screen.dart';
 import 'package:camp_to_go/screen/address-list-screen.dart';
 import 'package:camp_to_go/screen/payment-page.dart';
 import 'package:camp_to_go/screen/search-page.dart';
+import 'package:camp_to_go/screen/listing-page.dart';
 import 'package:camp_to_go/bindings/home_binding.dart' as bindings;
 import 'package:camp_to_go/bindings/product_detail_binding.dart';
 import 'package:camp_to_go/bindings/transaction_binding.dart';
 import 'package:camp_to_go/bindings/profile_binding.dart';
 import 'package:camp_to_go/bindings/search_binding.dart';
+import 'package:camp_to_go/bindings/listing_binding.dart';
 import 'package:camp_to_go/middleware/home_middleware.dart';
 import '../bindings/address_binding.dart';
 import '../bindings/payment_binding.dart';
@@ -96,6 +98,12 @@ class AppPages {
       transition: Transition.fadeIn,
       transitionDuration: const Duration(milliseconds: 200),
       binding: SearchBinding(),
+    ),
+    GetPage(
+      name: Routes.LISTING,
+      page: () => const ProductListPage(),
+      binding: ListingBinding(),
+      middlewares: [HomeMiddleware()],
     ),
     GetPage(
       name: Routes.PROFILE,

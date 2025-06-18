@@ -37,11 +37,9 @@ class AkunPage extends StatelessWidget {
             'Profil',
             onTap: () => Get.toNamed('/profile'),
           ),
-          _buildMenuItem(Icons.shopping_bag_outlined, 'Pesanan Saya'),
-          _buildMenuItem(Icons.favorite_border, 'Wishlist'),
+          _buildMenuItem(Icons.favorite_border, 'Favorit'),
           _buildMenuItem(Icons.location_on_outlined, 'Alamat'),
           _buildMenuItem(Icons.payment_outlined, 'Metode Pembayaran'),
-          _buildMenuItem(Icons.settings_outlined, 'Pengaturan'),
           _buildMenuItem(
             Icons.logout,
             'Logout',
