@@ -3,6 +3,7 @@ import 'package:get/get.dart';
 import '../routes/app_pages.dart';
 import '../services/payment_service.dart';
 import '../models/payment_method_model.dart';
+import '../controllers/payment_controller.dart';
 
 class PembayaranPage extends StatefulWidget {
   const PembayaranPage({super.key});
@@ -13,6 +14,7 @@ class PembayaranPage extends StatefulWidget {
 
 class _PembayaranPageState extends State<PembayaranPage> {
   final PaymentService _paymentService = Get.find<PaymentService>();
+  final PaymentController _paymentController = Get.find<PaymentController>();
   int selectedPaymentIndex = -1;
 
   // Konstanta untuk tipe metode pembayaran
@@ -385,7 +387,7 @@ class _PembayaranPageState extends State<PembayaranPage> {
         padding: const EdgeInsets.symmetric(horizontal: 16),
         width: double.infinity,
         child: FloatingActionButton.extended(
-          onPressed: () {
+          onPressed: () async {
             if (selectedPaymentIndex == -1) {
               Get.snackbar(
                 'Peringatan',
@@ -401,20 +403,31 @@ class _PembayaranPageState extends State<PembayaranPage> {
               return;
             }
 
-            // Tampilkan notifikasi pembayaran berhasil
-            Get.snackbar(
-              'Berhasil',
-              'Pembayaran berhasil dilakukan',
-              snackPosition: SnackPosition.TOP,
-              backgroundColor: Colors.green[100],
-              colorText: Colors.green[900],
-              margin: const EdgeInsets.all(16),
-              duration: const Duration(seconds: 2),
-              icon: const Icon(Icons.check_circle, color: Colors.green),
+            // Tampilkan loading indicator
+            Get.dialog(
+              const Center(
+                child: CircularProgressIndicator(),
+              ),
+              barrierDismissible: false,
             );
 
-            // Navigasi ke halaman home
-            Get.offAllNamed(Routes.HOME);
+            // Ambil payment method yang dipilih
+            final selectedPaymentMethod =
+                _paymentService.paymentMethods[selectedPaymentIndex];
+
+            // Buat order
+            final success = await _paymentController.createOrder(
+              selectedPaymentMethodId: selectedPaymentMethod.id,
+              notes: null, // Bisa ditambahkan field untuk notes jika diperlukan
+            );
+
+            // Tutup loading dialog
+            Get.back();
+
+            if (!success) {
+              // Error sudah ditangani di PaymentController
+              return;
+            }
           },
           backgroundColor: const Color(0xFF2F4E3E),
           label: const Text(

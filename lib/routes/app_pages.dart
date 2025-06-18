@@ -2,13 +2,19 @@ import 'package:get/get.dart';
 import 'package:camp_to_go/screen/home-page.dart';
 import 'package:camp_to_go/screen/cart-page-gpt.dart';
 import 'package:camp_to_go/screen/transaction-page.dart';
+import 'package:camp_to_go/screen/transaction_detail_page.dart';
 import 'package:camp_to_go/screen/akun-page.dart';
+import 'package:camp_to_go/screen/profile-page.dart';
 import 'package:camp_to_go/screen/product-detail-page.dart';
 import 'package:camp_to_go/screen/login-screen.dart';
 import 'package:camp_to_go/screen/address-list-screen.dart';
 import 'package:camp_to_go/screen/payment-page.dart';
+import 'package:camp_to_go/screen/search-page.dart';
 import 'package:camp_to_go/bindings/home_binding.dart' as bindings;
 import 'package:camp_to_go/bindings/product_detail_binding.dart';
+import 'package:camp_to_go/bindings/transaction_binding.dart';
+import 'package:camp_to_go/bindings/profile_binding.dart';
+import 'package:camp_to_go/bindings/search_binding.dart';
 import 'package:camp_to_go/middleware/home_middleware.dart';
 import '../bindings/address_binding.dart';
 import '../bindings/payment_binding.dart';
@@ -42,6 +48,18 @@ class AppPages {
       middlewares: [HomeMiddleware()],
     ),
     GetPage(
+      name: Routes.TRANSACTION_DETAIL,
+      page: () {
+        final args = Get.arguments;
+        if (args == null || !(args is Map<String, dynamic>)) {
+          return const TransactionDetailPage(orderId: 0);
+        }
+        final orderId = args['orderId'];
+        return TransactionDetailPage(orderId: orderId ?? 0);
+      },
+      binding: TransactionBinding(),
+    ),
+    GetPage(
       name: Routes.ACCOUNT,
       page: () => AkunPage(),
       binding: bindings.HomeBinding(),
@@ -71,6 +89,18 @@ class AppPages {
       name: Routes.PAYMENT,
       page: () => const PembayaranPage(),
       binding: PaymentBinding(),
+    ),
+    GetPage(
+      name: Routes.SEARCH,
+      page: () => const SearchPage(),
+      transition: Transition.fadeIn,
+      transitionDuration: const Duration(milliseconds: 200),
+      binding: SearchBinding(),
+    ),
+    GetPage(
+      name: Routes.PROFILE,
+      page: () => const ProfilePage(),
+      binding: ProfileBinding(),
     ),
   ];
 }

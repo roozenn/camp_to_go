@@ -88,8 +88,21 @@ class HomePage extends StatelessWidget {
   }
 }
 
-class HomeContent extends StatelessWidget {
+class HomeContent extends StatefulWidget {
   const HomeContent({super.key});
+
+  @override
+  State<HomeContent> createState() => _HomeContentState();
+}
+
+class _HomeContentState extends State<HomeContent> {
+  final FocusNode _searchFocusNode = FocusNode();
+
+  @override
+  void dispose() {
+    _searchFocusNode.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -158,16 +171,35 @@ class HomeContent extends StatelessWidget {
       child: Row(
         children: [
           Expanded(
-            child: TextField(
-              decoration: InputDecoration(
-                hintText: 'Cari Produk',
-                prefixIcon: Icon(Icons.search),
-                filled: true,
-                fillColor: Colors.grey[100],
-                contentPadding: const EdgeInsets.all(10),
-                border: OutlineInputBorder(
+            child: GestureDetector(
+              onTap: () {
+                // Navigate to search page with seamless transition
+                Get.toNamed(Routes.SEARCH);
+              },
+              child: Container(
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+                decoration: BoxDecoration(
+                  color: Colors.grey[100],
                   borderRadius: BorderRadius.circular(12),
-                  borderSide: BorderSide(color: Colors.grey.shade300),
+                  border: Border.all(color: Colors.grey.shade300),
+                ),
+                child: Row(
+                  children: [
+                    Icon(
+                      Icons.search,
+                      size: 20,
+                      color: Colors.grey[600],
+                    ),
+                    const SizedBox(width: 12),
+                    Text(
+                      'Cari Produk',
+                      style: TextStyle(
+                        color: Colors.grey[600],
+                        fontSize: 16,
+                      ),
+                    ),
+                  ],
                 ),
               ),
             ),
@@ -196,8 +228,9 @@ class HomeContent extends StatelessWidget {
       padding: const EdgeInsets.symmetric(horizontal: 16),
       child: Row(
         children: const [
+          Icon(Icons.location_on_outlined),
           Text('Kota Bandung', style: TextStyle(fontWeight: FontWeight.bold)),
-          Icon(Icons.keyboard_arrow_down),
+          // Icon(Icons.keyboard_arrow_down),
         ],
       ),
     );

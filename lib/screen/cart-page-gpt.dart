@@ -308,25 +308,32 @@ class _CartPageState extends State<CartPage> {
         );
       }),
       bottomNavigationBar: const MainBottomNav(),
-      floatingActionButton: Container(
-        padding: const EdgeInsets.symmetric(horizontal: 16),
-        width: double.infinity,
-        child: ElevatedButton(
-          style: ElevatedButton.styleFrom(
-            backgroundColor: const Color(0xFF2F4E3E),
-            foregroundColor: Colors.white,
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(8),
+      floatingActionButton: Obx(() {
+        // Hanya tampilkan tombol jika keranjang tidak kosong
+        if (cartController.cartItems.isEmpty) {
+          return const SizedBox.shrink();
+        }
+
+        return Container(
+          padding: const EdgeInsets.symmetric(horizontal: 16),
+          width: double.infinity,
+          child: ElevatedButton(
+            style: ElevatedButton.styleFrom(
+              backgroundColor: const Color(0xFF2F4E3E),
+              foregroundColor: Colors.white,
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(8),
+              ),
+              padding: const EdgeInsets.symmetric(vertical: 16),
             ),
-            padding: const EdgeInsets.symmetric(vertical: 16),
+            onPressed: () {
+              Get.toNamed(Routes.ADDRESS_LIST);
+            },
+            child:
+                const Text('Proses Pembayaran', style: TextStyle(fontSize: 16)),
           ),
-          onPressed: () {
-            Get.toNamed(Routes.ADDRESS_LIST);
-          },
-          child:
-              const Text('Proses Pembayaran', style: TextStyle(fontSize: 16)),
-        ),
-      ),
+        );
+      }),
       floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
     );
   }

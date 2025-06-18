@@ -7,6 +7,7 @@ import 'services/api_service.dart';
 import 'services/cart_service.dart';
 import 'services/favorite_service.dart';
 import 'services/transaction_service.dart';
+import 'services/profile_service.dart';
 import 'controllers/cart_controller.dart';
 import 'controllers/auth_controller.dart';
 import 'theme-colors.dart';
@@ -22,6 +23,7 @@ void main() async {
   await Get.putAsync(() => ApiService().init());
   await Get.putAsync(() => CartService().init());
   await Get.putAsync(() => FavoriteService().init());
+  await Get.putAsync(() => ProfileService().init());
   Get.put(TransactionService());
 
   // Inisialisasi controllers

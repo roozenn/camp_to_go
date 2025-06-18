@@ -79,7 +79,7 @@ class _TransaksiPageState extends State<TransaksiPage> {
                   splashColor: Colors.grey.withOpacity(0.1),
                   highlightColor: Colors.grey.withOpacity(0.1),
                   onTap: () {
-                    Get.to(() => TransaksiDetailPage(
+                    Get.to(() => TransactionDetailPage(
                           orderId: transaksi.id,
                         ));
                   },
@@ -88,9 +88,53 @@ class _TransaksiPageState extends State<TransaksiPage> {
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        Text(
-                          transaksi.orderNumber,
-                          style: TextStyle(fontWeight: FontWeight.bold),
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            Expanded(
+                              child: Text(
+                                transaksi.orderNumber,
+                                style: TextStyle(fontWeight: FontWeight.bold),
+                              ),
+                            ),
+                            if (transaksi.status == 'ongoing')
+                              Container(
+                                decoration: BoxDecoration(
+                                  color: Color(0xFF2F4E3E),
+                                  borderRadius: BorderRadius.circular(6),
+                                ),
+                                child: Material(
+                                  color: Colors.transparent,
+                                  child: InkWell(
+                                    borderRadius: BorderRadius.circular(6),
+                                    onTap: () {
+                                      // TODO: Implementasi logika kembalikan barang
+                                      Get.snackbar(
+                                        'Info',
+                                        'Fitur kembalikan barang akan segera tersedia',
+                                        snackPosition: SnackPosition.TOP,
+                                        backgroundColor: Colors.blue,
+                                        colorText: Colors.white,
+                                      );
+                                    },
+                                    child: Padding(
+                                      padding: const EdgeInsets.symmetric(
+                                        horizontal: 12.0,
+                                        vertical: 6.0,
+                                      ),
+                                      child: Text(
+                                        'Kembalikan Barang',
+                                        style: TextStyle(
+                                          color: Colors.white,
+                                          fontSize: 12,
+                                          fontWeight: FontWeight.w500,
+                                        ),
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                              ),
+                          ],
                         ),
                         SizedBox(height: 4),
                         Text(
@@ -110,19 +154,23 @@ class _TransaksiPageState extends State<TransaksiPage> {
                                   ? 'Pending'
                                   : transaksi.status == 'processing'
                                       ? 'Processing'
-                                      : transaksi.status == 'completed'
-                                          ? 'Completed'
-                                          : transaksi.status == 'cancelled'
-                                              ? 'Cancelled'
-                                              : transaksi.status,
+                                      : transaksi.status == 'ongoing'
+                                          ? 'Ongoing'
+                                          : transaksi.status == 'completed'
+                                              ? 'Completed'
+                                              : transaksi.status == 'cancelled'
+                                                  ? 'Cancelled'
+                                                  : transaksi.status,
                               style: TextStyle(
                                 color: transaksi.status == 'pending'
                                     ? Colors.orange
-                                    : transaksi.status == 'completed'
-                                        ? Colors.green
-                                        : transaksi.status == 'cancelled'
-                                            ? Colors.red
-                                            : Colors.blue,
+                                    : transaksi.status == 'ongoing'
+                                        ? Colors.blue
+                                        : transaksi.status == 'completed'
+                                            ? Colors.green
+                                            : transaksi.status == 'cancelled'
+                                                ? Colors.red
+                                                : Colors.blue,
                                 fontWeight: FontWeight.bold,
                               ),
                             ),

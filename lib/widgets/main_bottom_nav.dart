@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:camp_to_go/controllers/home_controller.dart';
-import 'package:camp_to_go/routes/app_pages.dart';
 
 class MainBottomNav extends StatelessWidget {
   const MainBottomNav({super.key});

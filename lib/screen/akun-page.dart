@@ -32,7 +32,11 @@ class AkunPage extends StatelessWidget {
       ),
       body: ListView(
         children: [
-          _buildMenuItem(Icons.person_outline, 'Profil'),
+          _buildMenuItem(
+            Icons.person_outline,
+            'Profil',
+            onTap: () => Get.toNamed('/profile'),
+          ),
           _buildMenuItem(Icons.shopping_bag_outlined, 'Pesanan Saya'),
           _buildMenuItem(Icons.favorite_border, 'Wishlist'),
           _buildMenuItem(Icons.location_on_outlined, 'Alamat'),

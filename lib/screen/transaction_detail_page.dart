@@ -1,11 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import '../controllers/transaction_detail_controller.dart';
+import '../routes/app_pages.dart';
 
-class TransaksiDetailPage extends StatelessWidget {
+class TransactionDetailPage extends StatelessWidget {
   final int orderId;
 
-  const TransaksiDetailPage({
+  const TransactionDetailPage({
     Key? key,
     required this.orderId,
   }) : super(key: key);
@@ -28,7 +29,7 @@ class TransaksiDetailPage extends StatelessWidget {
         centerTitle: false,
         leading: IconButton(
           icon: Icon(Icons.arrow_back, color: Colors.black),
-          onPressed: () => Get.back(),
+          onPressed: () => Get.offAllNamed(Routes.TRANSACTION),
         ),
       ),
       body: Obx(() {
@@ -190,7 +191,11 @@ class TransaksiDetailPage extends StatelessWidget {
                                       ],
                                     ),
                                     if (item != detail['items'].last)
-                                      Divider(height: 24),
+                                      Padding(
+                                        padding: const EdgeInsets.symmetric(
+                                            vertical: 12.0),
+                                        child: DashedLine(),
+                                      ),
                                   ],
                                 ))
                             .toList(),
@@ -201,28 +206,31 @@ class TransaksiDetailPage extends StatelessWidget {
                 SizedBox(height: 16),
 
                 // Address Card
-                Card(
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(8),
-                    side: BorderSide(color: Colors.grey.shade200),
-                  ),
-                  child: Padding(
-                    padding: const EdgeInsets.all(16.0),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(
-                          'Alamat Pengiriman',
-                          style: TextStyle(
-                            fontSize: 16,
-                            fontWeight: FontWeight.bold,
+                SizedBox(
+                  width: double.infinity,
+                  child: Card(
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(8),
+                      side: BorderSide(color: Colors.grey.shade200),
+                    ),
+                    child: Padding(
+                      padding: const EdgeInsets.all(16.0),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            'Alamat Pengiriman',
+                            style: TextStyle(
+                              fontSize: 16,
+                              fontWeight: FontWeight.bold,
+                            ),
                           ),
-                        ),
-                        SizedBox(height: 12),
-                        Text(detail['address']['recipient_name']),
-                        Text(detail['address']['full_address']),
-                        Text(detail['address']['phone_number']),
-                      ],
+                          SizedBox(height: 12),
+                          Text(detail['address']['recipient_name']),
+                          Text(detail['address']['full_address']),
+                          Text(detail['address']['phone_number']),
+                        ],
+                      ),
                     ),
                   ),
                 ),

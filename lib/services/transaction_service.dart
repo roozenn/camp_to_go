@@ -1,5 +1,6 @@
 import 'package:get/get.dart';
 import 'api_service.dart';
+import '../models/order_request_model.dart';
 
 class TransactionService {
   final ApiService _apiService = Get.find<ApiService>();
@@ -21,6 +22,14 @@ class TransactionService {
       }
     } catch (e) {
       throw Exception('Gagal mengambil detail transaksi: $e');
+    }
+  }
+
+  Future<OrderResponseModel> createOrder(OrderRequestModel orderRequest) async {
+    try {
+      return await _apiService.createOrder(orderRequest);
+    } catch (e) {
+      throw Exception('Gagal membuat pesanan: $e');
     }
   }
 }

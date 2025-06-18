@@ -1,7 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
+import '../controllers/search_controller.dart' as search;
 
 class SearchPage extends StatefulWidget {
-  const SearchPage({super.key});
+  final String? initialText;
+
+  const SearchPage({super.key, this.initialText});
 
   @override
   State<SearchPage> createState() => _SearchPageState();
@@ -9,12 +13,32 @@ class SearchPage extends StatefulWidget {
 
 class _SearchPageState extends State<SearchPage> {
   final TextEditingController _controller = TextEditingController();
+  final FocusNode _focusNode = FocusNode();
+  late search.SearchController _searchController;
 
-  final List<String> _searchResults = [
-    "Forclaz Men's MT900 Symbium2",
-    "Forclaz Men's MT900 Symbium2",
-    "Forclaz Men's MT900 Symbium2",
-  ];
+  @override
+  void initState() {
+    super.initState();
+    _searchController = Get.find<search.SearchController>();
+
+    // Set initial text if provided
+    if (widget.initialText != null) {
+      _controller.text = widget.initialText!;
+      _searchController.updateSearchQuery(widget.initialText!);
+    }
+
+    // Auto focus after a short delay to ensure smooth transition
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      _focusNode.requestFocus();
+    });
+  }
+
+  @override
+  void dispose() {
+    _controller.dispose();
+    _focusNode.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -25,18 +49,30 @@ class _SearchPageState extends State<SearchPage> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              // Search Row with Mic outside
+              // Back button and Search Row
               Row(
                 children: [
+                  GestureDetector(
+                    onTap: () => Get.back(),
+                    child: const Icon(
+                      Icons.arrow_back,
+                      size: 24,
+                      color: Colors.black87,
+                    ),
+                  ),
+                  const SizedBox(width: 12),
                   Expanded(
                     child: TextField(
                       controller: _controller,
-                      onChanged: (_) => setState(() {}),
+                      focusNode: _focusNode,
+                      onChanged: (value) {
+                        _searchController.updateSearchQuery(value);
+                      },
                       decoration: InputDecoration(
                         contentPadding: const EdgeInsets.symmetric(
                           vertical: 10,
                         ),
-                        hintText: 'Forclaz MT900',
+                        hintText: 'Tenda',
                         hintStyle: const TextStyle(
                           fontWeight: FontWeight.w600,
                           color: Colors.black54,
@@ -46,20 +82,19 @@ class _SearchPageState extends State<SearchPage> {
                           size: 20,
                           color: Colors.black54,
                         ),
-                        suffixIcon:
-                            _controller.text.isNotEmpty
-                                ? GestureDetector(
-                                  onTap: () {
-                                    _controller.clear();
-                                    setState(() {});
-                                  },
-                                  child: const Icon(
-                                    Icons.close,
-                                    size: 20,
-                                    color: Colors.black54,
-                                  ),
-                                )
-                                : null,
+                        suffixIcon: _controller.text.isNotEmpty
+                            ? GestureDetector(
+                                onTap: () {
+                                  _controller.clear();
+                                  _searchController.clearSearch();
+                                },
+                                child: const Icon(
+                                  Icons.close,
+                                  size: 20,
+                                  color: Colors.black54,
+                                ),
+                              )
+                            : null,
                         filled: true,
                         fillColor: Colors.white,
                         isDense: true,
@@ -79,23 +114,73 @@ class _SearchPageState extends State<SearchPage> {
                     ),
                   ),
                   const SizedBox(width: 12),
-                  const Icon(Icons.mic_none, size: 20, color: Colors.black45),
+                  // const Icon(Icons.mic_none, size: 20, color: Colors.black45),
                 ],
               ),
               const SizedBox(height: 20),
               // Search Results
-              ..._searchResults.map(
-                (result) => Padding(
-                  padding: const EdgeInsets.only(bottom: 16),
-                  child: Text(
-                    result,
-                    style: TextStyle(
-                      fontSize: 14,
-                      color: Colors.black.withOpacity(0.6),
+              Obx(() {
+                if (_searchController.isLoading.value) {
+                  return const Center(
+                    child: Padding(
+                      padding: EdgeInsets.all(20.0),
+                      child: CircularProgressIndicator(),
                     ),
-                  ),
-                ),
-              ),
+                  );
+                }
+
+                if (_searchController.searchSuggestions.isEmpty &&
+                    _searchController.searchQuery.value.isNotEmpty) {
+                  return const Padding(
+                    padding: EdgeInsets.all(20.0),
+                    child: Center(
+                      child: Text(
+                        'Tidak ada saran pencarian',
+                        style: TextStyle(
+                          color: Colors.grey,
+                          fontSize: 14,
+                        ),
+                      ),
+                    ),
+                  );
+                }
+
+                return Column(
+                  children: _searchController.searchSuggestions
+                      .map(
+                        (suggestion) => Padding(
+                          padding: const EdgeInsets.only(bottom: 16),
+                          child: GestureDetector(
+                            onTap: () {
+                              _controller.text = suggestion;
+                              _searchController.updateSearchQuery(suggestion);
+                              // TODO: Navigate to search results page
+                            },
+                            child: Row(
+                              children: [
+                                const Icon(
+                                  Icons.search,
+                                  size: 16,
+                                  color: Colors.grey,
+                                ),
+                                const SizedBox(width: 12),
+                                Expanded(
+                                  child: Text(
+                                    suggestion,
+                                    style: TextStyle(
+                                      fontSize: 14,
+                                      color: Colors.black.withOpacity(0.6),
+                                    ),
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                        ),
+                      )
+                      .toList(),
+                );
+              }),
             ],
           ),
         ),

@@ -5,9 +5,11 @@ import '../models/banner_model.dart';
 import '../models/category_model.dart';
 import '../models/product_model.dart';
 import 'package:camp_to_go/models/product_detail_model.dart';
+import 'package:camp_to_go/models/search_suggestions_model.dart';
 import 'package:dio/dio.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'token_service.dart';
+import '../models/order_request_model.dart';
 
 class ApiService extends GetxService {
   // Konstanta untuk port API
@@ -113,6 +115,28 @@ class ApiService extends GetxService {
       return [];
     } catch (e) {
       print('Error getting categories: $e');
+      return [];
+    }
+  }
+
+  // Get Search Suggestions
+  Future<List<String>> getSearchSuggestions(String query) async {
+    try {
+      final response = await http.get(
+        Uri.parse(
+            '$baseUrl/search/suggestions?q=${Uri.encodeComponent(query)}'),
+        headers: _headers,
+      );
+      print('Search Suggestions Response: ${response.body}'); // Debug print
+      if (response.statusCode == 200) {
+        final data = json.decode(response.body);
+        if (data['success'] == true) {
+          return List<String>.from(data['data']['suggestions'] ?? []);
+        }
+      }
+      return [];
+    } catch (e) {
+      print('Error getting search suggestions: $e');
       return [];
     }
   }
@@ -281,6 +305,32 @@ class ApiService extends GetxService {
       }
     } catch (e) {
       print('Error in toggleFavorite: $e');
+      rethrow;
+    }
+  }
+
+  // Create new order
+  Future<OrderResponseModel> createOrder(OrderRequestModel orderRequest) async {
+    try {
+      print(
+          'Creating order with data: ${orderRequest.toJson()}'); // Debug print
+
+      final response = await _dio.post('/orders', data: orderRequest.toJson());
+
+      print('Order creation response: ${response.data}'); // Debug print
+
+      if (response.statusCode == 201 || response.statusCode == 200) {
+        final responseData = response.data;
+        if (responseData['success'] == true) {
+          return OrderResponseModel.fromJson(responseData['data']);
+        } else {
+          throw Exception(responseData['message'] ?? 'Gagal membuat pesanan');
+        }
+      } else {
+        throw Exception('Gagal membuat pesanan: ${response.statusCode}');
+      }
+    } catch (e) {
+      print('Error in createOrder: $e');
       rethrow;
     }
   }
